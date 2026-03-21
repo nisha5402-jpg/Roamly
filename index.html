@@ -261,19 +261,18 @@
       min-width: 0;
     }
     #city-dropdown {
-      position: absolute;
-      top: calc(100% + 4px);
-      left: 0; right: 0;
-      background: rgba(13,17,23,0.98);
-      border: 1px solid var(--border);
+      position: fixed;
+      background: rgba(13,17,23,0.99);
+      border: 1px solid rgba(255,255,255,0.15);
       border-radius: var(--r-card);
-      z-index: 200;
-      max-height: 220px;
+      z-index: 99999;
+      max-height: 260px;
       overflow-y: auto;
       display: none;
       scrollbar-width: thin;
-      scrollbar-color: rgba(255,255,255,0.15) transparent;
-      box-shadow: var(--shadow);
+      scrollbar-color: rgba(255,255,255,0.2) transparent;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.7);
+      min-width: 220px;
     }
     #city-dropdown.on { display: block; }
     .city-opt {
@@ -2093,18 +2092,27 @@ function initAutocomplete() {
     ).slice(0, 8);
   }
 
+  function positionDropdown() {
+    const rect = input.getBoundingClientRect();
+    dropdown.style.top = (rect.bottom + 4) + 'px';
+    dropdown.style.left = rect.left + 'px';
+    dropdown.style.width = rect.width + 'px';
+  }
+
   function renderDropdown(matches, q) {
     if (!matches.length) { dropdown.classList.remove('on'); return; }
     const ql = q.toLowerCase();
     dropdown.innerHTML = matches.map((c, i) => {
-      const hi = c.name.toLowerCase().startsWith(ql)
-        ? `<span class="city-opt-match">${c.name.slice(0,q.length)}</span>${c.name.slice(q.length)}`
+      const nameL = c.name.toLowerCase();
+      const hi = nameL.startsWith(ql)
+        ? '<span class="city-opt-match">' + c.name.slice(0, q.length) + '</span>' + c.name.slice(q.length)
         : c.name;
-      return `<div class="city-opt" data-idx="${i}" data-key="${c.key}">
-        <span class="city-opt-name">${hi}</span>
-        <span class="city-opt-country">${c.country}</span>
-      </div>`;
+      return '<div class="city-opt" data-idx="' + i + '" data-key="' + c.key + '">'
+        + '<span class="city-opt-name">' + hi + '</span>'
+        + '<span class="city-opt-country">' + c.country + '</span>'
+        + '</div>';
     }).join('');
+    positionDropdown();
     dropdown.classList.add('on');
     selectedIndex = -1;
   }
@@ -2113,6 +2121,9 @@ function initAutocomplete() {
     const q = input.value.trim();
     renderDropdown(getMatches(q), q);
   });
+
+  window.addEventListener('resize', () => { if (dropdown.classList.contains('on')) positionDropdown(); });
+  window.addEventListener('scroll', () => { if (dropdown.classList.contains('on')) positionDropdown(); }, true);
 
   input.addEventListener('keydown', e => {
     const opts = dropdown.querySelectorAll('.city-opt');
@@ -2569,8 +2580,17 @@ function clearApMarkers() {
   if (apInfoWin) { apInfoWin.close(); apInfoWin=null; }
 }
 
-// ── SCORE CACHE — ensures consistent results for same city+persona ──
+// ── SCORE CACHE — persisted to localStorage for consistency across sessions ──
 let scoreCache = {};
+(function loadCache() {
+  try {
+    const saved = localStorage.getItem('roamly_score_cache');
+    if (saved) scoreCache = JSON.parse(saved);
+  } catch(e) { scoreCache = {}; }
+})();
+function saveCache() {
+  try { localStorage.setItem('roamly_score_cache', JSON.stringify(scoreCache)); } catch(e) {}
+}
 
 async function runAreaPicker() {
   const raw = document.getElementById('ap-input').value.trim().toLowerCase();
@@ -2588,8 +2608,11 @@ async function runAreaPicker() {
 
   map.setCenter(cityData.center); map.setZoom(cityData.zoom);
 
-  // Check cache first — same city+persona = same scores every time
-  const cacheKey = `${cityKey}__${persona}`;
+  // Cache key includes weight fingerprint so custom weights get their own cache entry
+  const wFingerprint = customWeights
+    ? Object.values(customWeights).map(v=>v.toFixed(3)).join(',')
+    : persona;
+  const cacheKey = cityKey + '__' + wFingerprint;
   if (scoreCache[cacheKey]) {
     btn.disabled=false; btn.textContent='Score areas →';
     document.getElementById('load-bar').classList.remove('on');
@@ -2623,6 +2646,7 @@ async function runAreaPicker() {
     scored.sort((a,b)=>b.score-a.score);
     // Cache the result — scores won't change on repeat searches
     scoreCache[cacheKey] = scored;
+    saveCache();
     const bounds = new google.maps.LatLngBounds();
     for (let i=0;i<scored.length;i++) {
       const nb=scored[i];
