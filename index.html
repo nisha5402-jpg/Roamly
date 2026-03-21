@@ -224,9 +224,137 @@
       position: relative;
       overflow: hidden;
       min-height: 0;
+      display: flex;
+      flex-direction: row;
     }
 
-    #map { width: 100%; height: 100%; }
+    #map { flex: 1; height: 100%; min-width: 0; }
+
+    /* Desktop: results panel sits beside map */
+    @media (min-width: 768px) {
+      #drawer {
+        position: relative !important;
+        width: 300px;
+        flex-shrink: 0;
+        max-height: 100% !important;
+        transform: none !important;
+        border-radius: 0 !important;
+        border-top: none !important;
+        border-left: 1px solid var(--border);
+        overflow-y: auto;
+      }
+      #drawer.open { transform: none !important; }
+      #drawer-handle-wrap { display: none !important; }
+      #radius-ctrl { right: 316px; }
+      #legend-ctrl { left: 10px; bottom: 10px; }
+      #help-btn { right: 316px; }
+      #family-badge { left: calc(50% - 150px); }
+    }
+
+    /* ── CITY AUTOCOMPLETE DROPDOWN ── */
+    #ap-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 0;
+    }
+    #city-dropdown {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0; right: 0;
+      background: rgba(13,17,23,0.98);
+      border: 1px solid var(--border);
+      border-radius: var(--r-card);
+      z-index: 200;
+      max-height: 220px;
+      overflow-y: auto;
+      display: none;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,0.15) transparent;
+      box-shadow: var(--shadow);
+    }
+    #city-dropdown.on { display: block; }
+    .city-opt {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 9px 12px;
+      font-size: 13px; color: var(--text);
+      cursor: pointer;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      transition: background 0.1s;
+    }
+    .city-opt:last-child { border-bottom: none; }
+    .city-opt:hover { background: rgba(255,255,255,0.07); }
+    .city-opt-name { font-weight: 600; }
+    .city-opt-country { font-size: 11px; color: var(--muted); }
+    .city-opt-match { color: var(--secondary); }
+
+    /* ── WEIGHT EDITOR ── */
+    #weight-btn {
+      height: 38px; padding: 0 12px;
+      border-radius: var(--r-pill); border: 1px solid var(--border);
+      background: rgba(255,255,255,0.06);
+      color: var(--muted); font-size: 12px; font-weight: 600;
+      cursor: pointer; white-space: nowrap; flex-shrink: 0;
+      font-family: inherit; transition: all 0.18s;
+    }
+    #weight-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.25); }
+    #weight-btn.custom { color: var(--accent); border-color: var(--accent); }
+
+    #weight-panel {
+      position: absolute; top: 0; right: 0; bottom: 0;
+      width: 280px; z-index: 50;
+      background: rgba(13,17,23,0.98);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-left: 1px solid var(--border);
+      padding: 16px; overflow-y: auto;
+      transform: translateX(100%);
+      transition: transform 0.25s ease;
+      display: flex; flex-direction: column; gap: 0;
+    }
+    #weight-panel.on { transform: translateX(0); }
+
+    .wp-title {
+      font-size: 14px; font-weight: 700; color: var(--text);
+      margin-bottom: 4px;
+    }
+    .wp-sub {
+      font-size: 11px; color: var(--muted);
+      margin-bottom: 14px; line-height: 1.4;
+    }
+    .wp-row { margin-bottom: 12px; }
+    .wp-label {
+      display: flex; justify-content: space-between;
+      font-size: 12px; color: var(--text); margin-bottom: 5px;
+    }
+    .wp-pct {
+      font-size: 11px; color: var(--secondary); font-weight: 600;
+    }
+    .wp-slider {
+      width: 100%; accent-color: var(--secondary); cursor: pointer;
+    }
+    .wp-actions {
+      display: flex; gap: 8px; margin-top: 14px;
+    }
+    .wp-apply {
+      flex: 1; height: 36px; border-radius: var(--r-pill);
+      border: none;
+      background: linear-gradient(135deg, var(--secondary), #45B7AA);
+      color: #fff; font-size: 13px; font-weight: 700;
+      cursor: pointer; font-family: inherit;
+    }
+    .wp-reset {
+      height: 36px; padding: 0 14px; border-radius: var(--r-pill);
+      border: 1px solid var(--border);
+      background: transparent; color: var(--muted);
+      font-size: 12px; font-weight: 600;
+      cursor: pointer; font-family: inherit;
+    }
+    .wp-reset:hover { color: var(--text); }
+    .wp-close {
+      position: absolute; top: 12px; right: 12px;
+      background: none; border: none;
+      color: var(--muted); font-size: 18px;
+      cursor: pointer; line-height: 1;
+    }
 
     /* ── LOADING BAR ── */
     #load-bar {
@@ -702,7 +830,7 @@
     }
     #ap-strip.on { display: flex; }
     #ap-input {
-      flex: 1; height: 38px;
+      width: 100%; height: 38px;
       background: rgba(255,255,255,0.06);
       border: 1px solid var(--border);
       border-radius: var(--r-pill);
@@ -710,7 +838,7 @@
       padding: 0 14px; outline: none;
       font-family: inherit;
       transition: border-color 0.2s, box-shadow 0.2s;
-      min-width: 0;
+      min-width: 0; box-sizing: border-box;
     }
     #ap-input::placeholder { color: var(--muted); }
     #ap-input:focus {
@@ -921,9 +1049,13 @@
 
   <!-- AREAPICKER STRIP -->
   <div id="ap-strip">
-    <input id="ap-input" type="text" autocomplete="off"
-      placeholder="City name — e.g. Lisbon, Barcelona, Paris...">
-    <button id="ap-btn">Score areas →</button>
+    <div id="ap-wrap">
+      <input id="ap-input" type="text" autocomplete="off"
+        placeholder="Type a city — e.g. Lisbon, Oslo, Zurich...">
+      <div id="city-dropdown"></div>
+    </div>
+    <button id="weight-btn" title="Customise scoring weights">⚖ Weights</button>
+    <button id="ap-btn">Score →</button>
   </div>
 
   <!-- SEARCH STRIP -->
@@ -996,6 +1128,18 @@
 
     <!-- HELP BUTTON -->
     <button id="help-btn" title="How to use Roamly">?</button>
+
+    <!-- WEIGHT EDITOR PANEL -->
+    <div id="weight-panel">
+      <button class="wp-close" id="wp-close">×</button>
+      <div class="wp-title">⚖ Customise weights</div>
+      <div class="wp-sub">Adjust what matters most to you. Weights auto-normalise to 100%.</div>
+      <div id="wp-sliders"></div>
+      <div class="wp-actions">
+        <button class="wp-apply" id="wp-apply">Apply &amp; rescore</button>
+        <button class="wp-reset" id="wp-reset">Reset</button>
+      </div>
+    </div>
 
     <!-- TOAST -->
     <div id="toast" class="hidden"></div>
@@ -1261,6 +1405,446 @@ const CITY_DATA = {
   ]},
 };
 
+  // ── ADDITIONAL EUROPEAN CITIES ──
+  // France
+  'marseille':  { name:'Marseille',  country:'France',       center:{lat:43.2965,lng:5.3698},  zoom:13, nb:[
+    {n:'Le Panier',        lat:43.2977,lng:5.3702},{n:'Noailles',         lat:43.2930,lng:5.3749},
+    {n:'Cours Julien',     lat:43.2890,lng:5.3820},{n:'Vieux-Port',       lat:43.2950,lng:5.3630},
+    {n:'La Joliette',      lat:43.3073,lng:5.3602},
+  ]},
+  'bordeaux':   { name:'Bordeaux',   country:'France',       center:{lat:44.8378,lng:-0.5792}, zoom:13, nb:[
+    {n:'Saint-Pierre',     lat:44.8379,lng:-0.5724},{n:'Chartrons',       lat:44.8541,lng:-0.5700},
+    {n:'Saint-Michel',     lat:44.8310,lng:-0.5699},{n:'Victoire',        lat:44.8327,lng:-0.5808},
+    {n:'Bacalan',          lat:44.8636,lng:-0.5681},
+  ]},
+  'strasbourg': { name:'Strasbourg', country:'France',       center:{lat:48.5734,lng:7.7521},  zoom:13, nb:[
+    {n:'Grande Île',       lat:48.5839,lng:7.7508},{n:'Krutenau',        lat:48.5762,lng:7.7616},
+    {n:'Petite France',    lat:48.5780,lng:7.7432},{n:'Neustadt',        lat:48.5840,lng:7.7645},
+    {n:'Robertsau',        lat:48.6101,lng:7.7785},
+  ]},
+  'nantes':     { name:'Nantes',     country:'France',       center:{lat:47.2184,lng:-1.5536}, zoom:13, nb:[
+    {n:'Centre',           lat:47.2184,lng:-1.5536},{n:'Bouffay',         lat:47.2128,lng:-1.5472},
+    {n:'Île de Nantes',    lat:47.2046,lng:-1.5538},{n:'Talensac',        lat:47.2211,lng:-1.5603},
+    {n:'Zola',             lat:47.2259,lng:-1.5454},
+  ]},
+  // Spain additions
+  'bilbao':     { name:'Bilbao',     country:'Spain',        center:{lat:43.2630,lng:-2.9350}, zoom:13, nb:[
+    {n:'Casco Viejo',      lat:43.2578,lng:-2.9239},{n:'Abando',          lat:43.2642,lng:-2.9361},
+    {n:'Indautxu',         lat:43.2689,lng:-2.9476},{n:'Bilbao la Vieja', lat:43.2559,lng:-2.9314},
+    {n:'Deusto',           lat:43.2778,lng:-2.9510},
+  ]},
+  'granada':    { name:'Granada',    country:'Spain',        center:{lat:37.1773,lng:-3.5986}, zoom:13, nb:[
+    {n:'Albaicín',         lat:37.1811,lng:-3.5913},{n:'Realejo',         lat:37.1733,lng:-3.5980},
+    {n:'Centro',           lat:37.1773,lng:-3.5986},{n:'Sacromonte',      lat:37.1838,lng:-3.5843},
+    {n:'Zaidín',           lat:37.1563,lng:-3.5942},
+  ]},
+  'malaga':     { name:'Málaga',     country:'Spain',        center:{lat:36.7213,lng:-4.4214}, zoom:13, nb:[
+    {n:'Centro Histórico', lat:36.7213,lng:-4.4214},{n:'Soho',            lat:36.7177,lng:-4.4286},
+    {n:'El Palo',          lat:36.7126,lng:-4.3610},{n:'Pedregalejo',     lat:36.7143,lng:-4.3810},
+    {n:'Lagunillas',       lat:36.7238,lng:-4.4110},
+  ]},
+  // Italy additions
+  'venice':     { name:'Venice',     country:'Italy',        center:{lat:45.4408,lng:12.3155}, zoom:14, nb:[
+    {n:'San Marco',        lat:45.4341,lng:12.3388},{n:'Dorsoduro',       lat:45.4312,lng:12.3233},
+    {n:'Cannaregio',       lat:45.4473,lng:12.3292},{n:'Castello',        lat:45.4381,lng:12.3567},
+    {n:'Giudecca',         lat:45.4265,lng:12.3277},
+  ]},
+  'naples':     { name:'Naples',     country:'Italy',        center:{lat:40.8518,lng:14.2681}, zoom:13, nb:[
+    {n:'Spaccanapoli',     lat:40.8500,lng:14.2542},{n:'Chiaia',          lat:40.8385,lng:14.2410},
+    {n:'Vomero',           lat:40.8500,lng:14.2417},{n:'Quartieri Spagnoli',lat:40.8449,lng:14.2484},
+    {n:'Posillipo',        lat:40.8200,lng:14.2127},
+  ]},
+  'bologna':    { name:'Bologna',    country:'Italy',        center:{lat:44.4949,lng:11.3426}, zoom:13, nb:[
+    {n:'Centro Storico',   lat:44.4949,lng:11.3426},{n:'Bolognina',       lat:44.5123,lng:11.3433},
+    {n:'Santo Stefano',    lat:44.4902,lng:11.3510},{n:'Saragozza',       lat:44.4898,lng:11.3278},
+    {n:'Colli',            lat:44.4780,lng:11.3398},
+  ]},
+  // Germany additions
+  'cologne':    { name:'Cologne',    country:'Germany',      center:{lat:50.9333,lng:6.9500},  zoom:13, nb:[
+    {n:'Altstadt',         lat:50.9386,lng:6.9611},{n:'Ehrenfeld',       lat:50.9502,lng:6.9135},
+    {n:'Deutz',            lat:50.9373,lng:6.9775},{n:'Nippes',          lat:50.9671,lng:6.9533},
+    {n:'Südstadt',         lat:50.9201,lng:6.9540},
+  ]},
+  'frankfurt':  { name:'Frankfurt',  country:'Germany',      center:{lat:50.1109,lng:8.6821},  zoom:13, nb:[
+    {n:'Sachsenhausen',    lat:50.0990,lng:8.6894},{n:'Bornheim',        lat:50.1233,lng:8.7083},
+    {n:'Altstadt',         lat:50.1109,lng:8.6821},{n:'Nordend',         lat:50.1306,lng:8.6845},
+    {n:'Westend',          lat:50.1193,lng:8.6648},
+  ]},
+  'dresden':    { name:'Dresden',    country:'Germany',      center:{lat:51.0504,lng:13.7373}, zoom:13, nb:[
+    {n:'Altstadt',         lat:51.0504,lng:13.7373},{n:'Neustadt',        lat:51.0651,lng:13.7348},
+    {n:'Loschwitz',        lat:51.0574,lng:13.8011},{n:'Striesen',        lat:51.0418,lng:13.7774},
+    {n:'Pieschen',         lat:51.0810,lng:13.7181},
+  ]},
+  // UK additions
+  'manchester': { name:'Manchester', country:'UK',           center:{lat:53.4808,lng:-2.2426}, zoom:13, nb:[
+    {n:'Northern Quarter', lat:53.4841,lng:-2.2332},{n:'Ancoats',         lat:53.4832,lng:-2.2221},
+    {n:'Didsbury',         lat:53.4189,lng:-2.2214},{n:'Castlefield',     lat:53.4724,lng:-2.2553},
+    {n:'Chorlton',         lat:53.4450,lng:-2.2729},
+  ]},
+  'bristol':    { name:'Bristol',    country:'UK',           center:{lat:51.4545,lng:-2.5879}, zoom:13, nb:[
+    {n:'Clifton',          lat:51.4572,lng:-2.6238},{n:'Stokes Croft',    lat:51.4641,lng:-2.5907},
+    {n:'Harbourside',      lat:51.4494,lng:-2.5957},{n:'Bedminster',      lat:51.4386,lng:-2.5968},
+    {n:'Montpelier',       lat:51.4668,lng:-2.5840},
+  ]},
+  'bath':       { name:'Bath',       country:'UK',           center:{lat:51.3758,lng:-2.3599}, zoom:14, nb:[
+    {n:'City Centre',      lat:51.3811,lng:-2.3590},{n:'Bathwick',        lat:51.3844,lng:-2.3442},
+    {n:'Widcombe',         lat:51.3726,lng:-2.3573},{n:'Larkhall',        lat:51.3939,lng:-2.3528},
+  ]},
+  // Netherlands additions
+  'rotterdam':  { name:'Rotterdam',  country:'Netherlands',  center:{lat:51.9244,lng:4.4777},  zoom:13, nb:[
+    {n:'Cool',             lat:51.9244,lng:4.4777},{n:'Delfshaven',      lat:51.9108,lng:4.4522},
+    {n:'Kralingen',        lat:51.9237,lng:4.5322},{n:'Noordereiland',   lat:51.9133,lng:4.4943},
+    {n:'Rotterdam Noord',  lat:51.9400,lng:4.4802},
+  ]},
+  'utrecht':    { name:'Utrecht',    country:'Netherlands',  center:{lat:52.0907,lng:5.1214},  zoom:13, nb:[
+    {n:'Binnenstad',       lat:52.0907,lng:5.1214},{n:'Wittevrouwen',    lat:52.0973,lng:5.1358},
+    {n:'Lombok',           lat:52.0834,lng:5.1016},{n:'Leidsche Rijn',   lat:52.0906,lng:5.0700},
+    {n:'Overvecht',        lat:52.1163,lng:5.1415},
+  ]},
+  // Belgium additions
+  'brussels':   { name:'Brussels',   country:'Belgium',      center:{lat:50.8503,lng:4.3517},  zoom:13, nb:[
+    {n:'Grand Place',      lat:50.8465,lng:4.3524},{n:'Ixelles',         lat:50.8311,lng:4.3691},
+    {n:'Saint-Gilles',     lat:50.8285,lng:4.3451},{n:'Uccle',           lat:50.8002,lng:4.3450},
+    {n:'Molenbeek',        lat:50.8548,lng:4.3246},
+  ]},
+  'ghent':      { name:'Ghent',      country:'Belgium',      center:{lat:51.0543,lng:3.7174},  zoom:13, nb:[
+    {n:'Patershol',        lat:51.0573,lng:3.7187},{n:'Graslei',         lat:51.0543,lng:3.7222},
+    {n:'Overpoort',        lat:51.0461,lng:3.7245},{n:'Bloemekenswijk',  lat:51.0654,lng:3.7385},
+    {n:'Sint-Pieters',     lat:51.0372,lng:3.7201},
+  ]},
+  'antwerp':    { name:'Antwerp',    country:'Belgium',      center:{lat:51.2194,lng:4.4025},  zoom:13, nb:[
+    {n:'Old Town',         lat:51.2194,lng:4.4025},{n:'Zurenborg',       lat:51.2064,lng:4.4232},
+    {n:''t Zuid',          lat:51.2068,lng:4.3989},{n:'Borgerhout',      lat:51.2224,lng:4.4397},
+    {n:'Het Eilandje',     lat:51.2361,lng:4.4006},
+  ]},
+  // Switzerland
+  'zurich':     { name:'Zurich',     country:'Switzerland',  center:{lat:47.3769,lng:8.5417},  zoom:13, nb:[
+    {n:'Altstadt',         lat:47.3731,lng:8.5392},{n:'Wiedikon',        lat:47.3618,lng:8.5176},
+    {n:'Langstrasse',      lat:47.3786,lng:8.5259},{n:'Seefeld',         lat:47.3619,lng:8.5611},
+    {n:'Hürlimann Areal',  lat:47.3589,lng:8.5277},
+  ]},
+  'geneva':     { name:'Geneva',     country:'Switzerland',  center:{lat:46.2044,lng:6.1432},  zoom:13, nb:[
+    {n:'Vieille Ville',    lat:46.2004,lng:6.1487},{n:'Plainpalais',     lat:46.1966,lng:6.1396},
+    {n:'Carouge',          lat:46.1842,lng:6.1396},{n:'Pâquis',          lat:46.2084,lng:6.1548},
+    {n:'Champel',          lat:46.1938,lng:6.1584},
+  ]},
+  'bern':       { name:'Bern',       country:'Switzerland',  center:{lat:46.9480,lng:7.4474},  zoom:13, nb:[
+    {n:'Altstadt',         lat:46.9480,lng:7.4474},{n:'Länggasse',       lat:46.9570,lng:7.4350},
+    {n:'Mattenhof',        lat:46.9368,lng:7.4508},{n:'Kirchenfeld',     lat:46.9397,lng:7.4593},
+    {n:'Lorraine',         lat:46.9611,lng:7.4484},
+  ]},
+  'basel':      { name:'Basel',      country:'Switzerland',  center:{lat:47.5596,lng:7.5886},  zoom:13, nb:[
+    {n:'Grossbasel',       lat:47.5564,lng:7.5906},{n:'Kleinbasel',      lat:47.5629,lng:7.5978},
+    {n:'Gundeldingen',     lat:47.5438,lng:7.5861},{n:'Iselin',          lat:47.5479,lng:7.5699},
+    {n:'St. Johann',       lat:47.5638,lng:7.5620},
+  ]},
+  // Austria additions
+  'salzburg':   { name:'Salzburg',   country:'Austria',      center:{lat:47.8095,lng:13.0550}, zoom:13, nb:[
+    {n:'Altstadt',         lat:47.7989,lng:13.0472},{n:'Schallmoos',      lat:47.8148,lng:13.0695},
+    {n:'Nonntal',          lat:47.7926,lng:13.0503},{n:'Maxglan',         lat:47.7984,lng:13.0194},
+    {n:'Elisabeth-Vorstadt',lat:47.8015,lng:13.0614},
+  ]},
+  'innsbruck':  { name:'Innsbruck',  country:'Austria',      center:{lat:47.2692,lng:11.4041}, zoom:13, nb:[
+    {n:'Altstadt',         lat:47.2683,lng:11.3930},{n:'Saggen',          lat:47.2778,lng:11.4077},
+    {n:'Hötting',          lat:47.2745,lng:11.3811},{n:'Pradl',           lat:47.2629,lng:11.4190},
+    {n:'Wilten',           lat:47.2575,lng:11.3990},
+  ]},
+  // Norway
+  'oslo':       { name:'Oslo',       country:'Norway',       center:{lat:59.9139,lng:10.7522}, zoom:12, nb:[
+    {n:'Grünerløkka',      lat:59.9236,lng:10.7624},{n:'Frogner',         lat:59.9208,lng:10.7107},
+    {n:'Grønland',         lat:59.9086,lng:10.7676},{n:'Majorstuen',      lat:59.9308,lng:10.7184},
+    {n:'Aker Brygge',      lat:59.9083,lng:10.7280},
+  ]},
+  'bergen':     { name:'Bergen',     country:'Norway',       center:{lat:60.3913,lng:5.3221},  zoom:13, nb:[
+    {n:'Bryggen',          lat:60.3976,lng:5.3246},{n:'Nordnes',         lat:60.3958,lng:5.3151},
+    {n:'Nygård',           lat:60.3843,lng:5.3224},{n:'Sandviken',       lat:60.4095,lng:5.3183},
+    {n:'Grieghallen',      lat:60.3870,lng:5.3331},
+  ]},
+  'trondheim':  { name:'Trondheim',  country:'Norway',       center:{lat:63.4305,lng:10.3951}, zoom:13, nb:[
+    {n:'Midtbyen',         lat:63.4305,lng:10.3951},{n:'Elgeseter',       lat:63.4202,lng:10.3896},
+    {n:'Nedre Elvehavn',   lat:63.4338,lng:10.4133},{n:'Møllenberg',      lat:63.4356,lng:10.4034},
+    {n:'Ila',              lat:63.4354,lng:10.3754},
+  ]},
+  // Finland
+  'helsinki':   { name:'Helsinki',   country:'Finland',      center:{lat:60.1699,lng:24.9384}, zoom:12, nb:[
+    {n:'Punavuori',        lat:60.1588,lng:24.9377},{n:'Kallio',          lat:60.1816,lng:24.9553},
+    {n:'Töölö',            lat:60.1832,lng:24.9177},{n:'Kruununhaka',     lat:60.1706,lng:24.9567},
+    {n:'Ullanlinna',       lat:60.1545,lng:24.9493},
+  ]},
+  'tampere':    { name:'Tampere',    country:'Finland',      center:{lat:61.4978,lng:23.7610}, zoom:13, nb:[
+    {n:'Keskusta',         lat:61.4978,lng:23.7610},{n:'Amuri',           lat:61.5039,lng:23.7494},
+    {n:'Tammela',          lat:61.5000,lng:23.7800},{n:'Pispala',         lat:61.5145,lng:23.7236},
+    {n:'Tesoma',           lat:61.5188,lng:23.7015},
+  ]},
+  // Iceland
+  'reykjavik':  { name:'Reykjavík',  country:'Iceland',      center:{lat:64.1355,lng:-21.8954},zoom:13, nb:[
+    {n:'101 Reykjavík',    lat:64.1466,lng:-21.9426},{n:'Laugardalur',    lat:64.1412,lng:-21.8762},
+    {n:'Grandi',           lat:64.1530,lng:-21.9578},{n:'Hlemmur',        lat:64.1447,lng:-21.9078},
+    {n:'Vesturbær',        lat:64.1515,lng:-21.9655},
+  ]},
+  // Poland additions
+  'warsaw':     { name:'Warsaw',     country:'Poland',       center:{lat:52.2297,lng:21.0122}, zoom:12, nb:[
+    {n:'Śródmieście',      lat:52.2297,lng:21.0122},{n:'Praga',           lat:52.2548,lng:21.0436},
+    {n:'Mokotów',          lat:52.1963,lng:21.0241},{n:'Żoliborz',        lat:52.2697,lng:20.9844},
+    {n:'Powiśle',          lat:52.2380,lng:21.0261},
+  ]},
+  'wroclaw':    { name:'Wrocław',    country:'Poland',       center:{lat:51.1079,lng:17.0385}, zoom:13, nb:[
+    {n:'Stare Miasto',     lat:51.1079,lng:17.0385},{n:'Nadodrze',        lat:51.1261,lng:17.0251},
+    {n:'Ołbin',            lat:51.1201,lng:17.0358},{n:'Przedmieście Świdnickie',lat:51.0987,lng:17.0331},
+    {n:'Plac Grunwaldzki', lat:51.1079,lng:17.0585},
+  ]},
+  'gdansk':     { name:'Gdańsk',     country:'Poland',       center:{lat:54.3520,lng:18.6466}, zoom:13, nb:[
+    {n:'Stare Miasto',     lat:54.3520,lng:18.6466},{n:'Wrzeszcz',        lat:54.3765,lng:18.6153},
+    {n:'Oliwa',            lat:54.4063,lng:18.5601},{n:'Nowy Port',       lat:54.3998,lng:18.6583},
+    {n:'Śródmieście',      lat:54.3617,lng:18.6389},
+  ]},
+  // Romania
+  'bucharest':  { name:'Bucharest',  country:'Romania',      center:{lat:44.4268,lng:26.1025}, zoom:12, nb:[
+    {n:'Floreasca',        lat:44.4660,lng:26.1018},{n:'Dorobanți',       lat:44.4579,lng:26.0934},
+    {n:'Centrul Vechi',    lat:44.4307,lng:26.1002},{n:'Cotroceni',       lat:44.4290,lng:26.0687},
+    {n:'Pantelimon',       lat:44.4320,lng:26.1750},
+  ]},
+  'cluj':       { name:'Cluj-Napoca',country:'Romania',      center:{lat:46.7712,lng:23.6236}, zoom:13, nb:[
+    {n:'Centru',           lat:46.7712,lng:23.6236},{n:'Mănăștur',        lat:46.7686,lng:23.5769},
+    {n:'Zorilor',          lat:46.7576,lng:23.6173},{n:'Grigorescu',      lat:46.7773,lng:23.6436},
+    {n:'Bună Ziua',        lat:46.7517,lng:23.6361},
+  ]},
+  'brasov':     { name:'Brașov',     country:'Romania',      center:{lat:45.6427,lng:25.5887}, zoom:13, nb:[
+    {n:'Centru',           lat:45.6409,lng:25.5888},{n:'Scheii Brașovului',lat:45.6283,lng:25.5923},
+    {n:'Blumăna',          lat:45.6558,lng:25.5997},{n:'Gemeni',          lat:45.6530,lng:25.6150},
+  ]},
+  'sibiu':      { name:'Sibiu',      country:'Romania',      center:{lat:45.7983,lng:24.1256}, zoom:14, nb:[
+    {n:'Centru Istoric',   lat:45.7983,lng:24.1256},{n:'Turnișor',        lat:45.8142,lng:24.1139},
+    {n:'Hipodrom',         lat:45.7808,lng:24.1119},{n:'Terezian',        lat:45.8071,lng:24.1347},
+  ]},
+  // Bulgaria
+  'sofia':      { name:'Sofia',      country:'Bulgaria',     center:{lat:42.6977,lng:23.3219}, zoom:12, nb:[
+    {n:'Center',           lat:42.6977,lng:23.3219},{n:'Lozenets',        lat:42.6723,lng:23.3289},
+    {n:'Oborishte',        lat:42.7090,lng:23.3366},{n:'Studentski Grad', lat:42.6536,lng:23.3484},
+    {n:'Poduyane',         lat:42.7231,lng:23.3680},
+  ]},
+  'plovdiv':    { name:'Plovdiv',    country:'Bulgaria',     center:{lat:42.1354,lng:24.7453}, zoom:13, nb:[
+    {n:'Kapana',           lat:42.1444,lng:24.7465},{n:'Old Town',        lat:42.1463,lng:24.7518},
+    {n:'Trakiya',          lat:42.1109,lng:24.7677},{n:'Kamenitza',       lat:42.1551,lng:24.7350},
+  ]},
+  'varna':      { name:'Varna',      country:'Bulgaria',     center:{lat:43.2141,lng:27.9147}, zoom:13, nb:[
+    {n:'City Centre',      lat:43.2141,lng:27.9147},{n:'Chaika',          lat:43.2308,lng:27.9427},
+    {n:'Sea Garden area',  lat:43.2046,lng:27.9179},{n:'Vladislavovo',    lat:43.2190,lng:27.9503},
+  ]},
+  // Czech additions
+  'brno':       { name:'Brno',       country:'Czech Rep.',   center:{lat:49.1951,lng:16.6068}, zoom:13, nb:[
+    {n:'Brno-střed',       lat:49.1951,lng:16.6068},{n:'Žabovřesky',      lat:49.2016,lng:16.5714},
+    {n:'Královo Pole',     lat:49.2220,lng:16.6062},{n:'Komín',           lat:49.2129,lng:16.5537},
+    {n:'Staré Brno',       lat:49.1905,lng:16.5914},
+  ]},
+  // Slovakia
+  'bratislava': { name:'Bratislava', country:'Slovakia',     center:{lat:48.1486,lng:17.1077}, zoom:13, nb:[
+    {n:'Staré Mesto',      lat:48.1440,lng:17.1078},{n:'Petržalka',       lat:48.1216,lng:17.0989},
+    {n:'Nové Mesto',       lat:48.1637,lng:17.1247},{n:'Dúbravka',        lat:48.1790,lng:17.0482},
+    {n:'Ružinov',          lat:48.1479,lng:17.1518},
+  ]},
+  'kosice':     { name:'Košice',     country:'Slovakia',     center:{lat:48.7164,lng:21.2611}, zoom:13, nb:[
+    {n:'Staré Mesto',      lat:48.7199,lng:21.2582},{n:'Sídlisko KVP',    lat:48.7261,lng:21.2230},
+    {n:'Furča',            lat:48.7433,lng:21.2644},{n:'Západ',           lat:48.7048,lng:21.2395},
+  ]},
+  // Slovenia
+  'ljubljana':  { name:'Ljubljana',  country:'Slovenia',     center:{lat:46.0569,lng:14.5058}, zoom:13, nb:[
+    {n:'Staro Mestno jedro',lat:46.0488,lng:14.5044},{n:'Trnovo',         lat:46.0390,lng:14.5021},
+    {n:'Šiška',            lat:46.0718,lng:14.4758},{n:'Bežigrad',        lat:46.0725,lng:14.5249},
+    {n:'Vič',              lat:46.0456,lng:14.4718},
+  ]},
+  'piran':      { name:'Piran',      country:'Slovenia',     center:{lat:45.5283,lng:13.5683}, zoom:14, nb:[
+    {n:'Old Town',         lat:45.5283,lng:13.5683},{n:'Tartinijev trg',  lat:45.5283,lng:13.5683},
+    {n:'Portorož',         lat:45.5131,lng:13.5917},
+  ]},
+  // Croatia additions
+  'zagreb':     { name:'Zagreb',     country:'Croatia',      center:{lat:45.8150,lng:15.9819}, zoom:13, nb:[
+    {n:'Gornji Grad',      lat:45.8150,lng:15.9819},{n:'Donji Grad',      lat:45.8067,lng:15.9697},
+    {n:'Tkalčićeva',       lat:45.8145,lng:15.9793},{n:'Maksimir',        lat:45.8226,lng:16.0264},
+    {n:'Jarun',            lat:45.7836,lng:15.9442},
+  ]},
+  'split':      { name:'Split',      country:'Croatia',      center:{lat:43.5081,lng:16.4402}, zoom:13, nb:[
+    {n:'Stari Grad',       lat:43.5089,lng:16.4392},{n:'Meje',            lat:43.5025,lng:16.4137},
+    {n:'Spinut',           lat:43.5217,lng:16.4421},{n:'Bačvice',         lat:43.5023,lng:16.4518},
+    {n:'Žnjan',            lat:43.4975,lng:16.5102},
+  ]},
+  'zadar':      { name:'Zadar',      country:'Croatia',      center:{lat:44.1194,lng:15.2314}, zoom:13, nb:[
+    {n:'Poluotok',         lat:44.1194,lng:15.2314},{n:'Voštarnica',      lat:44.1131,lng:15.2443},
+    {n:'Brodarica',        lat:44.1249,lng:15.2548},{n:'Relja',           lat:44.1185,lng:15.2487},
+  ]},
+  // Serbia
+  'belgrade':   { name:'Belgrade',   country:'Serbia',       center:{lat:44.8176,lng:20.4633}, zoom:12, nb:[
+    {n:'Stari Grad',       lat:44.8176,lng:20.4633},{n:'Savamala',        lat:44.8063,lng:20.4472},
+    {n:'Vračar',           lat:44.8008,lng:20.4664},{n:'Dorćol',          lat:44.8220,lng:20.4638},
+    {n:'Zemun',            lat:44.8456,lng:20.4006},
+  ]},
+  'novisad':    { name:'Novi Sad',   country:'Serbia',       center:{lat:45.2671,lng:19.8335}, zoom:13, nb:[
+    {n:'Stari Grad',       lat:45.2554,lng:19.8432},{n:'Liman',           lat:45.2451,lng:19.8434},
+    {n:'Salajka',          lat:45.2671,lng:19.8042},{n:'Rotkvarija',      lat:45.2663,lng:19.8630},
+  ]},
+  // Montenegro
+  'kotor':      { name:'Kotor',      country:'Montenegro',   center:{lat:42.4246,lng:18.7712}, zoom:14, nb:[
+    {n:'Old Town',         lat:42.4247,lng:18.7706},{n:'Dobrota',         lat:42.4429,lng:18.7738},
+    {n:'Muo',              lat:42.4137,lng:18.7558},{n:'Prcanj',          lat:42.4025,lng:18.7373},
+  ]},
+  'budva':      { name:'Budva',      country:'Montenegro',   center:{lat:42.2864,lng:18.8400}, zoom:13, nb:[
+    {n:'Stari Grad',       lat:42.2864,lng:18.8400},{n:'Slovenska Obala', lat:42.2960,lng:18.8397},
+    {n:'Bečići',           lat:42.2686,lng:18.8764},{n:'Petrovac',        lat:42.2063,lng:18.9469},
+  ]},
+  // Bosnia
+  'sarajevo':   { name:'Sarajevo',   country:'Bosnia',       center:{lat:43.8486,lng:18.3564}, zoom:13, nb:[
+    {n:'Baščaršija',       lat:43.8598,lng:18.4294},{n:'Grbavica',        lat:43.8443,lng:18.4037},
+    {n:'Ilidža',           lat:43.8250,lng:18.3092},{n:'Marijin Dvor',    lat:43.8560,lng:18.4120},
+    {n:'Stari Grad',       lat:43.8598,lng:18.4294},
+  ]},
+  'mostar':     { name:'Mostar',     country:'Bosnia',       center:{lat:43.3438,lng:17.8078}, zoom:14, nb:[
+    {n:'Stari Most',       lat:43.3360,lng:17.8155},{n:'Brankovac',       lat:43.3495,lng:17.8057},
+    {n:'Donja Mahala',     lat:43.3358,lng:17.8011},{n:'Bijeli Brijeg',   lat:43.3551,lng:17.8125},
+  ]},
+  // North Macedonia
+  'skopje':     { name:'Skopje',     country:'N. Macedonia', center:{lat:41.9973,lng:21.4280}, zoom:13, nb:[
+    {n:'Staro Skopje',     lat:41.9973,lng:21.4280},{n:'Čair',            lat:42.0044,lng:21.4432},
+    {n:'Center',           lat:41.9947,lng:21.4179},{n:'Karpoš',          lat:41.9880,lng:21.3888},
+    {n:'Aerodrom',         lat:41.9751,lng:21.4354},
+  ]},
+  'ohrid':      { name:'Ohrid',      country:'N. Macedonia', center:{lat:41.1231,lng:20.8016}, zoom:14, nb:[
+    {n:'Old Town',         lat:41.1231,lng:20.8016},{n:'Kaneo',           lat:41.1163,lng:20.7929},
+    {n:'Gorni Konjski',    lat:41.1302,lng:20.8140},{n:'Lakoceji',        lat:41.1176,lng:20.7988},
+  ]},
+  // Albania
+  'tirana':     { name:'Tirana',     country:'Albania',      center:{lat:41.3275,lng:19.8187}, zoom:13, nb:[
+    {n:'Blloku',           lat:41.3222,lng:19.8182},{n:'Pazari i Ri',     lat:41.3285,lng:19.8218},
+    {n:'Kombinat',         lat:41.3082,lng:19.8035},{n:'Lapraka',         lat:41.3410,lng:19.7885},
+    {n:'Elbasan Road',     lat:41.3202,lng:19.8550},
+  ]},
+  // Baltic states
+  'tallinn':    { name:'Tallinn',    country:'Estonia',      center:{lat:59.4370,lng:24.7536}, zoom:13, nb:[
+    {n:'Old Town',         lat:59.4370,lng:24.7536},{n:'Kalamaja',        lat:59.4453,lng:24.7321},
+    {n:'Telliskivi',       lat:59.4449,lng:24.7370},{n:'Kadriorg',        lat:59.4373,lng:24.7921},
+    {n:'Ülemiste',         lat:59.4245,lng:24.8069},
+  ]},
+  'riga':       { name:'Riga',       country:'Latvia',       center:{lat:56.9496,lng:24.1052}, zoom:13, nb:[
+    {n:'Old Town',         lat:56.9496,lng:24.1052},{n:'Art Nouveau District',lat:56.9614,lng:24.1250},
+    {n:'Āgenskalns',       lat:56.9416,lng:24.0824},{n:'Miera Iela',      lat:56.9614,lng:24.1450},
+    {n:'Berģi',            lat:57.0050,lng:24.1907},
+  ]},
+  'vilnius':    { name:'Vilnius',    country:'Lithuania',    center:{lat:54.6872,lng:25.2797}, zoom:13, nb:[
+    {n:'Old Town',         lat:54.6793,lng:25.2854},{n:'Užupis',          lat:54.6808,lng:25.3008},
+    {n:'Žvėrynas',         lat:54.6963,lng:25.2594},{n:'Šnipiškės',       lat:54.6951,lng:25.2890},
+    {n:'Naujamiestis',     lat:54.6854,lng:25.2666},
+  ]},
+  // Cyprus
+  'nicosia':    { name:'Nicosia',    country:'Cyprus',       center:{lat:35.1856,lng:33.3823}, zoom:13, nb:[
+    {n:'Old City',         lat:35.1722,lng:33.3617},{n:'Acropolis',       lat:35.1831,lng:33.3692},
+    {n:'Engomi',           lat:35.1738,lng:33.3315},{n:'Aglantzia',       lat:35.1546,lng:33.4071},
+    {n:'Lykavitos',        lat:35.1656,lng:33.3558},
+  ]},
+  'limassol':   { name:'Limassol',   country:'Cyprus',       center:{lat:34.6786,lng:33.0413}, zoom:13, nb:[
+    {n:'Old Town',         lat:34.6726,lng:33.0434},{n:'Neapolis',        lat:34.6840,lng:33.0480},
+    {n:'Agios Tychon',     lat:34.6917,lng:33.0893},{n:'Germasogeia',     lat:34.7094,lng:33.1025},
+    {n:'Zakaki',           lat:34.6953,lng:33.0044},
+  ]},
+  'paphos':     { name:'Paphos',     country:'Cyprus',       center:{lat:34.7757,lng:32.4244}, zoom:13, nb:[
+    {n:'Kato Paphos',      lat:34.7579,lng:32.4151},{n:'Pano Paphos',     lat:34.7757,lng:32.4244},
+    {n:'Tombs of Kings',   lat:34.7800,lng:32.4077},{n:'Universal area',  lat:34.7793,lng:32.4361},
+  ]},
+  // Malta
+  'valletta':   { name:'Valletta',   country:'Malta',        center:{lat:35.8997,lng:14.5147}, zoom:14, nb:[
+    {n:'Valletta Centre',  lat:35.8997,lng:14.5147},{n:'Floriana',        lat:35.8918,lng:14.5023},
+    {n:'Sliema',           lat:35.9122,lng:14.5017},{n:'St. Julian\'s',   lat:35.9210,lng:14.4895},
+    {n:'Mdina',            lat:35.8868,lng:14.4020},
+  ]},
+  // Luxembourg
+  'luxembourg': { name:'Luxembourg', country:'Luxembourg',   center:{lat:49.6116,lng:6.1319},  zoom:13, nb:[
+    {n:'Ville Haute',      lat:49.6116,lng:6.1319},{n:'Grund',           lat:49.6028,lng:6.1295},
+    {n:'Clausen',          lat:49.6070,lng:6.1469},{n:'Kirchberg',       lat:49.6216,lng:6.1557},
+    {n:'Bonnevoie',        lat:49.5989,lng:6.1358},
+  ]},
+  // Andorra
+  'andorra':    { name:'Andorra la Vella',country:'Andorra', center:{lat:42.5063,lng:1.5218},  zoom:13, nb:[
+    {n:'Barri Antic',      lat:42.5063,lng:1.5218},{n:'La Margineda',    lat:42.4959,lng:1.5127},
+    {n:'Santa Coloma',     lat:42.4863,lng:1.5228},
+  ]},
+  // Monaco
+  'monaco':     { name:'Monaco',     country:'Monaco',       center:{lat:43.7384,lng:7.4246},  zoom:14, nb:[
+    {n:'Monte Carlo',      lat:43.7396,lng:7.4290},{n:'Monaco-Ville',    lat:43.7313,lng:7.4154},
+    {n:'Fontvieille',      lat:43.7288,lng:7.4137},{n:'La Condamine',    lat:43.7368,lng:7.4176},
+  ]},
+  // Liechtenstein
+  'vaduz':      { name:'Vaduz',      country:'Liechtenstein',center:{lat:47.1410,lng:9.5215},  zoom:14, nb:[
+    {n:'City Centre',      lat:47.1410,lng:9.5215},{n:'Egerta',          lat:47.1483,lng:9.5245},
+    {n:'Mühleholz',        lat:47.1359,lng:9.5258},
+  ]},
+  // San Marino
+  'sanmarino':  { name:'San Marino', country:'San Marino',   center:{lat:43.9424,lng:12.4578}, zoom:14, nb:[
+    {n:'Città di San Marino',lat:43.9424,lng:12.4578},{n:'Borgo Maggiore',lat:43.9358,lng:12.4490},
+    {n:'Serravalle',       lat:43.9678,lng:12.4762},
+  ]},
+  // Denmark additions
+  'aarhus':     { name:'Aarhus',     country:'Denmark',      center:{lat:56.1629,lng:10.2039}, zoom:13, nb:[
+    {n:'Latinerkvarteret', lat:56.1629,lng:10.2039},{n:'Frederiksbjerg',  lat:56.1497,lng:10.2085},
+    {n:'Trøjborg',         lat:56.1786,lng:10.2152},{n:'Botanisk Have',   lat:56.1656,lng:10.1927},
+    {n:'Aarhus Ø',         lat:56.1600,lng:10.2369},
+  ]},
+  // Sweden additions
+  'gothenburg': { name:'Gothenburg', country:'Sweden',       center:{lat:57.7089,lng:11.9746}, zoom:12, nb:[
+    {n:'Haga',             lat:57.6980,lng:11.9680},{n:'Linné',           lat:57.6921,lng:11.9537},
+    {n:'Majorna',          lat:57.6844,lng:11.9363},{n:'Guldheden',       lat:57.6813,lng:11.9795},
+    {n:'Nordstan',         lat:57.7089,lng:11.9746},
+  ]},
+  'malmo':      { name:'Malmö',      country:'Sweden',       center:{lat:55.6050,lng:13.0038}, zoom:13, nb:[
+    {n:'Gamla Staden',     lat:55.6050,lng:13.0038},{n:'Möllevången',     lat:55.5937,lng:13.0070},
+    {n:'Husie',            lat:55.5800,lng:13.0804},{n:'Västra Hamnen',   lat:55.6195,lng:12.9909},
+    {n:'Hyllie',           lat:55.5600,lng:12.9833},
+  ]},
+  // Ireland additions
+  'cork':       { name:'Cork',       country:'Ireland',      center:{lat:51.8985,lng:-8.4756}, zoom:13, nb:[
+    {n:'City Centre',      lat:51.8985,lng:-8.4756},{n:'Shandon',         lat:51.9037,lng:-8.4778},
+    {n:'Douglas',          lat:51.8638,lng:-8.4478},{n:'Ballincollig',    lat:51.8894,lng:-8.5925},
+    {n:'Tivoli',           lat:51.8985,lng:-8.4408},
+  ]},
+  'galway':     { name:'Galway',     country:'Ireland',      center:{lat:53.2707,lng:-9.0568}, zoom:13, nb:[
+    {n:'Salthill',         lat:53.2566,lng:-9.0905},{n:'Latin Quarter',   lat:53.2737,lng:-9.0498},
+    {n:'Westside',         lat:53.2762,lng:-9.0823},{n:'Knocknacarra',    lat:53.2649,lng:-9.1234},
+    {n:'Rahoon',           lat:53.2734,lng:-9.0749},
+  ]},
+  // Greece additions
+  'rhodes':     { name:'Rhodes',     country:'Greece',       center:{lat:36.4341,lng:28.2176}, zoom:13, nb:[
+    {n:'Old Town',         lat:36.4451,lng:28.2270},{n:'Neohori',         lat:36.4380,lng:28.2230},
+    {n:'Ixia',             lat:36.4328,lng:28.1813},{n:'Trianda',         lat:36.4180,lng:28.1497},
+  ]},
+  'heraklion':  { name:'Heraklion',  country:'Greece',       center:{lat:35.3387,lng:25.1442}, zoom:13, nb:[
+    {n:'Old Town',         lat:35.3387,lng:25.1442},{n:'Nea Alikarnassos',lat:35.3307,lng:25.1617},
+    {n:'Fortetza',         lat:35.3442,lng:25.1265},{n:'Knossos Road',    lat:35.3182,lng:25.1350},
+  ]},
+  // Portugal additions
+  'faro':       { name:'Faro',       country:'Portugal',     center:{lat:37.0194,lng:-7.9304}, zoom:13, nb:[
+    {n:'Cidade Velha',     lat:37.0140,lng:-7.9317},{n:'Bairro Ribeirinho',lat:37.0194,lng:-7.9304},
+    {n:'Montenegro',       lat:37.0400,lng:-7.9296},{n:'Santa Bárbara',   lat:37.0328,lng:-7.9592},
+  ]},
+  'braga':      { name:'Braga',      country:'Portugal',     center:{lat:41.5454,lng:-8.4265}, zoom:13, nb:[
+    {n:'Centro Histórico', lat:41.5454,lng:-8.4265},{n:'Maximinos',       lat:41.5543,lng:-8.4218},
+    {n:'São Vítor',        lat:41.5371,lng:-8.4196},{n:'Nogueira',        lat:41.5269,lng:-8.4431},
+  ]},
+  // Hungary additions
+  'pecs':       { name:'Pécs',       country:'Hungary',      center:{lat:46.0727,lng:18.2323}, zoom:13, nb:[
+    {n:'Belváros',         lat:46.0727,lng:18.2323},{n:'Budai városrész', lat:46.0800,lng:18.2175},
+    {n:'Kertvárosi',       lat:46.0576,lng:18.2302},{n:'Kertváros',       lat:46.0579,lng:18.2499},
+  ]},
+  // Ukraine (historical)
+  'lviv':       { name:'Lviv',       country:'Ukraine',      center:{lat:49.8397,lng:24.0297}, zoom:13, nb:[
+    {n:'Old Town',         lat:49.8430,lng:24.0318},{n:'Sykhiv',          lat:49.7892,lng:24.0439},
+    {n:'Lychakiv',         lat:49.8305,lng:24.0597},{n:'Zalizny Port',    lat:49.8397,lng:23.9869},
+    {n:'Frankivsk',        lat:49.8190,lng:23.9960},
+  ]},
+  // Turkey (Istanbul - European side)
+  'istanbul':   { name:'Istanbul',   country:'Turkey',       center:{lat:41.0082,lng:28.9784}, zoom:12, nb:[
+    {n:'Sultanahmet',      lat:41.0054,lng:28.9768},{n:'Beyoğlu',         lat:41.0359,lng:28.9775},
+    {n:'Karaköy',          lat:41.0253,lng:28.9741},{n:'Balat',           lat:41.0296,lng:28.9461},
+    {n:'Nişantaşı',        lat:41.0501,lng:28.9910},
+  ]},
+};
+
 const CITY_ALIASES = {
   'lisbon':'lisbon','lisboa':'lisbon','lisbonne':'lisbon',
   'barcelona':'barcelona','bcn':'barcelona',
@@ -1276,7 +1860,7 @@ const CITY_ALIASES = {
   'porto':'porto','oporto':'porto',
   'athens':'athens','athina':'athens',
   'florence':'florence','firenze':'florence',
-  'copenhagen':'copenhagen',
+  'copenhagen':'copenhagen','københavn':'copenhagen',
   'dublin':'dublin',
   'seville':'seville','sevilla':'seville',
   'valencia':'valencia',
@@ -1292,6 +1876,91 @@ const CITY_ALIASES = {
   'thessaloniki':'thessaloniki',
   'lyon':'lyon',
   'santorini':'santorini','thira':'santorini',
+  // New aliases
+  'marseille':'marseille','marseilles':'marseille',
+  'bordeaux':'bordeaux',
+  'strasbourg':'strasbourg',
+  'nantes':'nantes',
+  'bilbao':'bilbao',
+  'granada':'granada',
+  'malaga':'malaga','málaga':'malaga',
+  'venice':'venice','venezia':'venice',
+  'naples':'naples','napoli':'naples',
+  'bologna':'bologna',
+  'cologne':'cologne','köln':'cologne',
+  'frankfurt':'frankfurt',
+  'dresden':'dresden',
+  'manchester':'manchester',
+  'bristol':'bristol',
+  'bath':'bath',
+  'rotterdam':'rotterdam',
+  'utrecht':'utrecht',
+  'brussels':'brussels','bruxelles':'brussels','brussel':'brussels',
+  'ghent':'ghent','gent':'ghent',
+  'antwerp':'antwerp','antwerpen':'antwerp',
+  'zurich':'zurich','zürich':'zurich',
+  'geneva':'geneva','genève':'geneva','genf':'geneva',
+  'bern':'bern',
+  'basel':'basel',
+  'salzburg':'salzburg',
+  'innsbruck':'innsbruck',
+  'oslo':'oslo',
+  'bergen':'bergen',
+  'trondheim':'trondheim',
+  'helsinki':'helsinki',
+  'tampere':'tampere',
+  'reykjavik':'reykjavik','reykjavík':'reykjavik',
+  'warsaw':'warsaw','warszawa':'warsaw',
+  'wroclaw':'wroclaw','wrocław':'wroclaw',
+  'gdansk':'gdansk','gdańsk':'gdansk',
+  'bucharest':'bucharest','bucurești':'bucharest',
+  'cluj':'cluj','cluj-napoca':'cluj',
+  'brasov':'brasov','brașov':'brasov',
+  'sibiu':'sibiu',
+  'sofia':'sofia','sofiya':'sofia',
+  'plovdiv':'plovdiv',
+  'varna':'varna',
+  'brno':'brno',
+  'bratislava':'bratislava',
+  'kosice':'kosice','košice':'kosice',
+  'ljubljana':'ljubljana',
+  'piran':'piran',
+  'zagreb':'zagreb',
+  'split':'split',
+  'zadar':'zadar',
+  'belgrade':'belgrade','beograd':'belgrade',
+  'novisad':'novisad','novi sad':'novisad',
+  'kotor':'kotor',
+  'budva':'budva',
+  'sarajevo':'sarajevo',
+  'mostar':'mostar',
+  'skopje':'skopje',
+  'ohrid':'ohrid',
+  'tirana':'tirana','tiranë':'tirana',
+  'tallinn':'tallinn',
+  'riga':'riga',
+  'vilnius':'vilnius',
+  'nicosia':'nicosia','lefkosia':'nicosia',
+  'limassol':'limassol',
+  'paphos':'paphos',
+  'valletta':'valletta',
+  'luxembourg':'luxembourg','luxembourg city':'luxembourg',
+  'andorra':'andorra','andorra la vella':'andorra',
+  'monaco':'monaco','monte carlo':'monaco',
+  'vaduz':'vaduz','liechtenstein':'vaduz',
+  'san marino':'sanmarino','sanmarino':'sanmarino',
+  'aarhus':'aarhus','århus':'aarhus',
+  'gothenburg':'gothenburg','göteborg':'gothenburg',
+  'malmo':'malmo','malmö':'malmo',
+  'cork':'cork',
+  'galway':'galway',
+  'rhodes':'rhodes','rodos':'rhodes',
+  'heraklion':'heraklion','iraklion':'heraklion',
+  'faro':'faro',
+  'braga':'braga',
+  'pecs':'pecs','pécs':'pecs',
+  'lviv':'lviv',
+  'istanbul':'istanbul',
 };
 
 // ── AREAPICKER STATE ──
@@ -1307,14 +1976,184 @@ function scoreColor(s) {
 }
 
 // ── 8-DIMENSION PERSONA WEIGHTS ──
-// Each row sums to 1.00
 const WEIGHTS = {
-  //          food   mobility culture green  quiet  char   air    essentials
   solo:   {food:0.20,mobility:0.15,culture:0.15,green:0.05,quiet:0.05,character:0.25,air:0.05,essentials:0.10},
   couple: {food:0.20,mobility:0.10,culture:0.22,green:0.10,quiet:0.10,character:0.15,air:0.05,essentials:0.08},
   family: {food:0.10,mobility:0.15,culture:0.08,green:0.20,quiet:0.15,character:0.05,air:0.07,essentials:0.20},
   remote: {food:0.10,mobility:0.25,culture:0.05,green:0.10,quiet:0.20,character:0.08,air:0.07,essentials:0.15},
 };
+
+// ── CUSTOM WEIGHTS STATE ──
+let customWeights = null; // null = use persona defaults
+
+const DIM_LABELS = {
+  food:'🍽 Food', mobility:'🚇 Mobility', culture:'🏛 Culture',
+  green:'🌳 Green', quiet:'🔇 Quiet', character:'✨ Character',
+  air:'💨 Air', essentials:'🛒 Essentials'
+};
+
+function getActiveWeights() {
+  if (customWeights) return customWeights;
+  const p = document.querySelector('.persona-btn.active')?.dataset.persona || 'solo';
+  return WEIGHTS[p];
+}
+
+// ── WEIGHT EDITOR INIT ──
+function initWeightEditor() {
+  const panel = document.getElementById('weight-panel');
+  const btn   = document.getElementById('weight-btn');
+  const closeBtn = document.getElementById('wp-close');
+  const applyBtn = document.getElementById('wp-apply');
+  const resetBtn = document.getElementById('wp-reset');
+  const container = document.getElementById('wp-sliders');
+
+  function buildSliders() {
+    const w = getActiveWeights();
+    container.innerHTML = '';
+    Object.entries(DIM_LABELS).forEach(([key, label]) => {
+      const val = Math.round((w[key] || 0) * 100);
+      container.innerHTML += `
+        <div class="wp-row">
+          <div class="wp-label">
+            <span>${label}</span>
+            <span class="wp-pct" id="pct-${key}">${val}%</span>
+          </div>
+          <input class="wp-slider" type="range" min="0" max="40" step="1"
+            value="${val}" data-dim="${key}"
+            oninput="updateSliderLabel(this)">
+        </div>`;
+    });
+  }
+
+  btn.addEventListener('click', () => {
+    buildSliders();
+    panel.classList.add('on');
+  });
+  closeBtn.addEventListener('click', () => panel.classList.remove('on'));
+
+  applyBtn.addEventListener('click', () => {
+    const sliders = container.querySelectorAll('.wp-slider');
+    const raw = {};
+    let total = 0;
+    sliders.forEach(s => { raw[s.dataset.dim] = parseInt(s.value); total += parseInt(s.value); });
+    if (total === 0) { showToast('At least one weight must be > 0'); return; }
+    const normalized = {};
+    Object.entries(raw).forEach(([k,v]) => normalized[k] = v / total);
+    customWeights = normalized;
+    scoreCache = {};
+    btn.classList.add('custom');
+    btn.textContent = '⚖ Custom';
+    panel.classList.remove('on');
+    if (document.getElementById('ap-btn').textContent.includes('Rescore') || apMarkers.length > 0) {
+      runAreaPicker();
+    }
+  });
+
+  resetBtn.addEventListener('click', () => {
+    customWeights = null;
+    scoreCache = {};
+    btn.classList.remove('custom');
+    btn.textContent = '⚖ Weights';
+    buildSliders();
+  });
+}
+
+function updateSliderLabel(slider) {
+  // Recalc all percentages relative to sum
+  const panel = document.getElementById('wp-sliders');
+  const sliders = panel.querySelectorAll('.wp-slider');
+  let total = 0;
+  sliders.forEach(s => total += parseInt(s.value));
+  if (total === 0) return;
+  sliders.forEach(s => {
+    const pct = Math.round(parseInt(s.value) / total * 100);
+    document.getElementById('pct-' + s.dataset.dim).textContent = pct + '%';
+  });
+}
+
+// ── CITY AUTOCOMPLETE ──
+function initAutocomplete() {
+  const input = document.getElementById('ap-input');
+  const dropdown = document.getElementById('city-dropdown');
+
+  // Build search list from CITY_DATA
+  const cityList = Object.entries(CITY_DATA).map(([key, data]) => ({
+    key, name: data.name, country: data.country
+  }));
+
+  let selectedIndex = -1;
+
+  function getMatches(q) {
+    if (!q || q.length < 1) return [];
+    const ql = q.toLowerCase();
+    return cityList.filter(c =>
+      c.name.toLowerCase().startsWith(ql) ||
+      c.country.toLowerCase().startsWith(ql) ||
+      c.key.startsWith(ql)
+    ).slice(0, 8);
+  }
+
+  function renderDropdown(matches, q) {
+    if (!matches.length) { dropdown.classList.remove('on'); return; }
+    const ql = q.toLowerCase();
+    dropdown.innerHTML = matches.map((c, i) => {
+      const hi = c.name.toLowerCase().startsWith(ql)
+        ? `<span class="city-opt-match">${c.name.slice(0,q.length)}</span>${c.name.slice(q.length)}`
+        : c.name;
+      return `<div class="city-opt" data-idx="${i}" data-key="${c.key}">
+        <span class="city-opt-name">${hi}</span>
+        <span class="city-opt-country">${c.country}</span>
+      </div>`;
+    }).join('');
+    dropdown.classList.add('on');
+    selectedIndex = -1;
+  }
+
+  input.addEventListener('input', () => {
+    const q = input.value.trim();
+    renderDropdown(getMatches(q), q);
+  });
+
+  input.addEventListener('keydown', e => {
+    const opts = dropdown.querySelectorAll('.city-opt');
+    if (!opts.length) return;
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      selectedIndex = Math.min(selectedIndex + 1, opts.length - 1);
+      opts.forEach((o,i) => o.style.background = i === selectedIndex ? 'rgba(255,255,255,0.1)' : '');
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      selectedIndex = Math.max(selectedIndex - 1, 0);
+      opts.forEach((o,i) => o.style.background = i === selectedIndex ? 'rgba(255,255,255,0.1)' : '');
+    } else if (e.key === 'Enter') {
+      if (selectedIndex >= 0 && opts[selectedIndex]) {
+        selectCity(opts[selectedIndex].dataset.key);
+      } else {
+        dropdown.classList.remove('on');
+        document.getElementById('ap-btn').click();
+      }
+    } else if (e.key === 'Escape') {
+      dropdown.classList.remove('on');
+    }
+  });
+
+  dropdown.addEventListener('click', e => {
+    const opt = e.target.closest('.city-opt');
+    if (opt) selectCity(opt.dataset.key);
+  });
+
+  document.addEventListener('click', e => {
+    if (!e.target.closest('#ap-wrap')) dropdown.classList.remove('on');
+  });
+
+  function selectCity(key) {
+    const city = CITY_DATA[key];
+    if (!city) return;
+    input.value = city.name;
+    dropdown.classList.remove('on');
+    document.getElementById('ap-btn').click();
+  }
+}
 
 // ── CHARACTER TAG → PERSONA SCORES ──
 const CHARACTER_SCORES = {
@@ -1646,8 +2485,8 @@ async function scoreNeighbourhood(nb) {
   const essOSM = clamp(osm.pharmacies * 1.5, 3);
   const essScore = clamp(essGoog + essOSM);
 
-  // Weighted final score
-  const w = WEIGHTS[persona] || WEIGHTS.solo;
+  // Weighted final score — uses custom weights if set, else persona defaults
+  const w = getActiveWeights();
   const raw = (foodScore*w.food + mobilityScore*w.mobility + cultureScore*w.culture +
     greenScore*w.green + quietScore*w.quiet + charScore*w.character +
     airScore*w.air + essScore*w.essentials) * 10;
@@ -2383,6 +3222,8 @@ function cyclePlaceholder() {
 document.addEventListener('DOMContentLoaded', () => {
   initCats();
   cyclePlaceholder();
+  initWeightEditor();
+  initAutocomplete();
 
   // Boot in Find area mode by default
   switchMode('find');
