@@ -340,7 +340,7 @@
       z-index: 15;
       transform: translateY(calc(100% - 26px));
       transition: transform 0.32s cubic-bezier(0.34,1.56,0.64,1);
-      max-height: 54vh;
+      max-height: 43vh;
       display: flex; flex-direction: column;
       padding-bottom: env(safe-area-inset-bottom);
     }
@@ -908,8 +908,8 @@
   <div id="top-bar">
     <div id="logo"><span class="pin">📍</span><span class="name"> Roamly</span></div>
     <div id="mode-toggle">
-      <button class="mode-btn" data-mode="find">Find area</button>
-      <button class="mode-btn active" data-mode="explore">Explore area</button>
+      <button class="mode-btn active" data-mode="find">Find area</button>
+      <button class="mode-btn" data-mode="explore">Explore area</button>
     </div>
     <div id="persona-row">
       <button class="persona-btn active" data-p="solo">Solo</button>
@@ -1730,6 +1730,9 @@ function clearApMarkers() {
   if (apInfoWin) { apInfoWin.close(); apInfoWin=null; }
 }
 
+// ── SCORE CACHE — ensures consistent results for same city+persona ──
+const scoreCache = {};
+
 async function runAreaPicker() {
   const raw = document.getElementById('ap-input').value.trim().toLowerCase();
   if (!raw) { toast('Enter a city — e.g. Lisbon, Barcelona, Paris'); return; }
@@ -1745,6 +1748,32 @@ async function runAreaPicker() {
   if (homePin){homePin.map=null;homePin=null;}
 
   map.setCenter(cityData.center); map.setZoom(cityData.zoom);
+
+  // Check cache first — same city+persona = same scores every time
+  const cacheKey = `${cityKey}__${persona}`;
+  if (scoreCache[cacheKey]) {
+    btn.disabled=false; btn.textContent='Score areas →';
+    document.getElementById('load-bar').classList.remove('on');
+    const scored = scoreCache[cacheKey];
+    document.getElementById('drawer-tabs').innerHTML = '';
+    document.getElementById('drawer-body').innerHTML =
+      Array(scored.length).fill('<div class="shimmer"></div>').join('');
+    openDrawer();
+    const bounds = new google.maps.LatLngBounds();
+    for (let i=0;i<scored.length;i++) {
+      const nb=scored[i];
+      bounds.extend({lat:nb.lat,lng:nb.lng});
+      const marker = await makeScorePin(nb,i+1);
+      marker.addListener('click',()=>openNbInfo(nb,marker,cityData));
+      apMarkers.push(marker);
+    }
+    map.fitBounds(bounds,{top:60,bottom:80,left:40,right:80});
+    document.getElementById('ap-score-legend').classList.add('on');
+    renderApDrawer(scored,cityData);
+    return;
+  }
+
+  document.getElementById('drawer-tabs').innerHTML = '';
   document.getElementById('drawer-body').innerHTML =
     `<div style="padding:10px 0 4px;font-size:12px;color:var(--muted)">Scoring ${cityData.nb.length} neighbourhoods in ${cityData.name}...</div>`+
     Array(cityData.nb.length).fill('<div class="shimmer"></div>').join('');
@@ -1753,6 +1782,8 @@ async function runAreaPicker() {
   try {
     const scored = await Promise.all(cityData.nb.map(nb=>scoreNeighbourhood({...nb,_cityKey:cityKey})));
     scored.sort((a,b)=>b.score-a.score);
+    // Cache the result — scores won't change on repeat searches
+    scoreCache[cacheKey] = scored;
     const bounds = new google.maps.LatLngBounds();
     for (let i=0;i<scored.length;i++) {
       const nb=scored[i];
@@ -1813,12 +1844,16 @@ function switchMode(mode) {
   document.getElementById('family-badge').style.display = (!apMode&&persona==='family')?'block':'none';
   if (apMode) {
     clearMarkers(); if(infoWin)infoWin.close();
+    // Clear explore-mode category tabs — they don't belong in Find area
+    document.getElementById('drawer-tabs').innerHTML = '';
     document.getElementById('drawer-body').innerHTML = `<div class="empty-state"><div class="empty-emoji">🏙</div><div>Enter a European city to score and rank its neighbourhoods by your preferences</div></div>`;
     document.getElementById('ap-score-legend').classList.remove('on');
     closeDrawer();
   } else {
     clearApMarkers();
     document.getElementById('ap-score-legend').classList.remove('on');
+    // Clear areapicker results — they don't belong in Explore area
+    document.getElementById('drawer-tabs').innerHTML = '';
     document.getElementById('drawer-body').innerHTML = `<div class="empty-state"><div class="empty-emoji">🗺</div><div>Enter an address and tap Roam to explore what's nearby</div></div>`;
   }
 }
@@ -2348,6 +2383,9 @@ function cyclePlaceholder() {
 document.addEventListener('DOMContentLoaded', () => {
   initCats();
   cyclePlaceholder();
+
+  // Boot in Find area mode by default
+  switchMode('find');
 
   // ── MODE TOGGLE ──
   document.querySelectorAll('.mode-btn').forEach(b => {
