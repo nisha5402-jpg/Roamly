@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#0d1117">
+  <title>Roamly — Discover your stay</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --primary: #FF6B6B;
+      --primary2: #FF8E53;
+      --secondary: #4ECDC4;
+      --accent: #FFE66D;
+      --bg: #0d1117;
+      --surface: #161b22;
+      --card: #0f1923;
+      --border: rgba(255,255,255,0.08);
+      --text: #f0f6fc;
+      --muted: #8b949e;
+      --glass: rgba(13,17,23,0.88);
+      --shadow: 0 8px 32px rgba(0,0,0,0.5);
+      --r-pill: 999px;
+      --r-card: 14px;
+      --r-btn: 10px;
+    }
+
+    html, body {
+      height: 100%; width: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #app {
+      display: flex;
+      flex-direction: column;
+      height: 100dvh;
+      padding-top: env(safe-area-inset-top);
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+    }
+
+    /* ── TOP BAR ── */
+    #top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      height: 50px;
+      background: var(--glass);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+      gap: 8px;
+    }
+
+    #logo {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    #logo .pin { color: var(--primary); }
+    #logo .name { color: var(--text); }
+
+    #persona-row {
+      display: flex;
+      gap: 4px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    #persona-row::-webkit-scrollbar { display: none; }
+
+    .persona-btn {
+      padding: 5px 10px;
+      border-radius: var(--r-pill);
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.18s;
+      font-family: inherit;
+    }
+    .persona-btn.active {
+      background: linear-gradient(135deg, var(--primary), var(--primary2));
+      border-color: transparent;
+      color: #fff;
+    }
+
+    /* ── SEARCH STRIP ── */
+    #search-strip {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 12px;
+      background: var(--glass);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    #search-input {
+      flex: 1;
+      height: 38px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
+      border-radius: var(--r-pill);
+      color: var(--text);
+      font-size: 13px;
+      padding: 0 14px;
+      outline: none;
+      font-family: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      min-width: 0;
+    }
+    #search-input::placeholder { color: var(--muted); }
+    #search-input:focus {
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 3px rgba(78,205,196,0.15);
+    }
+
+    #gps-btn {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      border: none;
+      background: var(--secondary);
+      color: #fff;
+      font-size: 15px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: transform 0.15s;
+    }
+    #gps-btn:active { transform: scale(0.9); }
+    #gps-btn.pulsing { animation: gpsPulse 1.2s infinite; }
+    @keyframes gpsPulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(78,205,196,0.5); }
+      60% { box-shadow: 0 0 0 10px rgba(78,205,196,0); }
+    }
+
+    #roam-btn {
+      height: 38px;
+      padding: 0 16px;
+      border-radius: var(--r-pill);
+      border: none;
+      background: linear-gradient(135deg, var(--primary), var(--primary2));
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      font-family: inherit;
+      transition: opacity 0.2s, transform 0.15s;
+      letter-spacing: 0.2px;
+    }
+    #roam-btn:active { transform: scale(0.96); }
+    #roam-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+    /* ── URL BANNER ── */
+    #url-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px 12px;
+      background: rgba(78,205,196,0.1);
+      border-bottom: 1px solid rgba(78,205,196,0.2);
+      font-size: 12px;
+      color: var(--secondary);
+      flex-shrink: 0;
+    }
+    #url-banner.hidden { display: none; }
+    #url-banner-close {
+      background: none; border: none;
+      color: var(--secondary); cursor: pointer; font-size: 18px; line-height: 1;
+    }
+
+    /* ── CATEGORY ROW ── */
+    #cat-row {
+      display: flex;
+      gap: 6px;
+      padding: 7px 12px;
+      background: var(--glass);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+      flex-shrink: 0;
+      align-items: center;
+      scrollbar-width: none;
+    }
+    #cat-row::-webkit-scrollbar { display: none; }
+
+    .cat-pill {
+      display: flex; align-items: center; gap: 4px;
+      padding: 5px 11px;
+      border-radius: var(--r-pill);
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.04);
+      color: var(--muted);
+      font-size: 12px; font-weight: 600;
+      cursor: pointer; white-space: nowrap;
+      transition: all 0.18s;
+      flex-shrink: 0;
+      font-family: inherit;
+    }
+    .cat-pill.active { color: #fff; }
+
+    /* ── MAP WRAPPER ── */
+    #map-wrap {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      min-height: 0;
+    }
+
+    #map { width: 100%; height: 100%; }
+
+    /* ── LOADING BAR ── */
+    #load-bar {
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary), var(--primary));
+      background-size: 200% 100%;
+      z-index: 20; display: none;
+      animation: loadAnim 1.4s linear infinite;
+    }
+    #load-bar.on { display: block; }
+    @keyframes loadAnim {
+      0% { background-position: 100% 0; }
+      100% { background-position: -100% 0; }
+    }
+
+    /* ── FAMILY BADGE ── */
+    #family-badge {
+      position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+      background: rgba(38,222,129,0.15);
+      border: 1px solid rgba(38,222,129,0.35);
+      border-radius: var(--r-pill);
+      padding: 5px 13px; font-size: 11px; font-weight: 600;
+      color: #26de81; z-index: 10; white-space: nowrap; display: none;
+      pointer-events: none;
+    }
+    #family-badge.on { display: block; }
+
+    /* ── RADIUS CONTROL ── */
+    #radius-ctrl {
+      position: absolute; top: 10px; right: 10px; z-index: 10;
+    }
+    #radius-pill-btn {
+      background: rgba(13,17,23,0.92);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: var(--r-pill);
+      padding: 7px 13px; color: var(--text);
+      font-size: 12px; font-weight: 600;
+      cursor: pointer; white-space: nowrap;
+      font-family: inherit; box-shadow: var(--shadow);
+    }
+    #radius-dropdown {
+      position: absolute; top: calc(100% + 6px); right: 0;
+      background: rgba(13,17,23,0.97);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: var(--r-card);
+      padding: 6px; min-width: 175px;
+      box-shadow: var(--shadow);
+    }
+    #radius-dropdown.hidden { display: none; }
+
+    .r-opt {
+      display: block; width: 100%;
+      padding: 9px 11px; border-radius: 8px;
+      border: none; background: transparent;
+      color: var(--text); font-size: 13px;
+      text-align: left; cursor: pointer;
+      font-family: inherit; transition: background 0.12s;
+    }
+    .r-opt:hover { background: rgba(255,255,255,0.07); }
+    .r-opt.active { background: rgba(255,107,107,0.15); color: var(--primary); }
+
+    #custom-wrap { padding: 4px 11px 8px; display: none; }
+    #custom-wrap.on { display: block; }
+    #r-slider { width: 100%; accent-color: var(--primary); cursor: pointer; }
+    #r-label { font-size: 11px; color: var(--muted); margin-top: 3px; text-align: center; }
+
+    /* ── LEGEND ── */
+    #legend-ctrl {
+      position: absolute; bottom: 18px; left: 10px; z-index: 10;
+    }
+    #legend-pill-btn {
+      background: rgba(13,17,23,0.92);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: var(--r-pill);
+      padding: 6px 12px; color: var(--text);
+      font-size: 12px; font-weight: 600;
+      cursor: pointer; font-family: inherit; box-shadow: var(--shadow);
+    }
+    #legend-box {
+      margin-top: 6px;
+      background: rgba(13,17,23,0.94);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: var(--r-card);
+      padding: 10px 12px; box-shadow: var(--shadow);
+    }
+    #legend-box.hidden { display: none; }
+    .leg-item {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 12px; color: var(--text);
+      margin-bottom: 5px;
+    }
+    .leg-item:last-of-type { margin-bottom: 0; }
+    .leg-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+    .leg-note {
+      font-size: 10px; color: var(--muted);
+      margin-top: 7px; padding-top: 7px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── RESULTS DRAWER ── */
+    #drawer {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: rgba(13,17,23,0.97);
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      border-top: 1px solid var(--border);
+      border-radius: 18px 18px 0 0;
+      z-index: 15;
+      transform: translateY(calc(100% - 26px));
+      transition: transform 0.32s cubic-bezier(0.34,1.56,0.64,1);
+      max-height: 54vh;
+      display: flex; flex-direction: column;
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    #drawer.open { transform: translateY(0); }
+
+    #drawer-handle-wrap {
+      display: flex; justify-content: center;
+      padding: 8px; cursor: pointer; flex-shrink: 0;
+    }
+    #drawer-handle {
+      width: 34px; height: 4px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 2px;
+    }
+
+    #drawer-tabs {
+      display: flex; gap: 5px;
+      padding: 0 12px 8px;
+      overflow-x: auto; flex-shrink: 0;
+      scrollbar-width: none;
+    }
+    #drawer-tabs::-webkit-scrollbar { display: none; }
+
+    .d-tab {
+      padding: 5px 12px; border-radius: var(--r-pill);
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      color: var(--muted); font-size: 12px; font-weight: 600;
+      cursor: pointer; white-space: nowrap; flex-shrink: 0;
+      transition: all 0.18s; font-family: inherit;
+    }
+    .d-tab.active { background: rgba(255,107,107,0.15); border-color: var(--primary); color: var(--primary); }
+
+    #drawer-body {
+      overflow-y: auto; padding: 0 10px 10px; flex: 1;
+      scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.15) transparent;
+    }
+
+    .r-card {
+      display: flex; align-items: center; gap: 11px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: var(--r-card); padding: 11px;
+      margin-bottom: 7px; transition: background 0.15s;
+    }
+    .r-card:active { background: rgba(255,255,255,0.07); }
+
+    .r-icon {
+      width: 38px; height: 38px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 19px; flex-shrink: 0;
+    }
+    .r-info { flex: 1; min-width: 0; }
+    .r-name {
+      font-size: 13px; font-weight: 700; color: var(--text);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      margin-bottom: 3px;
+    }
+    .r-meta { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
+    .r-rating { font-size: 11px; color: var(--accent); }
+    .r-dist { font-size: 11px; color: var(--secondary); }
+    .r-open { font-size: 10px; color: #26de81; }
+    .r-closed { font-size: 10px; color: var(--primary); }
+    .r-stroller {
+      font-size: 10px; color: var(--secondary);
+      background: rgba(78,205,196,0.12); padding: 1px 6px; border-radius: 4px;
+    }
+    .r-arrow {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--primary2));
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; text-decoration: none; font-size: 13px; font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .empty-state {
+      text-align: center; padding: 28px 16px; color: var(--muted); font-size: 13px;
+    }
+    .empty-emoji { font-size: 30px; margin-bottom: 8px; }
+
+    .shimmer {
+      height: 62px; border-radius: var(--r-card); margin-bottom: 7px;
+      background: linear-gradient(90deg,
+        rgba(255,255,255,0.04) 25%,
+        rgba(255,255,255,0.09) 50%,
+        rgba(255,255,255,0.04) 75%);
+      background-size: 200% 100%;
+      animation: shim 1.4s infinite;
+    }
+    @keyframes shim {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* ── TOAST ── */
+    #toast {
+      position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
+      background: rgba(255,107,107,0.95); color: #fff;
+      padding: 9px 16px; border-radius: var(--r-pill);
+      font-size: 13px; font-weight: 600; z-index: 100;
+      max-width: 78vw; text-align: center;
+      box-shadow: var(--shadow); transition: opacity 0.3s;
+      pointer-events: none;
+    }
+    #toast.hidden { display: none; }
+    #toast.ok { background: rgba(38,222,129,0.95); }
+
+    /* ── INFO WINDOW OVERRIDES ── */
+    .gm-style-iw-c {
+      background: transparent !important;
+      box-shadow: none !important; padding: 0 !important;
+      border-radius: var(--r-card) !important;
+    }
+    .gm-style-iw-d { overflow: visible !important; }
+    .gm-style-iw-chr { display: none !important; }
+    .gm-style-iw-t::after { display: none !important; }
+    .gm-ui-hover-effect { display: none !important; }
+
+    /* ── CUSTOM INFO CARD ── */
+    .iw-card {
+      background: rgba(13,17,23,0.97);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: var(--r-card); padding: 13px;
+      max-width: 230px; min-width: 180px;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+      color: var(--text); box-shadow: var(--shadow);
+    }
+    .iw-top { display: flex; align-items: center; gap: 7px; margin-bottom: 7px; }
+    .iw-badge {
+      padding: 2px 7px; border-radius: 5px;
+      font-size: 10px; font-weight: 700; color: #fff;
+    }
+    .iw-name { font-size: 14px; font-weight: 700; margin-bottom: 3px; line-height: 1.3; }
+    .iw-rating { font-size: 12px; color: var(--accent); margin-bottom: 2px; }
+    .iw-rating span { color: var(--muted); font-size: 11px; }
+    .iw-dist { font-size: 12px; color: var(--secondary); margin-bottom: 3px; }
+    .iw-status {
+      display: inline-block; padding: 2px 7px; border-radius: 4px;
+      font-size: 11px; font-weight: 600; margin-bottom: 9px;
+    }
+    .iw-open { background: rgba(38,222,129,0.18); color: #26de81; }
+    .iw-closed { background: rgba(255,107,107,0.18); color: var(--primary); }
+    .iw-stroller { font-size: 11px; color: var(--secondary); margin-bottom: 8px; }
+    .iw-btn {
+      display: block; width: 100%; padding: 9px;
+      border-radius: 9px;
+      background: linear-gradient(135deg, var(--primary), var(--primary2));
+      color: #fff; text-align: center; text-decoration: none;
+      font-size: 13px; font-weight: 700;
+    }
+
+    /* ── AUTOCOMPLETE ── */
+    .pac-container {
+      background: rgba(13,17,23,0.97) !important;
+      border: 1px solid var(--border) !important;
+      border-radius: 12px !important; margin-top: 4px !important;
+      box-shadow: var(--shadow) !important; font-family: inherit !important;
+    }
+    .pac-item {
+      border-top: 1px solid var(--border) !important;
+      color: var(--text) !important; padding: 8px 12px !important; cursor: pointer !important;
+    }
+    .pac-item:hover { background: rgba(255,255,255,0.06) !important; }
+    .pac-item-query { color: var(--text) !important; font-size: 13px !important; }
+    .pac-matched { color: var(--secondary) !important; }
+    .pac-icon { filter: invert(1) opacity(0.5) !important; }
+    .pac-logo::after { display: none !important; }
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <!-- TOP BAR -->
+  <div id="top-bar">
+    <div id="logo"><span class="pin">📍</span><span class="name"> Roamly</span></div>
+    <div id="persona-row">
+      <button class="persona-btn active" data-p="solo">Solo</button>
+      <button class="persona-btn" data-p="couple">Couple</button>
+      <button class="persona-btn" data-p="family">Family</button>
+      <button class="persona-btn" data-p="remote">Remote</button>
+    </div>
+  </div>
+
+  <!-- SEARCH STRIP -->
+  <div id="search-strip">
+    <input id="search-input" type="text" autocomplete="off"
+      placeholder="Enter address or paste Airbnb URL...">
+    <button id="gps-btn" title="Use my location">📍</button>
+    <button id="roam-btn">Roam →</button>
+  </div>
+
+  <!-- URL BANNER -->
+  <div id="url-banner" class="hidden">
+    <span id="url-text">📍 Airbnb URL detected — please type the property address</span>
+    <button id="url-close">×</button>
+  </div>
+
+  <!-- CATEGORY ROW -->
+  <div id="cat-row"></div>
+
+  <!-- MAP -->
+  <div id="map-wrap">
+    <div id="map"></div>
+    <div id="load-bar"></div>
+    <div id="family-badge">🧒 Kid-friendly mode active</div>
+
+    <!-- RADIUS -->
+    <div id="radius-ctrl">
+      <button id="radius-pill-btn">📍 15 min walk ▾</button>
+      <div id="radius-dropdown" class="hidden">
+        <button class="r-opt active" data-m="1200" data-l="15 min walk">⚡ 15 min walk</button>
+        <button class="r-opt" data-m="2400" data-l="30 min walk">🚶 30 min walk</button>
+        <button class="r-opt" data-m="20000" data-l="1 hr drive">🚗 1 hr drive</button>
+        <button class="r-opt" data-m="custom" data-l="Custom">🎯 Custom</button>
+        <div id="custom-wrap">
+          <input type="range" id="r-slider" min="500" max="25000" value="1200" step="100">
+          <div id="r-label">1.2 km</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEGEND -->
+    <div id="legend-ctrl">
+      <button id="legend-pill-btn">🗺 Legend</button>
+      <div id="legend-box" class="hidden">
+        <div id="legend-items"></div>
+        <div class="leg-note">★ Larger pin = top rated in category</div>
+      </div>
+    </div>
+
+    <!-- DRAWER -->
+    <div id="drawer">
+      <div id="drawer-handle-wrap"><div id="drawer-handle"></div></div>
+      <div id="drawer-tabs"></div>
+      <div id="drawer-body">
+        <div class="empty-state">
+          <div class="empty-emoji">🗺</div>
+          <div>Enter an address and tap Roam to explore what's nearby</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOAST -->
+    <div id="toast" class="hidden"></div>
+  </div>
+
+</div>
+
+<script>
+const KEY = 'AIzaSyA9410R5AlmHiaNM9mDOzTt15y6_N_tryY';
+
+// ── STATE ──
+let map, homePin, radiusCircle, infoWin;
+let markers = [];
+let results = {};
+let persona = 'solo';
+let radius = 1200, radiusLabel = '15 min walk';
+let homeLoc = null;
+let drawerOpen = false;
+let legendOpen = false;
+let rDropOpen = false;
+let activeCats = new Set();
+
+// ── CATEGORY DEFINITIONS ──
+const STD = [
+  { id:'food',    emoji:'🍽', label:'Food',    color:'#FF6B6B', type:'restaurant',       rank:'POPULARITY', min:50 },
+  { id:'transit', emoji:'🚇', label:'Transit', color:'#4ECDC4', type:'transit_station',  rank:'DISTANCE',   min:0  },
+  { id:'beach',   emoji:'🏖', label:'Beach',   color:'#00D4FF', text:'beach',            rank:'POPULARITY', min:0  },
+  { id:'see',     emoji:'🏛', label:'See',     color:'#FF9F43', type:'tourist_attraction',rank:'POPULARITY', min:100},
+  { id:'shop',    emoji:'🛒', label:'Shop',    color:'#26de81', type:'supermarket',      rank:'DISTANCE',   min:0  },
+  { id:'night',   emoji:'🍸', label:'Night',   color:'#A55EEA', type:'bar',              rank:'POPULARITY', min:30 },
+];
+const FAM = [
+  { id:'food',    emoji:'🍽', label:'Food',    color:'#FF6B6B', type:'restaurant',       rank:'POPULARITY', min:50, kidFilter:true },
+  { id:'transit', emoji:'🚇', label:'Transit', color:'#4ECDC4', type:'transit_station',  rank:'DISTANCE',   min:0  },
+  { id:'beach',   emoji:'🏖', label:'Beach',   color:'#00D4FF', text:'sandy beach',      rank:'POPULARITY', min:0  },
+  { id:'see',     emoji:'🏛', label:'See',     color:'#FF9F43', type:'tourist_attraction',rank:'POPULARITY', min:100},
+  { id:'shop',    emoji:'🛒', label:'Shop',    color:'#26de81', type:'supermarket',      rank:'DISTANCE',   min:0  },
+  { id:'play',    emoji:'🛝', label:'Play',    color:'#FFC312', type:'playground',       rank:'DISTANCE',   min:0  },
+  { id:'care',    emoji:'💊', label:'Care',    color:'#0be881', type:'pharmacy',         rank:'DISTANCE',   min:0  },
+];
+
+function getCats() { return persona === 'family' ? FAM : STD; }
+
+// ── INIT CATEGORIES ──
+function initCats() {
+  const row = document.getElementById('cat-row');
+  row.innerHTML = '';
+  activeCats.clear();
+  getCats().forEach(c => {
+    activeCats.add(c.id);
+    const b = document.createElement('button');
+    b.className = 'cat-pill active';
+    b.dataset.id = c.id;
+    b.innerHTML = `${c.emoji} ${c.label}`;
+    b.style.background = c.color + '28';
+    b.style.borderColor = c.color + '88';
+    b.style.color = c.color;
+    b.addEventListener('click', () => {
+      if (activeCats.has(c.id)) {
+        activeCats.delete(c.id);
+        b.classList.remove('active');
+        b.style.background = 'rgba(255,255,255,0.04)';
+        b.style.borderColor = 'rgba(255,255,255,0.12)';
+        b.style.color = 'var(--muted)';
+      } else {
+        activeCats.add(c.id);
+        b.classList.add('active');
+        b.style.background = c.color + '28';
+        b.style.borderColor = c.color + '88';
+        b.style.color = c.color;
+      }
+    });
+    row.appendChild(b);
+  });
+  updateLegend();
+}
+
+// ── GEOCODE ──
+async function geocode(addr) {
+  const r = await fetch(
+    `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(addr)}&key=${KEY}`
+  );
+  const d = await r.json();
+  if (d.status === 'OK') return d.results[0].geometry.location;
+  throw new Error(d.status === 'ZERO_RESULTS' ? 'Address not found — try a more specific address' : `Geocode error: ${d.status}`);
+}
+
+// ── REVERSE GEOCODE ──
+async function revGeocode(lat, lng) {
+  const r = await fetch(
+    `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${KEY}`
+  );
+  const d = await r.json();
+  return d.status === 'OK' ? d.results[0].formatted_address : `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+}
+
+// ── HAVERSINE DISTANCE ──
+function dist(lat1, lng1, lat2, lng2) {
+  const R = 6371000, dL = (lat2-lat1)*Math.PI/180, dG = (lng2-lng1)*Math.PI/180;
+  const a = Math.sin(dL/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dG/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+function fmtDist(m) { return m < 1000 ? `${Math.round(m)}m` : `${(m/1000).toFixed(1)}km`; }
+
+// ── PLACES API (NEW) ──
+const FIELD_MASK = [
+  'places.displayName','places.formattedAddress','places.rating',
+  'places.userRatingCount','places.location','places.regularOpeningHours',
+  'places.googleMapsUri','places.types','places.accessibilityOptions',
+  'places.goodForChildren','places.primaryTypeDisplayName'
+].join(',');
+
+async function searchPlaces(cat, lat, lng) {
+  const headers = {
+    'Content-Type': 'application/json',
+    'X-Goog-Api-Key': KEY,
+    'X-Goog-FieldMask': FIELD_MASK
+  };
+
+  if (cat.text) {
+    // Text Search for beaches
+    const body = {
+      textQuery: `${cat.text} near ${lat},${lng}`,
+      maxResultCount: 5,
+      locationBias: {
+        circle: { center: { latitude: lat, longitude: lng }, radius: Math.min(radius, 50000) }
+      }
+    };
+    const r = await fetch('https://places.googleapis.com/v1/places:searchText', {
+      method: 'POST', headers, body: JSON.stringify(body)
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.error?.message || 'Places API error');
+    return d.places || [];
+  } else {
+    // Nearby Search
+    const body = {
+      includedTypes: [cat.type],
+      maxResultCount: 10,
+      rankPreference: cat.rank,
+      locationRestriction: {
+        circle: { center: { latitude: lat, longitude: lng }, radius }
+      }
+    };
+    const r = await fetch('https://places.googleapis.com/v1/places:searchNearby', {
+      method: 'POST', headers, body: JSON.stringify(body)
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.error?.message || 'Places API error');
+
+    let places = d.places || [];
+    if (cat.min > 0) places = places.filter(p => (p.userRatingCount||0) >= cat.min);
+    if (cat.kidFilter) {
+      const kf = places.filter(p => p.goodForChildren === true);
+      if (kf.length > 0) places = kf;
+    }
+    return places.slice(0, 5);
+  }
+}
+
+// ── CUSTOM MARKER ──
+function mkMarker(emoji, color, rank) {
+  const sz = rank===1 ? 44 : rank<=3 ? 36 : 29;
+  const wrap = document.createElement('div');
+  wrap.style.cssText = `position:relative;width:${sz}px;height:${sz}px;cursor:pointer;opacity:${rank>=4?0.72:1}`;
+
+  const pin = document.createElement('div');
+  pin.style.cssText = `
+    width:${sz}px;height:${sz}px;
+    border-radius:50% 50% 50% 0;
+    transform:rotate(-45deg);
+    background:${color};
+    border:${rank===1?'3px solid #FFE66D':'2px solid rgba(255,255,255,0.75)'};
+    box-shadow:${rank===1?`0 0 0 3px rgba(255,230,109,0.3),0 4px 14px rgba(0,0,0,0.6)`:`0 2px 10px rgba(0,0,0,0.45)`};
+    display:flex;align-items:center;justify-content:center;
+  `;
+
+  const em = document.createElement('div');
+  em.style.cssText = `transform:rotate(45deg);font-size:${rank===1?17:rank<=3?14:12}px;line-height:1;user-select:none;`;
+  em.textContent = emoji;
+  pin.appendChild(em);
+
+  if (rank === 1) {
+    const lbl = document.createElement('div');
+    lbl.className = '_fl';
+    lbl.style.cssText = `
+      position:absolute;bottom:100%;left:50%;transform:translateX(-50%);
+      margin-bottom:3px;background:rgba(13,17,23,0.93);
+      color:#f0f6fc;font-size:10px;font-weight:700;
+      border-radius:7px;padding:3px 7px;white-space:nowrap;
+      box-shadow:0 2px 8px rgba(0,0,0,0.4);pointer-events:none;
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif;
+    `;
+    lbl.dataset.rank1 = '1';
+    wrap.appendChild(lbl);
+  }
+
+  wrap.appendChild(pin);
+  return wrap;
+}
+
+function mkHomeEl() {
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'position:relative;width:44px;height:44px;cursor:pointer;';
+  const pin = document.createElement('div');
+  pin.style.cssText = `
+    width:44px;height:44px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);
+    background:#0d1117;border:3px solid #FF6B6B;
+    box-shadow:0 0 0 3px rgba(255,107,107,0.25),0 4px 14px rgba(0,0,0,0.6);
+    display:flex;align-items:center;justify-content:center;
+  `;
+  const em = document.createElement('div');
+  em.style.cssText = 'transform:rotate(45deg);font-size:17px;line-height:1;';
+  em.textContent = '🏠';
+  pin.appendChild(em);
+  wrap.appendChild(pin);
+  return wrap;
+}
+
+// ── INFO WINDOW ──
+function openInfo(data, marker) {
+  if (infoWin) infoWin.close();
+  let html;
+  if (data.isHome) {
+    html = `<div class="iw-card">
+      <div class="iw-name">🏠 Your base</div>
+      <div style="font-size:12px;color:#8b949e;margin-top:4px">${data.addr||''}</div>
+    </div>`;
+  } else {
+    const rat = data.rating ? `★ ${data.rating.toFixed(1)} <span>(${(data.userRatingCount||0).toLocaleString()})</span>` : '';
+    const dst = data.d ? `<div class="iw-dist">${fmtDist(data.d)} away</div>` : '';
+    const st = data.openNow!=null ? `<div class="iw-status ${data.openNow?'iw-open':'iw-closed'}">${data.openNow?'● Open now':'● Closed'}</div>` : '';
+    const str = (persona==='family' && data.wc) ? `<div class="iw-stroller">♿ Likely stroller-friendly</div>` : '';
+    html = `<div class="iw-card">
+      <div class="iw-top">
+        <span style="font-size:20px">${data.emoji}</span>
+        <span class="iw-badge" style="background:${data.color}">${data.catLabel}</span>
+      </div>
+      <div class="iw-name">${data.name}</div>
+      ${rat ? `<div class="iw-rating">${rat}</div>` : ''}
+      ${dst}${st}${str}
+      ${data.uri ? `<a href="${data.uri}" target="_blank" class="iw-btn">Open in Google Maps →</a>` : ''}
+    </div>`;
+  }
+  infoWin = new google.maps.InfoWindow({ content: html, disableAutoPan: false });
+  infoWin.open({ anchor: marker, map });
+}
+
+// ── CLEAR MARKERS ──
+function clearMarkers() {
+  markers.forEach(m => m.map = null);
+  markers = [];
+  if (radiusCircle) { radiusCircle.setMap(null); radiusCircle = null; }
+  if (homePin) { homePin.map = null; homePin = null; }
+  if (infoWin) { infoWin.close(); infoWin = null; }
+}
+
+// ── PLACE HOME PIN ──
+async function placeHome(lat, lng, addr) {
+  const { AdvancedMarkerElement } = await google.maps.importLibrary('marker');
+  const el = mkHomeEl();
+  homePin = new AdvancedMarkerElement({ position:{lat,lng}, map, content:el, zIndex:999, title:'Your base' });
+  homePin.addListener('click', () => openInfo({ isHome:true, addr }, homePin));
+
+  radiusCircle = new google.maps.Circle({
+    map, center:{lat,lng}, radius,
+    fillColor:'#4ECDC4', fillOpacity:0.06,
+    strokeColor:'#4ECDC4', strokeOpacity:0.35, strokeWeight:1.5
+  });
+}
+
+// ── MAIN EXPLORE ──
+async function explore() {
+  const addr = document.getElementById('search-input').value.trim();
+  if (!addr) { toast('Please enter an address first'); return; }
+  if (activeCats.size === 0) { toast('Please select at least one category'); return; }
+
+  setLoading(true);
+  clearMarkers();
+  results = {};
+  renderTabs([]);
+
+  try {
+    const loc = await geocode(addr);
+    homeLoc = loc;
+    map.setCenter(loc); map.setZoom(14);
+    await placeHome(loc.lat, loc.lng, addr);
+
+    const bounds = new google.maps.LatLngBounds();
+    bounds.extend(loc);
+
+    const { AdvancedMarkerElement } = await google.maps.importLibrary('marker');
+    const cats = getCats().filter(c => activeCats.has(c.id));
+
+    // Show shimmer while loading
+    showShimmer(cats.length);
+
+    const searches = cats.map(async cat => {
+      try {
+        const places = await searchPlaces(cat, loc.lat, loc.lng);
+        return { cat, places };
+      } catch(e) {
+        console.warn(`${cat.label}:`, e.message);
+        return { cat, places: [] };
+      }
+    });
+
+    const all = await Promise.all(searches);
+
+    // Place markers
+    all.forEach(({ cat, places }) => {
+      results[cat.id] = { cat, places };
+      places.forEach((p, i) => {
+        const plat = p.location?.latitude, plng = p.location?.longitude;
+        if (!plat || !plng) return;
+        bounds.extend({ lat: plat, lng: plng });
+
+        const rank = i + 1;
+        const el = mkMarker(cat.emoji, cat.color, rank);
+
+        // Set floating label text for rank 1
+        if (rank === 1) {
+          const lbl = el.querySelector('[data-rank1]');
+          if (lbl) {
+            const nm = (p.displayName?.text || '').substring(0, 18);
+            lbl.textContent = p.rating ? `${nm} ★${p.rating.toFixed(1)}` : nm;
+          }
+        }
+
+        const d = dist(loc.lat, loc.lng, plat, plng);
+        const marker = new AdvancedMarkerElement({
+          position: { lat: plat, lng: plng },
+          map, content: el,
+          zIndex: 100 - i,
+          title: p.displayName?.text || cat.label
+        });
+
+        const pdata = {
+          name: p.displayName?.text || 'Unknown',
+          emoji: cat.emoji, color: cat.color, catLabel: cat.label,
+          rating: p.rating, userRatingCount: p.userRatingCount,
+          d, openNow: p.regularOpeningHours?.openNow,
+          uri: p.googleMapsUri,
+          wc: p.accessibilityOptions?.wheelchairAccessibleEntrance,
+          gfc: p.goodForChildren
+        };
+        marker.addListener('click', () => openInfo(pdata, marker));
+        markers.push(marker);
+      });
+    });
+
+    renderTabs(all.filter(r => r.places.length > 0));
+
+    if (markers.length > 0) {
+      map.fitBounds(bounds, { top:60, bottom:80, left:40, right:40 });
+    }
+
+    setTimeout(() => openDrawer(), 900);
+
+  } catch(e) {
+    toast(e.message || 'Something went wrong — please try again');
+  } finally {
+    setLoading(false);
+  }
+}
+
+// ── DRAWER ──
+function showShimmer(n) {
+  document.getElementById('drawer-body').innerHTML =
+    Array(Math.min(n,3)).fill('<div class="shimmer"></div>').join('');
+}
+
+function renderTabs(data) {
+  const tabs = document.getElementById('drawer-tabs');
+  const body = document.getElementById('drawer-body');
+
+  if (!data.length) {
+    tabs.innerHTML = '';
+    body.innerHTML = '<div class="empty-state"><div class="empty-emoji">🗺</div><div>Enter an address and tap Roam to explore</div></div>';
+    return;
+  }
+
+  tabs.innerHTML = data.map((r,i) => `
+    <button class="d-tab ${i===0?'active':''}" data-i="${i}"
+      style="${i===0?`border-color:${r.cat.color};color:${r.cat.color}`:''}">
+      ${r.cat.emoji} ${r.cat.label} (${r.places.length})
+    </button>`).join('');
+
+  tabs.querySelectorAll('.d-tab').forEach(t => {
+    t.addEventListener('click', () => {
+      tabs.querySelectorAll('.d-tab').forEach(x => {
+        x.classList.remove('active'); x.style.borderColor=''; x.style.color='';
+      });
+      const r = data[+t.dataset.i];
+      t.classList.add('active');
+      t.style.borderColor = r.cat.color; t.style.color = r.cat.color;
+      renderBody(r);
+    });
+  });
+  renderBody(data[0]);
+}
+
+function renderBody({ cat, places }) {
+  const body = document.getElementById('drawer-body');
+  if (!places.length) {
+    body.innerHTML = `<div class="empty-state"><div class="empty-emoji">${cat.emoji}</div><div>No ${cat.label.toLowerCase()} found nearby</div></div>`;
+    return;
+  }
+  body.innerHTML = places.map((p, i) => {
+    const plat = p.location?.latitude, plng = p.location?.longitude;
+    const d = (homeLoc && plat && plng) ? dist(homeLoc.lat,homeLoc.lng,plat,plng) : null;
+    const rat = p.rating ? `<span class="r-rating">★ ${p.rating.toFixed(1)}</span><span style="color:var(--muted);font-size:10px">(${(p.userRatingCount||0).toLocaleString()})</span>` : '';
+    const dst = d ? `<span class="r-dist">${fmtDist(d)}</span>` : '';
+    const st = p.regularOpeningHours?.openNow!=null ?
+      `<span class="${p.regularOpeningHours.openNow?'r-open':'r-closed'}">${p.regularOpeningHours.openNow?'● Open':'● Closed'}</span>` : '';
+    const str = (persona==='family' && p.accessibilityOptions?.wheelchairAccessibleEntrance) ?
+      '<span class="r-stroller">♿ Stroller</span>' : '';
+    const rank = i===0 ? '🥇 ' : '';
+    return `<div class="r-card">
+      <div class="r-icon" style="background:${cat.color}22">${cat.emoji}</div>
+      <div class="r-info">
+        <div class="r-name">${rank}${p.displayName?.text||'Unknown'}</div>
+        <div class="r-meta">${rat}${dst}${st}${str}</div>
+      </div>
+      ${p.googleMapsUri ? `<a href="${p.googleMapsUri}" target="_blank" class="r-arrow">→</a>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function openDrawer() {
+  document.getElementById('drawer').classList.add('open');
+  drawerOpen = true;
+}
+function closeDrawer() {
+  document.getElementById('drawer').classList.remove('open');
+  drawerOpen = false;
+}
+
+// ── LEGEND ──
+function updateLegend() {
+  const el = document.getElementById('legend-items');
+  if (!el) return;
+  el.innerHTML = getCats().filter(c => activeCats.has(c.id)).map(c =>
+    `<div class="leg-item"><div class="leg-dot" style="background:${c.color}"></div><span>${c.emoji} ${c.label}</span></div>`
+  ).join('');
+}
+
+// ── RADIUS ──
+function setRadius(m, label) {
+  radius = m; radiusLabel = label;
+  document.getElementById('radius-pill-btn').textContent = `📍 ${label} ▾`;
+  if (radiusCircle) radiusCircle.setRadius(m);
+  document.querySelectorAll('.r-opt').forEach(b =>
+    b.classList.toggle('active', b.dataset.m === String(m)));
+}
+
+// ── TOAST ──
+function toast(msg, type='err') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = type==='ok' ? 'ok' : '';
+  t.classList.remove('hidden');
+  clearTimeout(t._to);
+  t._to = setTimeout(() => t.classList.add('hidden'), 4200);
+}
+
+// ── LOADING ──
+function setLoading(on) {
+  const btn = document.getElementById('roam-btn');
+  btn.disabled = on;
+  btn.textContent = on ? '⏳ Roaming...' : 'Roam →';
+  document.getElementById('load-bar').classList.toggle('on', on);
+}
+
+// ── GPS ──
+async function useGPS() {
+  if (!navigator.geolocation) { toast('Geolocation not supported'); return; }
+  const btn = document.getElementById('gps-btn');
+  btn.classList.add('pulsing');
+  navigator.geolocation.getCurrentPosition(
+    async pos => {
+      btn.classList.remove('pulsing');
+      const { latitude: lat, longitude: lng } = pos.coords;
+      const addr = await revGeocode(lat, lng);
+      document.getElementById('search-input').value = addr;
+      toast('Location found!', 'ok');
+    },
+    () => { btn.classList.remove('pulsing'); toast('Location denied — please type your address'); },
+    { timeout: 10000 }
+  );
+}
+
+// ── MAP INIT ──
+async function initMap() {
+  const { Map } = await google.maps.importLibrary('maps');
+  map = new Map(document.getElementById('map'), {
+    center: { lat: 48.8566, lng: 2.3522 },
+    zoom: 12,
+    mapId: 'DEMO_MAP_ID',
+    disableDefaultUI: true,
+    zoomControl: true,
+    zoomControlOptions: { position: google.maps.ControlPosition.RIGHT_BOTTOM },
+    gestureHandling: 'greedy',
+    clickableIcons: false
+  });
+  map.addListener('click', () => { if (infoWin) infoWin.close(); });
+
+  // Autocomplete
+  try {
+    const { Autocomplete } = await google.maps.importLibrary('places');
+    const inp = document.getElementById('search-input');
+    const ac = new Autocomplete(inp, { types: ['geocode','establishment'] });
+    ac.addListener('place_changed', () => {
+      const pl = ac.getPlace();
+      if (pl.formatted_address) inp.value = pl.formatted_address;
+    });
+  } catch(e) { /* autocomplete optional */ }
+}
+
+// ── PLACEHOLDER CYCLE ──
+function cyclePlaceholder() {
+  const inp = document.getElementById('search-input');
+  const opts = [
+    'Enter address or hotel name...',
+    'Paste Airbnb listing URL...',
+    'Or tap 📍 for your location...'
+  ];
+  let i = 0;
+  setInterval(() => { i=(i+1)%opts.length; inp.placeholder = opts[i]; }, 3000);
+}
+
+// ── BOOT ──
+document.addEventListener('DOMContentLoaded', () => {
+  initCats();
+  cyclePlaceholder();
+
+  // Persona
+  document.querySelectorAll('.persona-btn').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.persona-btn').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      persona = b.dataset.p;
+      initCats();
+      document.getElementById('family-badge').classList.toggle('on', persona==='family');
+    });
+  });
+
+  // GPS
+  document.getElementById('gps-btn').addEventListener('click', useGPS);
+
+  // Roam
+  document.getElementById('roam-btn').addEventListener('click', explore);
+  document.getElementById('search-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') explore();
+  });
+
+  // Airbnb URL detection
+  document.getElementById('search-input').addEventListener('paste', () => {
+    setTimeout(() => {
+      const v = document.getElementById('search-input').value;
+      if (v.includes('airbnb.com')) {
+        document.getElementById('url-banner').classList.remove('hidden');
+        document.getElementById('search-input').value = '';
+        document.getElementById('search-input').placeholder = 'Type the property address here...';
+        setTimeout(() => document.getElementById('url-banner').classList.add('hidden'), 7000);
+      }
+    }, 80);
+  });
+  document.getElementById('url-close').addEventListener('click', () =>
+    document.getElementById('url-banner').classList.add('hidden'));
+
+  // Drawer handle
+  document.getElementById('drawer-handle-wrap').addEventListener('click', () => {
+    drawerOpen ? closeDrawer() : openDrawer();
+  });
+
+  // Radius pill
+  document.getElementById('radius-pill-btn').addEventListener('click', e => {
+    e.stopPropagation();
+    rDropOpen = !rDropOpen;
+    document.getElementById('radius-dropdown').classList.toggle('hidden', !rDropOpen);
+  });
+  document.querySelectorAll('.r-opt').forEach(b => {
+    b.addEventListener('click', () => {
+      if (b.dataset.m === 'custom') {
+        document.getElementById('custom-wrap').classList.toggle('on');
+      } else {
+        setRadius(parseInt(b.dataset.m), b.dataset.l);
+        document.getElementById('radius-dropdown').classList.add('hidden');
+        rDropOpen = false;
+        document.getElementById('custom-wrap').classList.remove('on');
+      }
+      document.querySelectorAll('.r-opt').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+    });
+  });
+  document.getElementById('r-slider').addEventListener('input', e => {
+    const m = parseInt(e.target.value);
+    const km = (m/1000).toFixed(1);
+    document.getElementById('r-label').textContent = `${km} km`;
+    setRadius(m, `${km} km`);
+  });
+
+  // Legend
+  document.getElementById('legend-pill-btn').addEventListener('click', e => {
+    e.stopPropagation();
+    legendOpen = !legendOpen;
+    document.getElementById('legend-box').classList.toggle('hidden', !legendOpen);
+    if (legendOpen) updateLegend();
+  });
+
+  // Close dropdowns on outside click
+  document.addEventListener('click', () => {
+    if (rDropOpen) {
+      document.getElementById('radius-dropdown').classList.add('hidden');
+      rDropOpen = false;
+    }
+  });
+});
+</script>
+
+<!-- Google Maps Bootstrap (v=beta for AdvancedMarkerElement) -->
+<script>
+(g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await(a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})
+({key:"AIzaSyA9410R5AlmHiaNM9mDOzTt15y6_N_tryY",v:"beta"});
+window.addEventListener('load', initMap);
+</script>
+</body>
+</html>
