@@ -234,7 +234,7 @@
     @media (min-width: 768px) {
       #drawer {
         position: relative !important;
-        width: 300px;
+        width: 320px;
         flex-shrink: 0;
         max-height: 100% !important;
         transform: none !important;
@@ -242,13 +242,16 @@
         border-top: none !important;
         border-left: 1px solid var(--border);
         overflow-y: auto;
+        display: flex !important;
+        flex-direction: column;
       }
       #drawer.open { transform: none !important; }
       #drawer-handle-wrap { display: none !important; }
-      #radius-ctrl { right: 316px; }
+      #radius-ctrl { right: 336px; }
       #legend-ctrl { left: 10px; bottom: 10px; }
-      #help-btn { right: 316px; }
-      #family-badge { left: calc(50% - 150px); }
+      #help-btn { right: 336px; }
+      #family-badge { left: calc(50% - 160px); }
+      #weight-panel { width: 320px; }
     }
 
     /* ── CITY AUTOCOMPLETE DROPDOWN ── */
@@ -1994,8 +1997,8 @@ const DIM_LABELS = {
 
 function getActiveWeights() {
   if (customWeights) return customWeights;
-  const p = document.querySelector('.persona-btn.active')?.dataset.persona || 'solo';
-  return WEIGHTS[p];
+  const p = document.querySelector('.persona-btn.active')?.dataset.p || 'solo';
+  return WEIGHTS[p] || WEIGHTS.solo;
 }
 
 // ── WEIGHT EDITOR INIT ──
@@ -2036,22 +2039,22 @@ function initWeightEditor() {
     const raw = {};
     let total = 0;
     sliders.forEach(s => { raw[s.dataset.dim] = parseInt(s.value); total += parseInt(s.value); });
-    if (total === 0) { showToast('At least one weight must be > 0'); return; }
+    if (total === 0) { toast('At least one weight must be > 0'); return; }
     const normalized = {};
     Object.entries(raw).forEach(([k,v]) => normalized[k] = v / total);
     customWeights = normalized;
-    scoreCache = {};
+    Object.keys(scoreCache).forEach(k => delete scoreCache[k]);
     btn.classList.add('custom');
     btn.textContent = '⚖ Custom';
     panel.classList.remove('on');
-    if (document.getElementById('ap-btn').textContent.includes('Rescore') || apMarkers.length > 0) {
+    if (apMarkers.length > 0) {
       runAreaPicker();
     }
   });
 
   resetBtn.addEventListener('click', () => {
     customWeights = null;
-    scoreCache = {};
+    Object.keys(scoreCache).forEach(k => delete scoreCache[k]);
     btn.classList.remove('custom');
     btn.textContent = '⚖ Weights';
     buildSliders();
@@ -2570,7 +2573,7 @@ function clearApMarkers() {
 }
 
 // ── SCORE CACHE — ensures consistent results for same city+persona ──
-const scoreCache = {};
+let scoreCache = {};
 
 async function runAreaPicker() {
   const raw = document.getElementById('ap-input').value.trim().toLowerCase();
