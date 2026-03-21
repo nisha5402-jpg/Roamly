@@ -492,6 +492,185 @@
       font-size: 13px; font-weight: 700;
     }
 
+    /* ── ONBOARDING SPLASH ── */
+    #splash {
+      position: fixed; inset: 0; z-index: 999;
+      background: #0d1117;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 28px 24px;
+      padding-top: calc(28px + env(safe-area-inset-top));
+      padding-bottom: calc(28px + env(safe-area-inset-bottom));
+      transition: opacity 0.45s, transform 0.45s;
+    }
+    #splash.hiding {
+      opacity: 0; transform: scale(0.97); pointer-events: none;
+    }
+    #splash.gone { display: none; }
+
+    .splash-logo {
+      font-size: 38px; margin-bottom: 6px;
+    }
+    .splash-name {
+      font-size: 28px; font-weight: 800;
+      letter-spacing: -0.8px; color: var(--text);
+      margin-bottom: 6px;
+    }
+    .splash-name span { color: var(--primary); }
+    .splash-tag {
+      font-size: 15px; color: var(--muted);
+      text-align: center; line-height: 1.5;
+      margin-bottom: 32px; max-width: 280px;
+    }
+
+    .splash-features {
+      width: 100%; max-width: 340px;
+      margin-bottom: 32px;
+    }
+    .sf-row {
+      display: flex; align-items: flex-start; gap: 14px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px; padding: 14px;
+      margin-bottom: 10px;
+    }
+    .sf-icon {
+      font-size: 24px; flex-shrink: 0; margin-top: 1px;
+    }
+    .sf-text h4 {
+      font-size: 14px; font-weight: 700;
+      color: var(--text); margin-bottom: 3px;
+    }
+    .sf-text p {
+      font-size: 12px; color: var(--muted); line-height: 1.5;
+    }
+
+    .splash-btns {
+      width: 100%; max-width: 340px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    #demo-btn {
+      width: 100%; height: 50px;
+      border-radius: var(--r-pill); border: none;
+      background: linear-gradient(135deg, var(--primary), var(--primary2));
+      color: #fff; font-size: 15px; font-weight: 700;
+      cursor: pointer; font-family: inherit;
+      transition: transform 0.15s, opacity 0.15s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    #demo-btn:active { transform: scale(0.97); }
+
+    #skip-btn {
+      width: 100%; height: 44px;
+      border-radius: var(--r-pill);
+      border: 1px solid rgba(255,255,255,0.12);
+      background: transparent; color: var(--muted);
+      font-size: 14px; font-weight: 600;
+      cursor: pointer; font-family: inherit;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    #skip-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.25); }
+
+    .splash-steps {
+      display: flex; gap: 6px; align-items: center;
+      margin-bottom: 28px;
+    }
+    .splash-step {
+      display: flex; align-items: center; gap: 7px;
+      font-size: 12px; color: var(--muted);
+    }
+    .step-num {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: rgba(255,107,107,0.15);
+      border: 1px solid rgba(255,107,107,0.3);
+      color: var(--primary); font-size: 11px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .step-arrow { color: rgba(255,255,255,0.2); font-size: 12px; }
+
+    /* ── HELP BUTTON + MODAL ── */
+    #help-btn {
+      position: absolute; bottom: 18px; right: 10px; z-index: 10;
+      width: 36px; height: 36px; border-radius: 50%;
+      background: rgba(13,17,23,0.92);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      color: var(--muted); font-size: 16px; font-weight: 700;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      box-shadow: var(--shadow); font-family: inherit;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    #help-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.25); }
+
+    #help-modal {
+      position: fixed; inset: 0; z-index: 500;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      display: flex; align-items: flex-end; justify-content: center;
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    #help-modal.hidden { display: none; }
+    .hm-card {
+      background: #0f1923;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px 20px 0 0;
+      padding: 20px 20px 28px;
+      width: 100%; max-width: 480px;
+      animation: slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+    .hm-handle {
+      width: 34px; height: 4px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 2px; margin: 0 auto 18px;
+    }
+    .hm-title {
+      font-size: 18px; font-weight: 800;
+      color: var(--text); margin-bottom: 16px;
+      letter-spacing: -0.3px;
+    }
+    .hm-row {
+      display: flex; align-items: flex-start; gap: 12px;
+      margin-bottom: 14px;
+    }
+    .hm-step {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--primary2));
+      color: #fff; font-size: 13px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px;
+    }
+    .hm-text h4 {
+      font-size: 14px; font-weight: 700;
+      color: var(--text); margin-bottom: 2px;
+    }
+    .hm-text p {
+      font-size: 12px; color: var(--muted); line-height: 1.5;
+    }
+    .hm-divider {
+      height: 1px; background: rgba(255,255,255,0.07);
+      margin: 14px 0;
+    }
+    .hm-tip {
+      font-size: 12px; color: var(--muted);
+      background: rgba(78,205,196,0.08);
+      border: 1px solid rgba(78,205,196,0.2);
+      border-radius: 10px; padding: 10px 12px;
+      line-height: 1.5; margin-bottom: 16px;
+    }
+    .hm-tip strong { color: var(--secondary); }
+    #hm-close {
+      width: 100%; height: 46px;
+      border-radius: var(--r-pill); border: none;
+      background: linear-gradient(135deg, var(--primary), var(--primary2));
+      color: #fff; font-size: 14px; font-weight: 700;
+      cursor: pointer; font-family: inherit;
+    }
+
     /* ── AUTOCOMPLETE ── */
     .pac-container {
       background: rgba(13,17,23,0.97) !important;
@@ -511,6 +690,91 @@
   </style>
 </head>
 <body>
+<!-- SPLASH SCREEN -->
+<div id="splash">
+  <div class="splash-logo">📍</div>
+  <div class="splash-name">Roam<span>ly</span></div>
+  <div class="splash-tag">Discover the best of any neighbourhood — the moment you arrive.</div>
+
+  <div class="splash-steps">
+    <div class="splash-step"><div class="step-num">1</div><span>Enter address</span></div>
+    <div class="step-arrow">›</div>
+    <div class="splash-step"><div class="step-num">2</div><span>Pick categories</span></div>
+    <div class="step-arrow">›</div>
+    <div class="splash-step"><div class="step-num">3</div><span>Tap Roam</span></div>
+  </div>
+
+  <div class="splash-features">
+    <div class="sf-row">
+      <div class="sf-icon">🗺</div>
+      <div class="sf-text">
+        <h4>Any address, anywhere</h4>
+        <p>Works for Airbnb, hotels, or any location worldwide — just paste the address.</p>
+      </div>
+    </div>
+    <div class="sf-row">
+      <div class="sf-icon">🎯</div>
+      <div class="sf-text">
+        <h4>6 categories, instantly ranked</h4>
+        <p>Restaurants, transit, beaches, attractions, shops and nightlife — top 5 in each, sorted by quality.</p>
+      </div>
+    </div>
+    <div class="sf-row">
+      <div class="sf-icon">🧒</div>
+      <div class="sf-text">
+        <h4>Travelling with kids?</h4>
+        <p>Switch to Family mode for playgrounds, pharmacies, and kid-friendly filters.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="splash-btns">
+    <button id="demo-btn">▶ See it in action — try Barcelona</button>
+    <button id="skip-btn">I'll enter my own address →</button>
+  </div>
+</div>
+
+<!-- HELP MODAL -->
+<div id="help-modal" class="hidden">
+  <div class="hm-card">
+    <div class="hm-handle"></div>
+    <div class="hm-title">How to use Roamly</div>
+    <div class="hm-row">
+      <div class="hm-step">1</div>
+      <div class="hm-text">
+        <h4>Enter your address</h4>
+        <p>Type your Airbnb or hotel address, paste an Airbnb URL, or tap 📍 to use your current location.</p>
+      </div>
+    </div>
+    <div class="hm-row">
+      <div class="hm-step">2</div>
+      <div class="hm-text">
+        <h4>Choose your traveller type</h4>
+        <p>Solo, Couple, Family or Remote — categories and filters adapt to your trip.</p>
+      </div>
+    </div>
+    <div class="hm-row">
+      <div class="hm-step">3</div>
+      <div class="hm-text">
+        <h4>Select categories and radius</h4>
+        <p>Toggle which categories you want. Set your radius from 15 min walk to 1 hr drive.</p>
+      </div>
+    </div>
+    <div class="hm-row">
+      <div class="hm-step">4</div>
+      <div class="hm-text">
+        <h4>Tap Roam</h4>
+        <p>Pins appear on the map instantly. Larger pins with a gold ring = top rated. Tap any pin for details and a Google Maps link.</p>
+      </div>
+    </div>
+    <div class="hm-divider"></div>
+    <div class="hm-tip">
+      <strong>💡 Pro tip:</strong> Swipe the bottom drawer up to see a full ranked list per category.
+    </div>
+    <button id="hm-close">Got it — let's explore</button>
+  </div>
+</div>
+
 <div id="app">
 
   <!-- TOP BAR -->
@@ -582,6 +846,9 @@
         </div>
       </div>
     </div>
+
+    <!-- HELP BUTTON -->
+    <button id="help-btn" title="How to use Roamly">?</button>
 
     <!-- TOAST -->
     <div id="toast" class="hidden"></div>
@@ -1191,6 +1458,50 @@ document.addEventListener('DOMContentLoaded', () => {
     legendOpen = !legendOpen;
     document.getElementById('legend-box').classList.toggle('hidden', !legendOpen);
     if (legendOpen) updateLegend();
+  });
+
+  // ── ONBOARDING ──
+  const splash = document.getElementById('splash');
+  const seen = localStorage.getItem('roamly_seen');
+
+  function hideSplash() {
+    splash.classList.add('hiding');
+    setTimeout(() => splash.classList.add('gone'), 480);
+    localStorage.setItem('roamly_seen', '1');
+  }
+
+  if (seen) {
+    splash.classList.add('gone');
+  }
+
+  document.getElementById('skip-btn').addEventListener('click', hideSplash);
+
+  document.getElementById('demo-btn').addEventListener('click', () => {
+    hideSplash();
+    setTimeout(() => {
+      document.getElementById('search-input').value = 'Sagrada Familia, Barcelona, Spain';
+      // Auto-run explore after map is ready
+      const tryExplore = setInterval(() => {
+        if (typeof map !== 'undefined' && map) {
+          clearInterval(tryExplore);
+          explore();
+        }
+      }, 300);
+    }, 500);
+  });
+
+  // ── HELP MODAL ──
+  document.getElementById('help-btn').addEventListener('click', e => {
+    e.stopPropagation();
+    document.getElementById('help-modal').classList.remove('hidden');
+  });
+  document.getElementById('hm-close').addEventListener('click', () => {
+    document.getElementById('help-modal').classList.add('hidden');
+  });
+  document.getElementById('help-modal').addEventListener('click', e => {
+    if (e.target === document.getElementById('help-modal')) {
+      document.getElementById('help-modal').classList.add('hidden');
+    }
   });
 
   // Close dropdowns on outside click
