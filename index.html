@@ -2625,13 +2625,13 @@ let scoreCache = {};
 (function loadCache() {
   try {
     // Cache versioned — bump version when scoring algorithm changes
-    const CACHE_VERSION = 'v6';
+    const CACHE_VERSION = 'v7';
     const saved = localStorage.getItem('roamly_score_cache_' + CACHE_VERSION);
     if (saved) scoreCache = JSON.parse(saved);
   } catch(e) { scoreCache = {}; }
 })();
 function saveCache() {
-  try { localStorage.setItem('roamly_score_cache_v6', JSON.stringify(scoreCache)); } catch(e) {}
+  try { localStorage.setItem('roamly_score_cache_v7', JSON.stringify(scoreCache)); } catch(e) {}
 }
 
 async function runAreaPicker() {
