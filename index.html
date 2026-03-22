@@ -2445,7 +2445,7 @@ async function scoreNeighbourhood(nb) {
       'X-Goog-FieldMask':'places.rating,places.userRatingCount,places.location,places.types'
     },
     body:JSON.stringify({
-      includedTypes:['restaurant','transit_station','tourist_attraction','supermarket','bar'],
+      includedTypes:['restaurant','transit_station','tourist_attraction','supermarket','bar','night_club','grocery_or_supermarket'],
       maxResultCount:20,
       rankPreference:'POPULARITY',
       locationRestriction:{circle:{center:{latitude:lat,longitude:lng},radius:800}}
@@ -2461,11 +2461,11 @@ async function scoreNeighbourhood(nb) {
   // Filter client-side by type
   // FIX: exclude dual-typed bar-restaurants from restaurant count (they inflate food score)
   const hasType = (p, t) => (p.types||[]).includes(t);
-  const bars         = allPlaces.filter(p => hasType(p,'bar'));
+  const bars         = allPlaces.filter(p => hasType(p,'bar') || hasType(p,'night_club'));
   const restaurants  = allPlaces.filter(p => hasType(p,'restaurant') && !hasType(p,'bar'));
   const transit      = allPlaces.filter(p => hasType(p,'transit_station'));
   const attractions  = allPlaces.filter(p => hasType(p,'tourist_attraction'));
-  const supermarkets = allPlaces.filter(p => hasType(p,'supermarket'));
+  const supermarkets = allPlaces.filter(p => hasType(p,'supermarket') || hasType(p,'grocery_or_supermarket'));
 
   const avgR = arr => arr.length ? arr.reduce((s,p)=>s+(p.rating||3.8),0)/arr.length : 0;
   const clamp = (v,max=10) => Math.min(Math.max(v,0),max);
@@ -2503,7 +2503,7 @@ async function scoreNeighbourhood(nb) {
 
   // D4 — Green & Nature (OSM only — completely new dimension)
   const parkScore = clamp((osm.parks/3)*8, 8);
-  const beachBonus = osm.beaches > 0 ? 2 : 0;
+  const beachBonus = osm.beaches > 0 ? 1 : 0;  // reduced from 2 — beach is bonus not primary signal
   const greenScore = clamp(parkScore + beachBonus);
 
   // D5 — Quietness (OSM noise proxy + nightlife density)
@@ -2625,13 +2625,13 @@ let scoreCache = {};
 (function loadCache() {
   try {
     // Cache versioned — bump version when scoring algorithm changes
-    const CACHE_VERSION = 'v5';
+    const CACHE_VERSION = 'v6';
     const saved = localStorage.getItem('roamly_score_cache_' + CACHE_VERSION);
     if (saved) scoreCache = JSON.parse(saved);
   } catch(e) { scoreCache = {}; }
 })();
 function saveCache() {
-  try { localStorage.setItem('roamly_score_cache_v5', JSON.stringify(scoreCache)); } catch(e) {}
+  try { localStorage.setItem('roamly_score_cache_v6', JSON.stringify(scoreCache)); } catch(e) {}
 }
 
 async function runAreaPicker() {
