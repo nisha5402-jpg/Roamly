@@ -2213,7 +2213,7 @@ const NB_CHARS = {
   'lisbon/Príncipe Real':{tags:['upscale','quiet','artistic'],desc:'Refined and peaceful. Antique shops, wine bars and garden squares.'},
   'lisbon/Mouraria':{tags:['authentic','multicultural','local'],desc:'Multi-cultural heart of Lisbon. Diverse food, real neighbourhood feel.'},
   'lisbon/Bairro Alto':{tags:['nightlife','bohemian','trendy'],desc:'The nightlife hub. Bars packed into narrow streets. Lively at night.'},
-  "lisbon/Parque das Nações":{tags:['modern','waterfront','residential'],desc:'Modern riverfront district. Contemporary architecture and quieter parks.'},
+  "lisbon/Parque das Nações":{tags:['modern','scenic','commercial'],desc:'Modern riverside Expo district. Aquarium, parks and contemporary architecture. Business feel.'},
   'barcelona/Gothic Quarter':{tags:['historic','touristy','bohemian'],desc:'Medieval labyrinth at the city core. Atmospheric but very busy.'},
   'barcelona/El Born':{tags:['trendy','artistic','authentic'],desc:'Hip neighbourhood with design shops, cocktail bars and local restaurants.'},
   'barcelona/Eixample':{tags:['elegant','upscale','modern'],desc:'Modernist grid with Gaudí buildings. Walkable and very well-served.'},
@@ -2595,7 +2595,7 @@ async function scoreNeighbourhood(nb) {
   const foodFetch = fetch('https://places.googleapis.com/v1/places:searchNearby',{
     ...nearbyOptions,
     body:JSON.stringify({
-      includedTypes:['restaurant','cafe','bakery','meal_takeaway','bar','night_club','tourist_attraction','supermarket','grocery_or_supermarket'],
+      includedTypes:['restaurant','cafe','bakery','meal_takeaway','bar','night_club','tourist_attraction','supermarket','grocery_store'],
       maxResultCount:20, rankPreference:'POPULARITY',
       locationRestriction:{circle:{center:{latitude:lat,longitude:lng},radius:800}}
     })
@@ -2625,7 +2625,7 @@ async function scoreNeighbourhood(nb) {
   const restaurants  = allPlaces.filter(p => (hasType(p,'restaurant') || hasType(p,'cafe') || hasType(p,'bakery') || hasType(p,'meal_takeaway')) && !hasType(p,'bar'));
   const transit      = allPlaces.filter(p => hasType(p,'transit_station'));
   const attractions  = allPlaces.filter(p => hasType(p,'tourist_attraction'));
-  const supermarkets = allPlaces.filter(p => hasType(p,'supermarket') || hasType(p,'grocery_or_supermarket'));
+  const supermarkets = allPlaces.filter(p => hasType(p,'supermarket') || hasType(p,'grocery_store') || hasType(p,'grocery_or_supermarket'));
 
   const avgR = arr => arr.length ? arr.reduce((s,p)=>s+(p.rating||3.8),0)/arr.length : 3.8;
   const clamp = (v,max=10) => Math.min(Math.max(v,0),max);
@@ -2785,13 +2785,13 @@ let scoreCache = {};
 (function loadCache() {
   try {
     // Cache versioned — bump version when scoring algorithm changes
-    const CACHE_VERSION = 'v11';
+    const CACHE_VERSION = 'v13';
     const saved = localStorage.getItem('roamly_score_cache_' + CACHE_VERSION);
     if (saved) scoreCache = JSON.parse(saved);
   } catch(e) { scoreCache = {}; }
 })();
 function saveCache() {
-  try { localStorage.setItem('roamly_score_cache_v11', JSON.stringify(scoreCache)); } catch(e) {}
+  try { localStorage.setItem('roamly_score_cache_v13', JSON.stringify(scoreCache)); } catch(e) {}
 }
 
 async function runAreaPicker() {
