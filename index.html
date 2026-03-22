@@ -2454,7 +2454,7 @@ async function scoreNeighbourhood(nb) {
   // Run consolidated Places call + OSM in parallel — just 2 network calls total
   const [allPlaces, osm] = await Promise.all([
     consolidatedFetch,
-    fetchOSMData(lat, lng).catch(()=>({parks:0,beaches:0,cultural:0,pedestrian:0,noisy_roads:0,pharmacies:0}))
+    fetchOSMData(lat, lng).catch(()=>({parks:0,playgrounds:0,beaches:0,cultural:0,pedestrian:0,noisy_roads:0,pharmacies:0}))
   ]);
 
   // Filter client-side by type
@@ -2540,7 +2540,7 @@ async function scoreNeighbourhood(nb) {
   const raw = (foodScore*w.food + mobilityScore*w.mobility + cultureScore*w.culture +
     greenScore*w.green + quietScore*w.quiet + charScore*w.character +
     airScore*w.air + essScore*w.essentials) * 10;
-  const finalScore = Math.min(Math.max(Math.round(raw), 10), 99);
+  const finalScore = isNaN(raw) ? 50 : Math.min(Math.max(Math.round(raw), 10), 99);
 
   return {
     ...nb,
@@ -2568,7 +2568,7 @@ async function makeScorePin(nb, rank) {
   pin.style.cssText = `min-width:44px;height:44px;border-radius:22px 22px 22px 0;transform:rotate(-45deg);background:${col};border:${rank===1?'3px solid #fff':'2px solid rgba(255,255,255,0.7)'};box-shadow:${rank===1?'0 0 0 3px rgba(255,255,255,0.2),0 4px 16px rgba(0,0,0,0.6)':'0 2px 10px rgba(0,0,0,0.45)'};display:flex;align-items:center;justify-content:center;padding:0 6px;`;
   const inner = document.createElement('div');
   inner.style.cssText = 'transform:rotate(45deg);font-size:12px;font-weight:800;color:#fff;white-space:nowrap;line-height:1;';
-  inner.textContent = nb.score;
+  inner.textContent = nb.score != null && !isNaN(nb.score) ? nb.score : '--';
   pin.appendChild(inner);
   const lbl = document.createElement('div');
   lbl.style.cssText = `position:absolute;bottom:calc(100% + 2px);left:50%;transform:translateX(-50%);background:rgba(13,17,23,0.93);color:#f0f6fc;font-size:10px;font-weight:700;border-radius:7px;padding:3px 8px;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,0.4);pointer-events:none;font-family:-apple-system,sans-serif;`;
@@ -2731,7 +2731,7 @@ function renderApDrawer(scored, cityData) {
         <div class="ap-nb-meta">${topDims}</div>
         ${desc}
       </div>
-      <div class="ap-score-badge" style="background:${col}">${nb.score}</div>
+      <div class="ap-score-badge" style="background:${col}">${nb.score != null && !isNaN(nb.score) ? nb.score : "--"}</div>
     </div>`;
   }).join('');
   body.innerHTML = header+cards;
