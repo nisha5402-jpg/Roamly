@@ -262,17 +262,18 @@
     }
     #city-dropdown {
       position: fixed;
-      background: rgba(13,17,23,0.99);
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: var(--r-card);
-      z-index: 99999;
-      max-height: 260px;
+      background: #0d1117;
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 12px;
+      z-index: 999999;
+      max-height: 280px;
       overflow-y: auto;
       display: none;
       scrollbar-width: thin;
       scrollbar-color: rgba(255,255,255,0.2) transparent;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.7);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.85);
       min-width: 220px;
+      /* Isolated from ALL stacking contexts by living at body level */
     }
     #city-dropdown.on { display: block; }
     .city-opt {
@@ -1052,7 +1053,6 @@
     <div id="ap-wrap">
       <input id="ap-input" type="text" autocomplete="off"
         placeholder="Type a city — e.g. Lisbon, Oslo, Zurich...">
-      <div id="city-dropdown"></div>
     </div>
     <button id="weight-btn" title="Customise scoring weights">⚖ Weights</button>
     <button id="ap-btn">Score →</button>
@@ -2103,7 +2103,8 @@ function initAutocomplete() {
 
   function positionDropdown() {
     const rect = input.getBoundingClientRect();
-    dropdown.style.top = (rect.bottom + 4) + 'px';
+    // Body-level fixed element — viewport coords are correct
+    dropdown.style.top  = (rect.bottom + 6) + 'px';
     dropdown.style.left = rect.left + 'px';
     dropdown.style.width = rect.width + 'px';
   }
@@ -3439,5 +3440,6 @@ document.addEventListener('DOMContentLoaded', () => {
 ({key:"AIzaSyA9410R5AlmHiaNM9mDOzTt15y6_N_tryY",v:"beta"});
 window.addEventListener('load', initMap);
 </script>
+<div id="city-dropdown"></div>
 </body>
 </html>
