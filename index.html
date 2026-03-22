@@ -2418,30 +2418,40 @@ out tags;`;
 }
 
 // ── NEW 8-DIMENSION SCORING ENGINE ──
+// Single consolidated Places API call per neighbourhood (was 5 separate calls)
+// Saves ~80% of Google API spend
 async function scoreNeighbourhood(nb) {
   const lat=nb.lat, lng=nb.lng;
-  const hdr = {
-    'Content-Type':'application/json',
-    'X-Goog-Api-Key':KEY,
-    'X-Goog-FieldMask':'places.rating,places.userRatingCount,places.location'
-  };
-  const nearby = (type) => fetch('https://places.googleapis.com/v1/places:searchNearby',{
-    method:'POST', headers:hdr,
+
+  // ONE Places API call with all needed types — filter client-side
+  const consolidatedFetch = fetch('https://places.googleapis.com/v1/places:searchNearby',{
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'X-Goog-Api-Key':KEY,
+      'X-Goog-FieldMask':'places.rating,places.userRatingCount,places.location,places.types'
+    },
     body:JSON.stringify({
-      includedTypes:[type], maxResultCount:5, rankPreference:'POPULARITY',
+      includedTypes:['restaurant','transit_station','tourist_attraction','supermarket','bar'],
+      maxResultCount:20,
+      rankPreference:'POPULARITY',
       locationRestriction:{circle:{center:{latitude:lat,longitude:lng},radius:800}}
     })
   }).then(r=>r.json()).then(d=>d.places||[]).catch(()=>[]);
 
-  // Run all data sources in parallel — Google Places + OpenStreetMap
-  const [restaurants, transit, attractions, supermarkets, bars, osm] = await Promise.all([
-    nearby('restaurant'),
-    nearby('transit_station'),
-    nearby('tourist_attraction'),
-    nearby('supermarket'),
-    nearby('bar'),
+  // Run consolidated Places call + OSM in parallel — just 2 network calls total
+  const [allPlaces, osm] = await Promise.all([
+    consolidatedFetch,
     fetchOSMData(lat, lng).catch(()=>({parks:0,beaches:0,cultural:0,pedestrian:0,noisy_roads:0,pharmacies:0}))
   ]);
+
+  // Filter client-side by type
+  const hasType = (p, t) => (p.types||[]).includes(t);
+  const restaurants  = allPlaces.filter(p => hasType(p,'restaurant'));
+  const transit      = allPlaces.filter(p => hasType(p,'transit_station'));
+  const attractions  = allPlaces.filter(p => hasType(p,'tourist_attraction'));
+  const supermarkets = allPlaces.filter(p => hasType(p,'supermarket'));
+  const bars         = allPlaces.filter(p => hasType(p,'bar'));
 
   const avgR = arr => arr.length ? arr.reduce((s,p)=>s+(p.rating||3.8),0)/arr.length : 0;
   const clamp = (v,max=10) => Math.min(Math.max(v,0),max);
@@ -2816,8 +2826,8 @@ function fmtDist(m) { return m < 1000 ? `${Math.round(m)}m` : `${(m/1000).toFixe
 // ── PLACES API (NEW) ──
 const FIELD_MASK = [
   'places.displayName','places.formattedAddress','places.rating',
-  'places.userRatingCount','places.location','places.regularOpeningHours',
-  'places.googleMapsUri','places.types','places.accessibilityOptions',
+  'places.userRatingCount','places.location',
+  'places.googleMapsUri','places.types',
   'places.goodForChildren','places.primaryTypeDisplayName'
 ].join(',');
 
@@ -2847,7 +2857,7 @@ async function searchPlaces(cat, lat, lng) {
     // Nearby Search
     const body = {
       includedTypes: [cat.type],
-      maxResultCount: 10,
+      maxResultCount: 5,
       rankPreference: cat.rank,
       locationRestriction: {
         circle: { center: { latitude: lat, longitude: lng }, radius }
@@ -2940,7 +2950,7 @@ function openInfo(data, marker) {
   } else {
     const rat = data.rating ? `★ ${data.rating.toFixed(1)} <span>(${(data.userRatingCount||0).toLocaleString()})</span>` : '';
     const dst = data.d ? `<div class="iw-dist">${fmtDist(data.d)} away</div>` : '';
-    const st = data.openNow!=null ? `<div class="iw-status ${data.openNow?'iw-open':'iw-closed'}">${data.openNow?'● Open now':'● Closed'}</div>` : '';
+    const st = '';
     const str = (persona==='family' && data.wc) ? `<div class="iw-stroller">♿ Likely stroller-friendly</div>` : '';
     html = `<div class="iw-card">
       <div class="iw-top">
@@ -3050,7 +3060,7 @@ async function explore() {
           name: p.displayName?.text || 'Unknown',
           emoji: cat.emoji, color: cat.color, catLabel: cat.label,
           rating: p.rating, userRatingCount: p.userRatingCount,
-          d, openNow: p.regularOpeningHours?.openNow,
+          d, 
           uri: p.googleMapsUri,
           wc: p.accessibilityOptions?.wheelchairAccessibleEntrance,
           gfc: p.goodForChildren
