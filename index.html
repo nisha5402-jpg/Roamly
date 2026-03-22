@@ -1975,7 +1975,9 @@ function scoreColor(s) {
 // ── 8-DIMENSION PERSONA WEIGHTS ──
 const WEIGHTS = {
   // food  mobility  culture  green   quiet   character  air    essentials  (must sum to 1.00)
-  solo:   {food:0.20,mobility:0.15,culture:0.15,green:0.05,quiet:0.05,character:0.25,air:0.05,essentials:0.10},
+  // solo: character dominates (0.35) — vibe/scene is the primary solo signal
+  //        food 0.15, mobility 0.15, essentials 0.15, culture 0.10, green/quiet/air minimal
+  solo:   {food:0.18,mobility:0.15,culture:0.15,green:0.02,quiet:0.02,character:0.35,air:0.03,essentials:0.10},
   couple: {food:0.20,mobility:0.10,culture:0.22,green:0.10,quiet:0.10,character:0.15,air:0.05,essentials:0.08},
   // family weights — each dimension now measures something genuinely relevant:
   //   food:      0.03  (quality of local cafes/restaurants — small but non-zero)
@@ -2178,26 +2180,26 @@ function initAutocomplete() {
 
 // ── CHARACTER TAG → PERSONA SCORES ──
 const CHARACTER_SCORES = {
-  bohemian:     {solo:9,couple:7,family:3,remote:6},
+  bohemian:     {solo:9,couple:7,family:4,remote:6},
   historic:     {solo:7,couple:8,family:5,remote:4},
   trendy:       {solo:8,couple:7,family:4,remote:5},
-  residential:  {solo:4,couple:6,family:9,remote:8},
+  residential:  {solo:3,couple:6,family:9,remote:8},
   touristy:     {solo:5,couple:6,family:7,remote:2},
   authentic:    {solo:8,couple:8,family:6,remote:5},
   artistic:     {solo:8,couple:9,family:5,remote:6},
   commercial:   {solo:4,couple:5,family:5,remote:3},
-  waterfront:   {solo:7,couple:9,family:8,remote:5},
-  upscale:      {solo:5,couple:8,family:6,remote:4},
-  nightlife:    {solo:9,couple:7,family:1,remote:2},
-  quiet:        {solo:4,couple:7,family:9,remote:9},
-  modern:       {solo:5,couple:6,family:6,remote:7},
+  waterfront:   {solo:6,couple:9,family:8,remote:5},
+  upscale:      {solo:6,couple:8,family:6,remote:4},
+  nightlife:    {solo:9,couple:7,family:2,remote:2},
+  quiet:        {solo:3,couple:7,family:9,remote:9},
+  modern:       {solo:4,couple:6,family:6,remote:7},
   multicultural:{solo:8,couple:7,family:6,remote:6},
   romantic:     {solo:7,couple:10,family:4,remote:4},
-  alternative:  {solo:9,couple:6,family:3,remote:7},
-  elegant:      {solo:6,couple:9,family:5,remote:5},
+  alternative:  {solo:7,couple:6,family:3,remote:7},
+  elegant:      {solo:7,couple:9,family:5,remote:5},
   local:        {solo:8,couple:7,family:7,remote:6},
   industrial:   {solo:6,couple:5,family:3,remote:5},
-  scenic:       {solo:7,couple:9,family:7,remote:5},
+  scenic:       {solo:5,couple:9,family:7,remote:5},
 };
 
 // ── WIKIVOYAGE-INFORMED NEIGHBOURHOOD CHARACTER DATA ──
@@ -2436,27 +2438,42 @@ out tags;`;
 async function scoreNeighbourhood(nb) {
   const lat=nb.lat, lng=nb.lng;
 
-  // ONE Places API call with all needed types — filter client-side
-  const consolidatedFetch = fetch('https://places.googleapis.com/v1/places:searchNearby',{
+  // TWO Places API calls per neighbourhood — split by type group for reliability
+  // Call 1: food/nightlife/essentials (5 types, maxResults 20)
+  // Call 2: transit only (dedicated, ensures transit always returns results)
+  const nearbyOptions = {
     method:'POST',
     headers:{
       'Content-Type':'application/json',
       'X-Goog-Api-Key':KEY,
       'X-Goog-FieldMask':'places.rating,places.userRatingCount,places.location,places.types'
-    },
+    }
+  };
+  const foodFetch = fetch('https://places.googleapis.com/v1/places:searchNearby',{
+    ...nearbyOptions,
     body:JSON.stringify({
-      includedTypes:['restaurant','transit_station','tourist_attraction','supermarket','bar','night_club','grocery_or_supermarket'],
-      maxResultCount:20,
-      rankPreference:'POPULARITY',
+      includedTypes:['restaurant','bar','night_club','supermarket','grocery_or_supermarket'],
+      maxResultCount:20, rankPreference:'POPULARITY',
       locationRestriction:{circle:{center:{latitude:lat,longitude:lng},radius:800}}
     })
   }).then(r=>r.json()).then(d=>d.places||[]).catch(()=>[]);
 
-  // Run consolidated Places call + OSM in parallel — just 2 network calls total
-  const [allPlaces, osm] = await Promise.all([
-    consolidatedFetch,
+  const transitFetch = fetch('https://places.googleapis.com/v1/places:searchNearby',{
+    ...nearbyOptions,
+    body:JSON.stringify({
+      includedTypes:['transit_station'],
+      maxResultCount:10, rankPreference:'DISTANCE',
+      locationRestriction:{circle:{center:{latitude:lat,longitude:lng},radius:800}}
+    })
+  }).then(r=>r.json()).then(d=>d.places||[]).catch(()=>[]);
+
+  // 3 parallel calls: food/nightlife, transit, OSM
+  const [foodPlaces, transitPlaces, osm] = await Promise.all([
+    foodFetch,
+    transitFetch,
     fetchOSMData(lat, lng).catch(()=>({parks:0,playgrounds:0,beaches:0,cultural:0,pedestrian:0,noisy_roads:0,pharmacies:0}))
   ]);
+  const allPlaces = [...foodPlaces, ...transitPlaces];
 
   // Filter client-side by type
   // FIX: exclude dual-typed bar-restaurants from restaurant count (they inflate food score)
@@ -2495,10 +2512,10 @@ async function scoreNeighbourhood(nb) {
     const kidCultural = clamp((osm.cultural / 5) * 3, 3);    // some cultural venues good for kids too
     cultureScore = clamp(playScore + kidCultural);
   } else {
-    const cultureGoog = attractions.length
-      ? clamp(((avgR(attractions)-3.5)/1.5)*5 + (attractions.length/5)*2, 7) : 0;
-    const cultureOSM = clamp((osm.cultural/5)*3, 3);
-    cultureScore = clamp(cultureGoog + cultureOSM);
+    // Solo culture: OSM cultural venues (museums, theatres, galleries) only
+    // tourist_attraction is unreliable — residential areas return 0 and get penalised unfairly
+    // Character dimension already captures neighbourhood vibrancy for solo
+    cultureScore = clamp((osm.cultural/5)*10);
   }
 
   // D4 — Green & Nature (OSM only — completely new dimension)
@@ -2511,7 +2528,7 @@ async function scoreNeighbourhood(nb) {
   const noiseDeduct = clamp(osm.noisy_roads * 3, 8);
   const nightDeduct = persona==='family'
     ? clamp(bars.length * 1.5, 7)
-    : clamp(bars.length * 0.5, 3);
+    : clamp(bars.length * 0.3, 2);  // solo: very mild bar penalty — nightlife is desirable
   const quietScore = clamp(10 - noiseDeduct - nightDeduct);
 
   // D6 — Character & Vibe (Wikivoyage pre-computed tags)
@@ -2625,13 +2642,13 @@ let scoreCache = {};
 (function loadCache() {
   try {
     // Cache versioned — bump version when scoring algorithm changes
-    const CACHE_VERSION = 'v7';
+    const CACHE_VERSION = 'v8';
     const saved = localStorage.getItem('roamly_score_cache_' + CACHE_VERSION);
     if (saved) scoreCache = JSON.parse(saved);
   } catch(e) { scoreCache = {}; }
 })();
 function saveCache() {
-  try { localStorage.setItem('roamly_score_cache_v7', JSON.stringify(scoreCache)); } catch(e) {}
+  try { localStorage.setItem('roamly_score_cache_v8', JSON.stringify(scoreCache)); } catch(e) {}
 }
 
 async function runAreaPicker() {
