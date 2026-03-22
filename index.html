@@ -2595,11 +2595,11 @@ async function scoreNeighbourhood(nb) {
   const foodFetch = fetch('https://places.googleapis.com/v1/places:searchNearby',{
     ...nearbyOptions,
     body:JSON.stringify({
-      includedTypes:['restaurant','cafe','food','meal_takeaway','bar','night_club','tourist_attraction','supermarket','grocery_or_supermarket'],
+      includedTypes:['restaurant','cafe','bakery','meal_takeaway','bar','night_club','tourist_attraction','supermarket','grocery_or_supermarket'],
       maxResultCount:20, rankPreference:'POPULARITY',
       locationRestriction:{circle:{center:{latitude:lat,longitude:lng},radius:800}}
     })
-  }).then(r=>r.json()).then(d=>d.places||[]).catch(()=>[]);
+  }).then(r=>r.json()).then(d=>{if(d.error){console.warn('Places API error:',d.error.message||d.error.status);}return d.places||[];}).catch(e=>{console.warn('Places fetch failed:',e);return[];});
 
   const transitFetch = fetch('https://places.googleapis.com/v1/places:searchNearby',{
     ...nearbyOptions,
@@ -2622,7 +2622,7 @@ async function scoreNeighbourhood(nb) {
   // FIX: exclude dual-typed bar-restaurants from restaurant count (they inflate food score)
   const hasType = (p, t) => (p.types||[]).includes(t);
   const bars         = allPlaces.filter(p => hasType(p,'bar') || hasType(p,'night_club'));
-  const restaurants  = allPlaces.filter(p => (hasType(p,'restaurant') || hasType(p,'cafe') || hasType(p,'food')) && !hasType(p,'bar'));
+  const restaurants  = allPlaces.filter(p => (hasType(p,'restaurant') || hasType(p,'cafe') || hasType(p,'bakery') || hasType(p,'meal_takeaway')) && !hasType(p,'bar'));
   const transit      = allPlaces.filter(p => hasType(p,'transit_station'));
   const attractions  = allPlaces.filter(p => hasType(p,'tourist_attraction'));
   const supermarkets = allPlaces.filter(p => hasType(p,'supermarket') || hasType(p,'grocery_or_supermarket'));
@@ -2785,13 +2785,13 @@ let scoreCache = {};
 (function loadCache() {
   try {
     // Cache versioned — bump version when scoring algorithm changes
-    const CACHE_VERSION = 'v10';
+    const CACHE_VERSION = 'v11';
     const saved = localStorage.getItem('roamly_score_cache_' + CACHE_VERSION);
     if (saved) scoreCache = JSON.parse(saved);
   } catch(e) { scoreCache = {}; }
 })();
 function saveCache() {
-  try { localStorage.setItem('roamly_score_cache_v10', JSON.stringify(scoreCache)); } catch(e) {}
+  try { localStorage.setItem('roamly_score_cache_v11', JSON.stringify(scoreCache)); } catch(e) {}
 }
 
 async function runAreaPicker() {
