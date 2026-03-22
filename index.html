@@ -2392,7 +2392,7 @@ const NB_CHARS = {
 
 // ── OSM OVERPASS API — fetch green space, culture, noise, walkability ──
 async function fetchOSMData(lat, lng) {
-  const query = `[out:json][timeout:20];
+  const query = `[out:json][timeout:25];
 (
   nwr["leisure"~"^(park|garden|playground)$"](around:800,${lat},${lng});
   nwr["natural"~"^(beach|wood)$"](around:1000,${lat},${lng});
@@ -2541,7 +2541,7 @@ async function scoreNeighbourhood(nb) {
   const raw = (foodScore*w.food + mobilityScore*w.mobility + cultureScore*w.culture +
     greenScore*w.green + quietScore*w.quiet + charScore*w.character +
     airScore*w.air + essScore*w.essentials) * 10;
-  const finalScore = isNaN(raw) ? 50 : Math.min(Math.max(Math.round(raw), 10), 99);
+  const finalScore = Number.isFinite(raw) ? Math.min(Math.max(Math.round(raw), 10), 99) : 50;
 
   return {
     ...nb,
@@ -2625,13 +2625,13 @@ let scoreCache = {};
 (function loadCache() {
   try {
     // Cache versioned — bump version when scoring algorithm changes
-    const CACHE_VERSION = 'v4';
+    const CACHE_VERSION = 'v5';
     const saved = localStorage.getItem('roamly_score_cache_' + CACHE_VERSION);
     if (saved) scoreCache = JSON.parse(saved);
   } catch(e) { scoreCache = {}; }
 })();
 function saveCache() {
-  try { localStorage.setItem('roamly_score_cache_v4', JSON.stringify(scoreCache)); } catch(e) {}
+  try { localStorage.setItem('roamly_score_cache_v5', JSON.stringify(scoreCache)); } catch(e) {}
 }
 
 async function runAreaPicker() {
@@ -2678,13 +2678,42 @@ async function runAreaPicker() {
   }
 
   document.getElementById('drawer-tabs').innerHTML = '';
-  document.getElementById('drawer-body').innerHTML =
-    `<div style="padding:10px 0 4px;font-size:12px;color:var(--muted)">Scoring ${cityData.nb.length} neighbourhoods in ${cityData.name}...</div>`+
+  const shimHTML = `<div id="score-progress" style="padding:10px 0 4px;font-size:12px;color:var(--muted)">Scoring 1 of ${cityData.nb.length} — ${cityData.nb[0]?.n||''}...</div>`+
     Array(cityData.nb.length).fill('<div class="shimmer"></div>').join('');
+  document.getElementById('drawer-body').innerHTML = shimHTML;
   openDrawer();
 
   try {
-    const scored = await Promise.all(cityData.nb.map(nb=>scoreNeighbourhood({...nb,_cityKey:cityKey})));
+    // Score sequentially with 300ms delay between calls — prevents OSM Overpass rate limiting
+    // (7 simultaneous requests caused throttling → some neighbourhoods got no OSM data → null scores)
+    const scored = [];
+    for (let i = 0; i < cityData.nb.length; i++) {
+      if (i > 0) await new Promise(r => setTimeout(r, 300)); // stagger OSM calls
+      // Update progress indicator
+      const prog = document.getElementById('score-progress');
+      if (prog) prog.textContent = `Scoring ${i+1} of ${cityData.nb.length} — ${cityData.nb[i].n}...`;
+      try {
+        const result = await scoreNeighbourhood({...cityData.nb[i], _cityKey:cityKey});
+        // Validate score — reject if not a valid finite number
+        if (result && Number.isFinite(result.score)) {
+          scored.push(result);
+        } else {
+          // Re-score once more before giving up
+          await new Promise(r => setTimeout(r, 500));
+          const retry = await scoreNeighbourhood({...cityData.nb[i], _cityKey:cityKey});
+          scored.push({
+            ...cityData.nb[i],
+            score: (retry && Number.isFinite(retry.score)) ? retry.score : 50,
+            charLabel: retry?.charLabel || null,
+            dims: retry?.dims || {}
+          });
+        }
+      } catch(nbErr) {
+        // Individual neighbourhood failed — use neutral score rather than breaking everything
+        console.warn('Scoring failed for', cityData.nb[i].n, nbErr.message);
+        scored.push({...cityData.nb[i], score: 50, charLabel: null, dims: {}});
+      }
+    }
     scored.sort((a,b)=>b.score-a.score);
     // Cache the result — scores won't change on repeat searches
     scoreCache[cacheKey] = scored;
