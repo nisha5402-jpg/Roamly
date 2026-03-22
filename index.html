@@ -1974,9 +1974,20 @@ function scoreColor(s) {
 
 // ── 8-DIMENSION PERSONA WEIGHTS ──
 const WEIGHTS = {
+  // food  mobility  culture  green   quiet   character  air    essentials  (must sum to 1.00)
   solo:   {food:0.20,mobility:0.15,culture:0.15,green:0.05,quiet:0.05,character:0.25,air:0.05,essentials:0.10},
   couple: {food:0.20,mobility:0.10,culture:0.22,green:0.10,quiet:0.10,character:0.15,air:0.05,essentials:0.08},
-  family: {food:0.10,mobility:0.15,culture:0.08,green:0.20,quiet:0.15,character:0.05,air:0.07,essentials:0.20},
+  // family weights — each dimension now measures something genuinely relevant:
+  //   food:      0.03  (quality of local cafes/restaurants — small but non-zero)
+  //   mobility:  0.15  (transit + walkability with kids)
+  //   culture:   0.15  (= kid infrastructure: playgrounds + kid-friendly venues)
+  //   green:     0.22  (parks — highest priority for families)
+  //   quiet:     0.15  (bar/motorway noise penalty)
+  //   character: 0.15  (residential/quiet Wikivoyage tags)
+  //   air:       0.05  (road noise proxy)
+  //   essentials:0.10  (supermarkets + pharmacies)
+  //   sum = 1.00
+  family: {food:0.03,mobility:0.15,culture:0.15,green:0.22,quiet:0.15,character:0.15,air:0.05,essentials:0.10},
   remote: {food:0.10,mobility:0.25,culture:0.05,green:0.10,quiet:0.20,character:0.08,air:0.07,essentials:0.15},
 };
 
@@ -2400,12 +2411,13 @@ out tags;`;
   });
   const data = await res.json();
 
-  const counts = {parks:0,beaches:0,cultural:0,pedestrian:0,noisy_roads:0,pharmacies:0};
+  const counts = {parks:0,playgrounds:0,beaches:0,cultural:0,pedestrian:0,noisy_roads:0,pharmacies:0};
   for (const el of (data.elements||[])) {
     const t = el.tags||{};
     const lei=t.leisure||'', nat=t.natural||'', tour=t.tourism||'',
           hist=t.historic||'', am=t.amenity||'', hw=t.highway||'';
-    if(['park','garden','playground'].includes(lei)) counts.parks++;
+    if(['park','garden'].includes(lei)) counts.parks++;
+    if(lei==='playground') counts.playgrounds++;   // separated from parks
     if(nat==='beach') counts.beaches++;
     if(['museum','gallery','artwork'].includes(tour)||
        ['monument','memorial','castle','ruins'].includes(hist)||
@@ -2446,30 +2458,47 @@ async function scoreNeighbourhood(nb) {
   ]);
 
   // Filter client-side by type
+  // FIX: exclude dual-typed bar-restaurants from restaurant count (they inflate food score)
   const hasType = (p, t) => (p.types||[]).includes(t);
-  const restaurants  = allPlaces.filter(p => hasType(p,'restaurant'));
+  const bars         = allPlaces.filter(p => hasType(p,'bar'));
+  const restaurants  = allPlaces.filter(p => hasType(p,'restaurant') && !hasType(p,'bar'));
   const transit      = allPlaces.filter(p => hasType(p,'transit_station'));
   const attractions  = allPlaces.filter(p => hasType(p,'tourist_attraction'));
   const supermarkets = allPlaces.filter(p => hasType(p,'supermarket'));
-  const bars         = allPlaces.filter(p => hasType(p,'bar'));
 
   const avgR = arr => arr.length ? arr.reduce((s,p)=>s+(p.rating||3.8),0)/arr.length : 0;
   const clamp = (v,max=10) => Math.min(Math.max(v,0),max);
 
-  // D1 — Food & Social Scene (Google Places)
-  const foodScore = restaurants.length
-    ? clamp(((avgR(restaurants)-3.5)/1.5)*7 + (restaurants.length/5)*3) : 0;
+  // D1 — Food & Social Scene
+  // For family: restaurants still matter (cafes, family dining) but density is less important.
+  // Rating quality weighted heavily; count contribution halved vs solo.
+  const rCapped = Math.min(restaurants.length, 5);
+  const foodScore = rCapped
+    ? persona === 'family'
+      ? clamp(((avgR(restaurants)-3.5)/1.5)*9 + (rCapped/5)*1)  // quality 90%, count 10%
+      : clamp(((avgR(restaurants)-3.5)/1.5)*8 + (rCapped/5)*2)  // quality 80%, count 20%
+    : 0;
 
   // D2 — Mobility & Connectivity (Google Places + OSM pedestrian paths)
   const transitGoog = clamp((transit.length/4)*7, 7);
   const pedestrianBonus = clamp((osm.pedestrian/8)*3, 3);
   const mobilityScore = clamp(transitGoog + pedestrianBonus);
 
-  // D3 — Culture & Attractions (Google Places + OSM museums/galleries/monuments)
-  const cultureGoog = attractions.length
-    ? clamp(((avgR(attractions)-3.5)/1.5)*5 + (attractions.length/5)*2, 7) : 0;
-  const cultureOSM = clamp((osm.cultural/5)*3, 3);
-  const cultureScore = clamp(cultureGoog + cultureOSM);
+  // D3 — Culture (solo) OR Kid Infrastructure (family)
+  // For family: tourist attractions are irrelevant. Playgrounds + parks for kids = correct signal.
+  // For solo: tourist attractions + museums remain the right measure.
+  let cultureScore;
+  if (persona === 'family') {
+    // Kid infrastructure: playgrounds nearby + green spaces (parks already in D4)
+    const playScore = clamp((osm.playgrounds / 2) * 7, 7);   // 2 playgrounds = score 7
+    const kidCultural = clamp((osm.cultural / 5) * 3, 3);    // some cultural venues good for kids too
+    cultureScore = clamp(playScore + kidCultural);
+  } else {
+    const cultureGoog = attractions.length
+      ? clamp(((avgR(attractions)-3.5)/1.5)*5 + (attractions.length/5)*2, 7) : 0;
+    const cultureOSM = clamp((osm.cultural/5)*3, 3);
+    cultureScore = clamp(cultureGoog + cultureOSM);
+  }
 
   // D4 — Green & Nature (OSM only — completely new dimension)
   const parkScore = clamp((osm.parks/3)*8, 8);
@@ -2477,9 +2506,11 @@ async function scoreNeighbourhood(nb) {
   const greenScore = clamp(parkScore + beachBonus);
 
   // D5 — Quietness (OSM noise proxy + nightlife density)
+  // FIX: family gets stronger bar penalty (1.5 per bar, cap 7) — was 0.8 cap 4
   const noiseDeduct = clamp(osm.noisy_roads * 3, 8);
-  const nightDeduct = (persona==='family'||persona==='remote')
-    ? clamp(bars.length * 0.8, 4) : 0;
+  const nightDeduct = persona==='family'
+    ? clamp(bars.length * 1.5, 7)
+    : clamp(bars.length * 0.5, 3);
   const quietScore = clamp(10 - noiseDeduct - nightDeduct);
 
   // D6 — Character & Vibe (Wikivoyage pre-computed tags)
@@ -2516,14 +2547,14 @@ async function scoreNeighbourhood(nb) {
     score: finalScore,
     charLabel: charData ? charData.desc : null,
     dims: {
-      '🍽 Food':       Math.round(foodScore),
-      '🚇 Mobility':   Math.round(mobilityScore),
-      '🏛 Culture':    Math.round(cultureScore),
-      '🌳 Green':      Math.round(greenScore),
-      '🔇 Quietness':  Math.round(quietScore),
-      '✨ Character':  Math.round(charScore),
-      '💨 Air':        Math.round(airScore),
-      '🛒 Essentials': Math.round(essScore),
+      '🍽 Food':                   Math.round(foodScore),
+      '🚇 Mobility':               Math.round(mobilityScore),
+      [persona==='family' ? '🛝 Kid spots' : '🏛 Culture']: Math.round(cultureScore),
+      '🌳 Green':                  Math.round(greenScore),
+      '🔇 Quietness':              Math.round(quietScore),
+      '✨ Character':              Math.round(charScore),
+      '💨 Air':                    Math.round(airScore),
+      '🛒 Essentials':             Math.round(essScore),
     }
   };
 }
@@ -2592,12 +2623,14 @@ function clearApMarkers() {
 let scoreCache = {};
 (function loadCache() {
   try {
-    const saved = localStorage.getItem('roamly_score_cache');
+    // Cache versioned — bump version when scoring algorithm changes
+    const CACHE_VERSION = 'v4';
+    const saved = localStorage.getItem('roamly_score_cache_' + CACHE_VERSION);
     if (saved) scoreCache = JSON.parse(saved);
   } catch(e) { scoreCache = {}; }
 })();
 function saveCache() {
-  try { localStorage.setItem('roamly_score_cache', JSON.stringify(scoreCache)); } catch(e) {}
+  try { localStorage.setItem('roamly_score_cache_v4', JSON.stringify(scoreCache)); } catch(e) {}
 }
 
 async function runAreaPicker() {
