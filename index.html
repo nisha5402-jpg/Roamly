@@ -2537,16 +2537,20 @@ const NB_CHARS = {
 
 // ── OSM OVERPASS API — fetch green space, culture, noise, walkability ──
 async function fetchOSMData(lat, lng) {
-  const query = `[out:json][timeout:25];
+  const query = `[out:json][timeout:30][maxsize:1073741824];
 (
-  nwr["leisure"~"^(park|garden|playground)$"](around:800,${lat},${lng});
-  nwr["natural"~"^(beach|wood)$"](around:1000,${lat},${lng});
-  nwr["tourism"~"^(museum|gallery|artwork)$"](around:800,${lat},${lng});
-  nwr["historic"~"^(monument|memorial|castle|ruins)$"](around:800,${lat},${lng});
-  nwr["amenity"~"^(theatre|cinema|arts_centre|marketplace)$"](around:800,${lat},${lng});
+  way["leisure"~"^(park|garden)$"](around:800,${lat},${lng});
+  relation["leisure"~"^(park|garden)$"](around:800,${lat},${lng});
+  node["leisure"="playground"](around:800,${lat},${lng});
+  way["leisure"="playground"](around:800,${lat},${lng});
+  node["natural"="beach"](around:1000,${lat},${lng});
+  way["natural"="beach"](around:1000,${lat},${lng});
+  node["tourism"~"^(museum|gallery)$"](around:800,${lat},${lng});
+  way["tourism"~"^(museum|gallery)$"](around:800,${lat},${lng});
+  node["historic"~"^(monument|memorial|castle)$"](around:800,${lat},${lng});
+  node["amenity"~"^(theatre|cinema|arts_centre|pharmacy|hospital)$"](around:800,${lat},${lng});
   way["highway"~"^(motorway|trunk)$"](around:300,${lat},${lng});
   way["highway"~"^(footway|pedestrian|cycleway)$"](around:700,${lat},${lng});
-  nwr["amenity"~"^(pharmacy|hospital)$"](around:800,${lat},${lng});
 );
 out tags;`;
 
@@ -2555,7 +2559,14 @@ out tags;`;
     headers:{'Content-Type':'application/x-www-form-urlencoded'},
     body:'data=' + encodeURIComponent(query)
   });
-  const data = await res.json();
+  if (!res.ok) {
+    console.warn('OSM Overpass error:', res.status, res.statusText);
+    throw new Error('OSM ' + res.status);
+  }
+  const text = await res.text();
+  let data;
+  try { data = JSON.parse(text); }
+  catch(e) { console.warn('OSM JSON parse error:', text.slice(0,200)); throw e; }
 
   const counts = {parks:0,playgrounds:0,beaches:0,cultural:0,pedestrian:0,noisy_roads:0,pharmacies:0};
   for (const el of (data.elements||[])) {
@@ -2608,13 +2619,17 @@ async function scoreNeighbourhood(nb) {
       maxResultCount:10, rankPreference:'DISTANCE',
       locationRestriction:{circle:{center:{latitude:lat,longitude:lng},radius:800}}
     })
-  }).then(r=>r.json()).then(d=>d.places||[]).catch(()=>[]);
+  }).then(r=>r.json()).then(d=>d.places||[]).catch(e=>{console.warn('Transit fetch failed:',e);return[];});
 
   // 3 parallel calls: food/nightlife, transit, OSM
   const [foodPlaces, transitPlaces, osm] = await Promise.all([
     foodFetch,
     transitFetch,
-    fetchOSMData(lat, lng).catch(()=>({parks:0,playgrounds:0,beaches:0,cultural:0,pedestrian:0,noisy_roads:0,pharmacies:0}))
+    fetchOSMData(lat, lng).catch(async ()=>{
+      console.warn('OSM failed for',nb.n,'- retrying in 2s');
+      await new Promise(r=>setTimeout(r,2000));
+      return fetchOSMData(lat, lng).catch(()=>({parks:0,playgrounds:0,beaches:0,cultural:0,pedestrian:0,noisy_roads:0,pharmacies:0}));
+    })
   ]);
   const allPlaces = [...foodPlaces, ...transitPlaces];
 
@@ -2785,13 +2800,13 @@ let scoreCache = {};
 (function loadCache() {
   try {
     // Cache versioned — bump version when scoring algorithm changes
-    const CACHE_VERSION = 'v13';
+    const CACHE_VERSION = 'v15';
     const saved = localStorage.getItem('roamly_score_cache_' + CACHE_VERSION);
     if (saved) scoreCache = JSON.parse(saved);
   } catch(e) { scoreCache = {}; }
 })();
 function saveCache() {
-  try { localStorage.setItem('roamly_score_cache_v13', JSON.stringify(scoreCache)); } catch(e) {}
+  try { localStorage.setItem('roamly_score_cache_v15', JSON.stringify(scoreCache)); } catch(e) {}
 }
 
 async function runAreaPicker() {
