@@ -895,6 +895,10 @@
     .nb-bar-track { flex: 1; height: 5px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }
     .nb-bar-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
     .nb-bar-val { font-size: 11px; color: var(--text); font-weight: 600; width: 20px; text-align: right; flex-shrink: 0; }
+    .dim-src-tip { font-size:9px; color:rgba(255,255,255,0.2); margin-left:2px; cursor:help; vertical-align:middle; }
+    .nb-fb-row { display:flex; align-items:center; gap:7px; margin-bottom:9px; }
+    .nb-fb-btn { background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:14px; padding:2px 9px; font-size:11px; cursor:pointer; color:rgba(255,255,255,0.55); font-family:inherit; }
+    .nb-fb-btn:hover { background:rgba(255,255,255,0.12); }
     .nb-explore-btn {
       display: block; width: 100%; padding: 9px;
       border-radius: 9px; border: none;
@@ -904,6 +908,167 @@
       font-family: inherit;
     }
 
+
+    /* ── TRANSPARENCY PANEL ──────────────────────────────────────── */
+    #how-btn {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--muted); font-size: 13px; font-weight: 700;
+      cursor: pointer; display: flex; align-items: center;
+      justify-content: center; flex-shrink: 0; font-family: inherit;
+      transition: background 0.18s, color 0.18s;
+    }
+    #how-btn:hover { background: rgba(255,255,255,0.13); color: var(--text); }
+
+    #how-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+      z-index: 9000; opacity: 0; pointer-events: none;
+      transition: opacity 0.28s;
+    }
+    #how-overlay.open { opacity: 1; pointer-events: all; }
+
+    #how-panel {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      max-height: 88vh; overflow-y: auto;
+      background: var(--surface);
+      border-radius: 22px 22px 0 0;
+      z-index: 9001; padding: 0 0 env(safe-area-inset-bottom,16px);
+      transform: translateY(100%);
+      transition: transform 0.32s cubic-bezier(0.34,1.12,0.64,1);
+      -webkit-overflow-scrolling: touch;
+    }
+    #how-panel.open { transform: translateY(0); }
+
+    .how-handle {
+      width: 36px; height: 4px; border-radius: 2px;
+      background: rgba(255,255,255,0.15);
+      margin: 12px auto 0; cursor: pointer;
+    }
+    .how-inner { padding: 20px 22px 32px; }
+
+    .how-eyebrow {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--secondary);
+      margin-bottom: 6px;
+    }
+    .how-headline {
+      font-size: 22px; font-weight: 800; color: var(--text);
+      line-height: 1.2; margin-bottom: 18px;
+    }
+
+    /* Problem section */
+    .how-problem {
+      background: linear-gradient(135deg,rgba(255,107,107,0.1),rgba(255,142,83,0.06));
+      border: 1px solid rgba(255,107,107,0.2);
+      border-radius: var(--r-card); padding: 16px 18px; margin-bottom: 20px;
+    }
+    .how-problem-label {
+      font-size: 9px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--primary); margin-bottom: 8px;
+    }
+    .how-problem p {
+      font-size: 13px; line-height: 1.65; color: rgba(255,255,255,0.75);
+      margin: 0 0 8px;
+    }
+    .how-problem p:last-child { margin: 0; }
+
+    /* Section headings */
+    .how-section-title {
+      font-size: 12px; font-weight: 700; color: var(--text);
+      text-transform: uppercase; letter-spacing: 0.08em;
+      margin: 22px 0 12px; display: flex; align-items: center; gap: 8px;
+    }
+    .how-section-title::after {
+      content:''; flex:1; height:1px; background:var(--border);
+    }
+
+    /* Data source cards */
+    .how-sources { display: flex; flex-direction: column; gap: 9px; margin-bottom: 4px; }
+    .how-src-card {
+      display: flex; align-items: flex-start; gap: 12px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border); border-radius: 12px;
+      padding: 13px 14px;
+    }
+    .how-src-icon {
+      font-size: 20px; flex-shrink: 0; margin-top: 1px;
+      width: 36px; height: 36px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .how-src-name {
+      font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 3px;
+    }
+    .how-src-desc {
+      font-size: 11px; color: var(--muted); line-height: 1.55;
+    }
+
+    /* Scoring explanation */
+    .how-steps { display: flex; flex-direction: column; gap: 0; }
+    .how-step {
+      display: flex; gap: 14px; align-items: flex-start;
+      padding: 13px 0; border-bottom: 1px solid var(--border);
+    }
+    .how-step:last-child { border-bottom: none; }
+    .how-step-num {
+      width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg,var(--primary),var(--primary2));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 800; color: #fff;
+    }
+    .how-step-body { flex: 1; }
+    .how-step-title {
+      font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 4px;
+    }
+    .how-step-desc {
+      font-size: 11px; color: var(--muted); line-height: 1.6;
+    }
+
+    /* Dimensions grid */
+    .how-dims {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 8px; margin-top: 4px;
+    }
+    .how-dim-pill {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border); border-radius: 10px;
+      padding: 9px 11px; display: flex; align-items: center; gap: 8px;
+    }
+    .how-dim-pill span:first-child { font-size: 15px; flex-shrink: 0; }
+    .how-dim-pill-label { font-size: 10px; font-weight: 700; color: var(--text); }
+    .how-dim-pill-sub { font-size: 9px; color: var(--muted); margin-top: 1px; }
+
+    /* Personas */
+    .how-personas { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .how-persona-card {
+      background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+      border-radius: 12px; padding: 12px 13px;
+    }
+    .how-persona-name { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .how-persona-desc { font-size: 10px; color: var(--muted); line-height: 1.55; }
+
+    /* Honesty note */
+    .how-honesty {
+      background: rgba(78,205,196,0.07);
+      border: 1px solid rgba(78,205,196,0.2);
+      border-radius: 12px; padding: 14px 16px; margin-top: 20px;
+    }
+    .how-honesty-label {
+      font-size: 9px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--secondary); margin-bottom: 7px;
+    }
+    .how-honesty p {
+      font-size: 11px; color: rgba(255,255,255,0.6); line-height: 1.65; margin: 0;
+    }
+
+    /* Close button */
+    .how-close-btn {
+      width: 100%; margin-top: 20px; padding: 14px;
+      background: rgba(255,255,255,0.06); border: 1px solid var(--border);
+      border-radius: var(--r-btn); color: var(--muted);
+      font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit;
+    }
+    .how-close-btn:hover { background: rgba(255,255,255,0.1); }
     /* ── AREAPICKER DRAWER (ranked list) ── */
     .ap-nb-card {
       display: flex; align-items: center; gap: 11px;
@@ -1045,6 +1210,118 @@
     <div id="persona-row">
       <button class="persona-btn active" data-p="solo">Solo</button>
       <button class="persona-btn" data-p="family">Family</button>
+    </div>
+    <button id="how-btn" onclick="openHowPanel()" title="How Roamly works">?</button>
+  </div>
+
+  <!-- HOW ROAMLY WORKS PANEL -->
+  <div id="how-overlay" onclick="closeHowPanel()"></div>
+  <div id="how-panel">
+    <div class="how-handle" onclick="closeHowPanel()"></div>
+    <div class="how-inner">
+
+      <div class="how-eyebrow">How it works</div>
+      <h2 class="how-headline">Picking a city is easy.<br>Picking the right neighbourhood? That's where most trips go wrong.</h2>
+
+      <!-- PROBLEM -->
+      <div class="how-problem">
+        <div class="how-problem-label">The problem</div>
+        <p>Booking platforms show you the flat. Not the street. Not the vibe. Not whether it's right <em>for you</em>.</p>
+        <p>Every neighbourhood has its own personality — bohemian, upscale, buzzing with nightlife, or quiet and family-friendly. And every traveller is different. A solo explorer and a family with young kids need completely different things from the same city. Generic "best neighbourhood" lists ignore both of these truths.</p>
+        <p><strong style="color:var(--text)">Roamly connects the right traveller with the right neighbourhood — algorithmically.</strong></p>
+      </div>
+
+      <!-- WHAT IT DOES -->
+      <div class="how-section-title">What Roamly does</div>
+      <div class="how-steps">
+        <div class="how-step">
+          <div class="how-step-num">→</div>
+          <div class="how-step-body">
+            <div class="how-step-title">Before you book</div>
+            <div class="how-step-desc">Scores every neighbourhood in your city against your travel style, so you pick the right area — not just a well-reviewed flat in the wrong one.</div>
+          </div>
+        </div>
+        <div class="how-step">
+          <div class="how-step-num">→</div>
+          <div class="how-step-body">
+            <div class="how-step-title">After you arrive</div>
+            <div class="how-step-desc">Shows you what's actually nearby your address so you hit the ground running from day one.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- HOW SCORING WORKS -->
+      <div class="how-section-title">How the score is built</div>
+      <div class="how-steps">
+        <div class="how-step">
+          <div class="how-step-num">1</div>
+          <div class="how-step-body">
+            <div class="how-step-title">8 dimensions measured</div>
+            <div class="how-step-desc">Food, mobility, culture, green space, quiet, character, air and essentials — each scored using live data.</div>
+          </div>
+        </div>
+        <div class="how-step">
+          <div class="how-step-num">2</div>
+          <div class="how-step-body">
+            <div class="how-step-title">Weighted to your persona</div>
+            <div class="how-step-desc">A solo traveller and a family need very different things. Your persona shifts how much each dimension counts in the final score.</div>
+          </div>
+        </div>
+        <div class="how-step">
+          <div class="how-step-num">3</div>
+          <div class="how-step-body">
+            <div class="how-step-title">A fit score, not a quality score</div>
+            <div class="how-step-desc">78 means this area fits you better than a 65 in the same city — not that it's objectively better. Use ⚖ to adjust weights yourself.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DATA SOURCES -->
+      <div class="how-section-title">Trusted data sources</div>
+      <div class="how-sources">
+        <div class="how-src-card">
+          <div class="how-src-icon" style="background:rgba(255,107,107,0.12)">🗺️</div>
+          <div>
+            <div class="how-src-name">Google Places</div>
+            <div class="how-src-desc">Live ratings and counts for restaurants, cafes, bars, supermarkets and transit — the same source powering Google Maps.</div>
+          </div>
+        </div>
+        <div class="how-src-card">
+          <div class="how-src-icon" style="background:rgba(78,205,196,0.12)">🌍</div>
+          <div>
+            <div class="how-src-name">OpenStreetMap</div>
+            <div class="how-src-desc">The world's largest open map database. Parks, playgrounds, beaches, walking paths — updated continuously by millions of contributors.</div>
+          </div>
+        </div>
+        <div class="how-src-card">
+          <div class="how-src-icon" style="background:rgba(255,230,109,0.12)">📖</div>
+          <div>
+            <div class="how-src-name">Wikivoyage</div>
+            <div class="how-src-desc">Neighbourhood character and vibe, written by travellers and locals who know these areas first-hand.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PERSONAS — Solo + Family only -->
+      <div class="how-section-title">Your travel persona</div>
+      <div class="how-personas">
+        <div class="how-persona-card">
+          <div class="how-persona-name">🧳 Solo</div>
+          <div class="how-persona-desc">Character, food scene and energy lead. Quiet matters less than authenticity.</div>
+        </div>
+        <div class="how-persona-card">
+          <div class="how-persona-name">👨‍👩‍👧 Family</div>
+          <div class="how-persona-desc">Parks, quiet streets and essentials dominate. Nightlife counts against.</div>
+        </div>
+      </div>
+
+      <!-- HONESTY NOTE -->
+      <div class="how-honesty">
+        <div class="how-honesty-label">Good to know</div>
+        <p>Scores don't include rent, safety or school data. European cities are well covered — other regions are growing. Use scores as a starting point, not the final word.</p>
+      </div>
+
+      <button class="how-close-btn" onclick="closeHowPanel()">Got it</button>
     </div>
   </div>
 
@@ -2001,6 +2278,16 @@ const DIM_LABELS = {
   green:'🌳 Green', quiet:'🔇 Quiet', character:'✨ Character',
   air:'💨 Air', essentials:'🛒 Essentials'
 };
+const DIM_SOURCES = {
+  food:      'Restaurant count & ratings · Google Places',
+  mobility:  'Transit stops & walkable paths · OpenStreetMap',
+  culture:   'Museums, galleries, historic sites · OpenStreetMap',
+  green:     'Parks, gardens & beaches · OpenStreetMap',
+  quiet:     'Nightlife venues & road traffic · Google Places + OSM',
+  character: 'Neighbourhood vibe & editorial tags · Wikivoyage',
+  air:       'Motorway & road density · OpenStreetMap',
+  essentials:'Supermarkets & pharmacies · Google Places + OSM'
+};
 
 function getActiveWeights() {
   if (customWeights) return customWeights;
@@ -2758,12 +3045,18 @@ function openNbInfo(nb, marker, cityData) {
   if (apInfoWin) apInfoWin.close();
   if (infoWin) infoWin.close();
   const col = scoreColor(nb.score);
-  const dimBars = Object.entries(nb.dims).map(([label,v])=>`
-    <div class="nb-bar-row">
-      <div class="nb-bar-label">${label}</div>
-      <div class="nb-bar-track"><div class="nb-bar-fill" style="width:${v*10}%;background:${col}"></div></div>
-      <div class="nb-bar-val">${v}</div>
-    </div>`).join('');
+  const _l2k = Object.fromEntries(Object.entries(DIM_LABELS).map(function(e){return [e[1],e[0]];}));
+  const dimBars = Object.entries(nb.dims).map(function(entry){
+    var label=entry[0], v=entry[1];
+    var src = DIM_SOURCES[_l2k[label]||''] || '';
+    var tip = src ? ' title="'+src+'"' : '';
+    var badge = src ? '<span class="dim-src-tip" title="'+src+'">ⓘ</span>' : '';
+    return '<div class="nb-bar-row"'+tip+'>'
+      +'<div class="nb-bar-label">'+label+badge+'</div>'
+      +'<div class="nb-bar-track"><div class="nb-bar-fill" style="width:'+(v*10)+'%;background:'+col+'"></div></div>'
+      +'<div class="nb-bar-val">'+v+'</div>'
+      +'</div>';
+  }).join('');
   const charBlock = nb.charLabel
     ? `<div style="font-size:11px;color:#4ECDC4;background:rgba(78,205,196,0.1);border-radius:7px;padding:6px 9px;margin-bottom:10px;line-height:1.5">${nb.charLabel}</div>`
     : '';
@@ -2776,7 +3069,18 @@ function openNbInfo(nb, marker, cityData) {
     <div style="font-size:10px;color:var(--muted);margin-bottom:8px">Scored for ${pLabel[persona]||'solo'} traveller</div>
     ${charBlock}
     <div class="nb-bars">${dimBars}</div>
-    <div style="font-size:10px;color:rgba(255,255,255,0.25);margin-bottom:8px;line-height:1.4">Data: Google Places + OpenStreetMap + Wikivoyage</div>
+    <div style="font-size:10px;color:rgba(255,255,255,0.25);margin-bottom:6px;line-height:1.4">Data: Google Places + OpenStreetMap + Wikivoyage</div>
+    <details style="margin-bottom:9px">
+      <summary style="font-size:10px;color:rgba(255,255,255,0.32);cursor:pointer;list-style:none;user-select:none">▸ How is this score calculated?</summary>
+      <div style="margin-top:6px;font-size:10px;line-height:1.65;color:rgba(255,255,255,0.42);padding:7px 9px;background:rgba(255,255,255,0.03);border-radius:7px">
+        8 dimensions scored using live data from Google Places &amp; OpenStreetMap, weighted by your persona (Solo / Family / Couple / Remote). Each dimension is rated 1–10. Hover the ⓘ on any bar to see its exact data source. The final score (out of 100) reflects how well this area fits <em>your</em> travel style — not an absolute quality ranking.
+      </div>
+    </details>
+    <div class="nb-fb-row">
+      <span style="font-size:10px;color:rgba(255,255,255,0.3)">Is this accurate?</span>
+      <button class="nb-fb-btn" onclick="submitFb(this,'${nb.n}','${cityData.name}',1)">👍 Yes</button>
+      <button class="nb-fb-btn" onclick="submitFb(this,'${nb.n}','${cityData.name}',0)">👎 No</button>
+    </div>
     <button class="nb-explore-btn" onclick="exploreNeighbourhood('${nb.n.replace(/'/g,"\\'")}','${cityData.name}')">Explore this area in Roamly →</button>
   </div>`;
   apInfoWin = new google.maps.InfoWindow({content:html,disableAutoPan:false});
@@ -2800,13 +3104,13 @@ let scoreCache = {};
 (function loadCache() {
   try {
     // Cache versioned — bump version when scoring algorithm changes
-    const CACHE_VERSION = 'v15';
+    const CACHE_VERSION = 'v16';
     const saved = localStorage.getItem('roamly_score_cache_' + CACHE_VERSION);
     if (saved) scoreCache = JSON.parse(saved);
   } catch(e) { scoreCache = {}; }
 })();
 function saveCache() {
-  try { localStorage.setItem('roamly_score_cache_v15', JSON.stringify(scoreCache)); } catch(e) {}
+  try { localStorage.setItem('roamly_score_cache_v16', JSON.stringify(scoreCache)); } catch(e) {}
 }
 
 async function runAreaPicker() {
@@ -3643,6 +3947,29 @@ document.addEventListener('DOMContentLoaded', () => {
 (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await(a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})
 ({key:"AIzaSyA9410R5AlmHiaNM9mDOzTt15y6_N_tryY",v:"beta"});
 window.addEventListener('load', initMap);
+
+// ── FEEDBACK ─────────────────────────────────────────────────────
+window.submitFb = function(btn, nb, city, positive) {
+  try {
+    var arr = JSON.parse(localStorage.getItem('roamly_fb_v1')||'[]');
+    var p = document.querySelector('.persona-btn.active');
+    arr.push({nb:nb,city:city,ok:positive,persona:p?p.dataset.p:'solo',ts:Date.now()});
+    localStorage.setItem('roamly_fb_v1', JSON.stringify(arr.slice(-200)));
+  } catch(e){}
+  btn.parentElement.innerHTML = '<span style="font-size:10px;color:#4ECDC4">✓ Thanks!</span>';
+};
+
+// ── HOW ROAMLY WORKS PANEL ────────────────────────────────────────
+window.openHowPanel = function() {
+  document.getElementById('how-overlay').classList.add('open');
+  document.getElementById('how-panel').classList.add('open');
+  document.body.style.overflow = 'hidden';
+};
+window.closeHowPanel = function() {
+  document.getElementById('how-overlay').classList.remove('open');
+  document.getElementById('how-panel').classList.remove('open');
+  document.body.style.overflow = '';
+};
 </script>
 <div id="city-dropdown"></div>
 </body>
