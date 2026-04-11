@@ -1037,7 +1037,7 @@
 
   <!-- TOP BAR -->
   <div id="top-bar">
-    <div id="logo"><span class="pin">📍</span><span class="name"> Roamly</span></div>
+    <div id="logo"><span class="pin">📍</span><span class="name"> Roamly</span><span style="font-size:9px;color:var(--muted);margin-left:6px;font-weight:400;opacity:0.7">v18</span></div>
     <div id="mode-toggle">
       <button class="mode-btn active" data-mode="find">Find area</button>
       <button class="mode-btn" data-mode="explore">Explore area</button>
@@ -2629,8 +2629,8 @@ async function fetchNeighbourhoodRawData(nb) {
   const lat = nb.lat, lng = nb.lng;
   const cacheKey = `${lat.toFixed(4)}_${lng.toFixed(4)}`;
 
-  // Return cached data if available and not expired
-  if (rawDataCache[cacheKey] && !rawDataCache[cacheKey]._partial) {
+  // Return cached data if available, not expired, and not flagged as unreliable
+  if (rawDataCache[cacheKey] && !rawDataCache[cacheKey]._partial && !rawDataCache[cacheKey]._unreliable) {
     return rawDataCache[cacheKey];
   }
 
@@ -2684,9 +2684,33 @@ async function fetchNeighbourhoodRawData(nb) {
     foodFetch, transitFetch, fetchOSMWithRetry()
   ]);
 
-  // Classify places once — persona-independent
-  const allPlaces = [...foodPlaces, ...transitPlaces];
+  // FIX: Validate Google Places results — 0 restaurants in a city centre is clearly a failed fetch
+  // Retry once with a slight delay if suspiciously empty
+  let finalFoodPlaces = foodPlaces;
   const hasType = (p, t) => (p.types||[]).includes(t);
+  const restaurantCount = foodPlaces.filter(p => (hasType(p,'restaurant') || hasType(p,'cafe') || hasType(p,'bakery') || hasType(p,'meal_takeaway'))).length;
+  if (restaurantCount < 2 && foodPlaces.length < 3) {
+    console.warn('Google Places suspiciously empty for', nb.n, '— retrying in 2s');
+    await new Promise(r => setTimeout(r, 2000));
+    try {
+      const retryFood = await fetch('https://places.googleapis.com/v1/places:searchNearby',{
+        ...nearbyOptions,
+        body:JSON.stringify({
+          includedTypes:['restaurant','cafe','bakery','meal_takeaway','bar','night_club','tourist_attraction','supermarket','grocery_store'],
+          maxResultCount:20, rankPreference:'POPULARITY',
+          locationRestriction:{circle:{center:{latitude:lat,longitude:lng},radius:800}}
+        })
+      }).then(r=>r.json()).then(d=>d.places||[]);
+      // Use whichever result has more places
+      if (retryFood.length > foodPlaces.length) {
+        finalFoodPlaces = retryFood;
+        console.log('Retry returned', retryFood.length, 'places vs original', foodPlaces.length);
+      }
+    } catch(e) { /* keep original */ }
+  }
+
+  // Classify places once — persona-independent
+  const allPlaces = [...finalFoodPlaces, ...transitPlaces];
 
   const rawData = {
     restaurants: allPlaces.filter(p => (hasType(p,'restaurant') || hasType(p,'cafe') || hasType(p,'bakery') || hasType(p,'meal_takeaway')) && !hasType(p,'bar'))
@@ -2703,11 +2727,19 @@ async function fetchNeighbourhoodRawData(nb) {
     attractions: allPlaces.filter(p => hasType(p,'tourist_attraction')).length,
     osm: osm,
     _ts: Date.now(),
-    _partial: osm._partial || false
+    _partial: osm._partial || false,
+    // Flag as unreliable if Google Places returned suspiciously few results
+    // This prevents caching bad data — next search will re-fetch
+    _unreliable: (restaurantCount < 2 && finalFoodPlaces.length < 5)
   };
 
-  rawDataCache[cacheKey] = rawData;
-  saveRawCache();
+  // Only cache if data looks reliable
+  if (!rawData._unreliable) {
+    rawDataCache[cacheKey] = rawData;
+    saveRawCache();
+  } else {
+    console.warn('Skipping cache for', nb.n, '— data looks unreliable (', finalFoodPlaces.length, 'places)');
+  }
   return rawData;
 }
 
@@ -2825,16 +2857,45 @@ function computeScore(nb, rawData, personaKey, weights) {
 // Applies tiebreaking: if two scores are within 2 points, character score decides rank.
 function normalizeAndRank(scoredList) {
   if (scoredList.length === 0) return [];
-  const rawScores = scoredList.map(s => s.rawScore);
-  const minRaw = Math.min(...rawScores);
-  const maxRaw = Math.max(...rawScores);
-  const spread = maxRaw - minRaw;
 
-  // Normalize to 30-90 range within the city
+  // OUTLIER DAMPENING: If a neighbourhood's raw score is >1.5 std devs from the mean,
+  // pull it toward the mean. Tighter threshold (1.5 not 2) because city-relative
+  // normalization amplifies outliers — dampening must be aggressive to prevent
+  // one bad API call from shifting every other neighbourhood's display score.
+  const rawScores = scoredList.map(s => s.rawScore);
+  const mean = rawScores.reduce((s, v) => s + v, 0) / rawScores.length;
+  const stdDev = Math.sqrt(rawScores.reduce((s, v) => s + (v - mean) ** 2, 0) / rawScores.length);
+
+  if (stdDev > 0.5) {
+    for (const s of scoredList) {
+      const zScore = (s.rawScore - mean) / stdDev;
+      if (Math.abs(zScore) > 1.5) {
+        const dampened = mean + 1.5 * stdDev * Math.sign(zScore);
+        console.warn('Outlier dampened:', s.n, 'raw', s.rawScore.toFixed(1), '→', dampened.toFixed(1),
+          '(z=' + zScore.toFixed(1) + ')');
+        s.rawScore = dampened;
+      }
+    }
+  }
+
+  // ROBUST NORMALIZATION: Use 10th and 90th percentile instead of raw min/max.
+  // This prevents one extreme neighbourhood (even after dampening) from
+  // compressing everyone else's scores into a narrow band.
+  const sorted = [...scoredList].sort((a, b) => a.rawScore - b.rawScore);
+  const n = sorted.length;
+  const p10 = sorted[Math.floor(n * 0.1)]?.rawScore ?? sorted[0].rawScore;
+  const p90 = sorted[Math.ceil(n * 0.9) - 1]?.rawScore ?? sorted[n - 1].rawScore;
+  const spread = p90 - p10;
+
   const normalized = scoredList.map(s => {
-    const normScore = spread > 0.5
-      ? 30 + 60 * (s.rawScore - minRaw) / spread
-      : 65; // All scores identical → put at midpoint
+    let normScore;
+    if (spread > 0.5) {
+      // Map p10→35, p90→85, allow overshoot to 30-90 for values outside percentiles
+      normScore = 35 + 50 * (s.rawScore - p10) / spread;
+      normScore = Math.max(30, Math.min(90, normScore));
+    } else {
+      normScore = 65;
+    }
     return { ...s, score: Math.round(normScore) };
   });
 
