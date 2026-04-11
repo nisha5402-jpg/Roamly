@@ -895,10 +895,6 @@
     .nb-bar-track { flex: 1; height: 5px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }
     .nb-bar-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
     .nb-bar-val { font-size: 11px; color: var(--text); font-weight: 600; width: 20px; text-align: right; flex-shrink: 0; }
-    .dim-src-tip { font-size:9px; color:rgba(255,255,255,0.2); margin-left:2px; cursor:help; vertical-align:middle; }
-    .nb-fb-row { display:flex; align-items:center; gap:7px; margin-bottom:9px; }
-    .nb-fb-btn { background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:14px; padding:2px 9px; font-size:11px; cursor:pointer; color:rgba(255,255,255,0.55); font-family:inherit; }
-    .nb-fb-btn:hover { background:rgba(255,255,255,0.12); }
     .nb-explore-btn {
       display: block; width: 100%; padding: 9px;
       border-radius: 9px; border: none;
@@ -908,253 +904,6 @@
       font-family: inherit;
     }
 
-
-
-
-    /* ── WELCOME POPUP ───────────────────────────────────────────── */
-    #welcome-popup {
-      position: fixed;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%) scale(0.92);
-      width: min(88vw, 340px);
-      background: var(--surface);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 20px;
-      z-index: 8500;
-      padding: 22px 20px 18px;
-      box-shadow: 0 24px 60px rgba(0,0,0,0.7);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.28s, transform 0.28s cubic-bezier(0.34,1.1,0.64,1);
-    }
-    #welcome-popup.open {
-      opacity: 1;
-      pointer-events: all;
-      transform: translate(-50%, -50%) scale(1);
-    }
-    #welcome-overlay {
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.5);
-      z-index: 8499;
-      opacity: 0; pointer-events: none;
-      transition: opacity 0.28s;
-    }
-    #welcome-overlay.open { opacity: 1; pointer-events: all; }
-
-    .wlc-close {
-      position: absolute; top: 12px; right: 14px;
-      width: 26px; height: 26px; border-radius: 50%;
-      background: rgba(255,255,255,0.07);
-      border: none; color: var(--muted);
-      font-size: 14px; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      font-family: inherit; line-height: 1;
-    }
-    .wlc-close:hover { background: rgba(255,255,255,0.14); color: var(--text); }
-
-    .wlc-tag {
-      font-size: 9px; font-weight: 700; letter-spacing: 0.12em;
-      text-transform: uppercase; color: var(--secondary);
-      margin-bottom: 7px;
-    }
-    .wlc-title {
-      font-size: 16px; font-weight: 800; color: var(--text);
-      line-height: 1.3; margin-bottom: 12px;
-    }
-    .wlc-items {
-      display: flex; flex-direction: column; gap: 8px;
-      margin-bottom: 14px;
-    }
-    .wlc-item {
-      display: flex; align-items: flex-start; gap: 9px;
-      font-size: 12px; color: rgba(255,255,255,0.65);
-      line-height: 1.5;
-    }
-    .wlc-item-icon {
-      font-size: 14px; flex-shrink: 0; margin-top: 1px;
-    }
-    .wlc-divider {
-      height: 1px; background: var(--border); margin-bottom: 12px;
-    }
-    .wlc-footer {
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 8px;
-    }
-    .wlc-got-it {
-      flex: 1; padding: 10px 14px;
-      background: linear-gradient(135deg, var(--primary), var(--primary2));
-      border: none; border-radius: var(--r-btn);
-      color: #fff; font-size: 13px; font-weight: 700;
-      cursor: pointer; font-family: inherit;
-    }
-    .wlc-learn {
-      padding: 10px 14px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid var(--border); border-radius: var(--r-btn);
-      color: var(--muted); font-size: 12px; font-weight: 600;
-      cursor: pointer; font-family: inherit; white-space: nowrap;
-    }
-    .wlc-learn:hover { background: rgba(255,255,255,0.1); color: var(--text); }
-    /* ── TRANSPARENCY PANEL ──────────────────────────────────────── */
-    #how-btn {
-      width: 28px; height: 28px; border-radius: 50%;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.12);
-      color: var(--muted); font-size: 13px; font-weight: 700;
-      cursor: pointer; display: flex; align-items: center;
-      justify-content: center; flex-shrink: 0; font-family: inherit;
-      transition: background 0.18s, color 0.18s;
-    }
-    #how-btn:hover { background: rgba(255,255,255,0.13); color: var(--text); }
-
-    #how-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.55);
-      z-index: 9000; opacity: 0; pointer-events: none;
-      transition: opacity 0.28s;
-    }
-    #how-overlay.open { opacity: 1; pointer-events: all; }
-
-    #how-panel {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      max-height: 88vh; overflow-y: auto;
-      background: var(--surface);
-      border-radius: 22px 22px 0 0;
-      z-index: 9001; padding: 0 0 env(safe-area-inset-bottom,16px);
-      transform: translateY(100%);
-      transition: transform 0.32s cubic-bezier(0.34,1.12,0.64,1);
-      -webkit-overflow-scrolling: touch;
-    }
-    #how-panel.open { transform: translateY(0); }
-
-    .how-handle {
-      width: 36px; height: 4px; border-radius: 2px;
-      background: rgba(255,255,255,0.15);
-      margin: 12px auto 0; cursor: pointer;
-    }
-    .how-inner { padding: 20px 22px 32px; }
-
-    .how-eyebrow {
-      font-size: 10px; font-weight: 700; letter-spacing: 0.12em;
-      text-transform: uppercase; color: var(--secondary);
-      margin-bottom: 6px;
-    }
-    .how-headline {
-      font-size: 22px; font-weight: 800; color: var(--text);
-      line-height: 1.2; margin-bottom: 18px;
-    }
-
-    /* Problem section */
-    .how-problem {
-      background: linear-gradient(135deg,rgba(255,107,107,0.1),rgba(255,142,83,0.06));
-      border: 1px solid rgba(255,107,107,0.2);
-      border-radius: var(--r-card); padding: 16px 18px; margin-bottom: 20px;
-    }
-    .how-problem-label {
-      font-size: 9px; font-weight: 700; letter-spacing: 0.1em;
-      text-transform: uppercase; color: var(--primary); margin-bottom: 8px;
-    }
-    .how-problem p {
-      font-size: 13px; line-height: 1.65; color: rgba(255,255,255,0.75);
-      margin: 0 0 8px;
-    }
-    .how-problem p:last-child { margin: 0; }
-
-    /* Section headings */
-    .how-section-title {
-      font-size: 12px; font-weight: 700; color: var(--text);
-      text-transform: uppercase; letter-spacing: 0.08em;
-      margin: 22px 0 12px; display: flex; align-items: center; gap: 8px;
-    }
-    .how-section-title::after {
-      content:''; flex:1; height:1px; background:var(--border);
-    }
-
-    /* Data source cards */
-    .how-sources { display: flex; flex-direction: column; gap: 9px; margin-bottom: 4px; }
-    .how-src-card {
-      display: flex; align-items: flex-start; gap: 12px;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--border); border-radius: 12px;
-      padding: 13px 14px;
-    }
-    .how-src-icon {
-      font-size: 20px; flex-shrink: 0; margin-top: 1px;
-      width: 36px; height: 36px; border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .how-src-name {
-      font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 3px;
-    }
-    .how-src-desc {
-      font-size: 11px; color: var(--muted); line-height: 1.55;
-    }
-
-    /* Scoring explanation */
-    .how-steps { display: flex; flex-direction: column; gap: 0; }
-    .how-step {
-      display: flex; gap: 14px; align-items: flex-start;
-      padding: 13px 0; border-bottom: 1px solid var(--border);
-    }
-    .how-step:last-child { border-bottom: none; }
-    .how-step-num {
-      width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
-      background: linear-gradient(135deg,var(--primary),var(--primary2));
-      display: flex; align-items: center; justify-content: center;
-      font-size: 11px; font-weight: 800; color: #fff;
-    }
-    .how-step-body { flex: 1; }
-    .how-step-title {
-      font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 4px;
-    }
-    .how-step-desc {
-      font-size: 11px; color: var(--muted); line-height: 1.6;
-    }
-
-    /* Dimensions grid */
-    .how-dims {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 8px; margin-top: 4px;
-    }
-    .how-dim-pill {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--border); border-radius: 10px;
-      padding: 9px 11px; display: flex; align-items: center; gap: 8px;
-    }
-    .how-dim-pill span:first-child { font-size: 15px; flex-shrink: 0; }
-    .how-dim-pill-label { font-size: 10px; font-weight: 700; color: var(--text); }
-    .how-dim-pill-sub { font-size: 9px; color: var(--muted); margin-top: 1px; }
-
-    /* Personas */
-    .how-personas { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .how-persona-card {
-      background: rgba(255,255,255,0.03); border: 1px solid var(--border);
-      border-radius: 12px; padding: 12px 13px;
-    }
-    .how-persona-name { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
-    .how-persona-desc { font-size: 10px; color: var(--muted); line-height: 1.55; }
-
-    /* Honesty note */
-    .how-honesty {
-      background: rgba(78,205,196,0.07);
-      border: 1px solid rgba(78,205,196,0.2);
-      border-radius: 12px; padding: 14px 16px; margin-top: 20px;
-    }
-    .how-honesty-label {
-      font-size: 9px; font-weight: 700; letter-spacing: 0.1em;
-      text-transform: uppercase; color: var(--secondary); margin-bottom: 7px;
-    }
-    .how-honesty p {
-      font-size: 11px; color: rgba(255,255,255,0.6); line-height: 1.65; margin: 0;
-    }
-
-    /* Close button */
-    .how-close-btn {
-      width: 100%; margin-top: 20px; padding: 14px;
-      background: rgba(255,255,255,0.06); border: 1px solid var(--border);
-      border-radius: var(--r-btn); color: var(--muted);
-      font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit;
-    }
-    .how-close-btn:hover { background: rgba(255,255,255,0.1); }
     /* ── AREAPICKER DRAWER (ranked list) ── */
     .ap-nb-card {
       display: flex; align-items: center; gap: 11px;
@@ -1296,136 +1045,6 @@
     <div id="persona-row">
       <button class="persona-btn active" data-p="solo">Solo</button>
       <button class="persona-btn" data-p="family">Family</button>
-    </div>
-    <button id="how-btn" onclick="openHowPanel()" title="How Roamly works">?</button>
-  </div>
-
-  <!-- WELCOME POPUP -->
-  <div id="welcome-overlay" onclick="closeWelcome()"></div>
-  <div id="welcome-popup">
-    <button class="wlc-close" onclick="closeWelcome()" aria-label="Close">✕</button>
-    <div class="wlc-tag">Welcome to Roamly</div>
-    <div class="wlc-title">Find the neighbourhood that fits <em>you</em> — not the average tourist.</div>
-    <div class="wlc-items">
-      <div class="wlc-item"><span class="wlc-item-icon">🏙️</span><span>Every neighbourhood has its own personality. Roamly scores them so you can compare.</span></div>
-      <div class="wlc-item"><span class="wlc-item-icon">🎯</span><span>Solo explorer or family with kids? Your persona shifts what matters in the score.</span></div>
-      <div class="wlc-item"><span class="wlc-item-icon">📊</span><span>Scores are built on live data from Google Places, OpenStreetMap and Wikivoyage.</span></div>
-    </div>
-    <div class="wlc-divider"></div>
-    <div class="wlc-footer">
-      <button class="wlc-got-it" onclick="closeWelcome()">Got it, let's go →</button>
-      <button class="wlc-learn" onclick="closeWelcome();openHowPanel()">How it works</button>
-    </div>
-  </div>
-
-  <!-- HOW ROAMLY WORKS PANEL -->
-  <div id="how-overlay" onclick="closeHowPanel()"></div>
-  <div id="how-panel">
-    <div class="how-handle" onclick="closeHowPanel()"></div>
-    <div class="how-inner">
-
-      <div class="how-eyebrow">How it works</div>
-      <h2 class="how-headline">Picking a city is easy.<br>Picking the right neighbourhood? That's where most trips go wrong.</h2>
-
-      <!-- PROBLEM -->
-      <div class="how-problem">
-        <div class="how-problem-label">The problem</div>
-        <p>Booking platforms show you the flat. Not the street. Not the vibe. Not whether it's right <em>for you</em>.</p>
-        <p>Every neighbourhood has its own personality — bohemian, upscale, buzzing with nightlife, or quiet and family-friendly. And every traveller is different. A solo explorer and a family with young kids need completely different things from the same city. Generic "best neighbourhood" lists ignore both of these truths.</p>
-        <p><strong style="color:var(--text)">Roamly connects the right traveller with the right neighbourhood — algorithmically.</strong></p>
-      </div>
-
-      <!-- WHAT IT DOES -->
-      <div class="how-section-title">What Roamly does</div>
-      <div class="how-steps">
-        <div class="how-step">
-          <div class="how-step-num">→</div>
-          <div class="how-step-body">
-            <div class="how-step-title">Before you book</div>
-            <div class="how-step-desc">Scores every neighbourhood in your city against your travel style, so you pick the right area — not just a well-reviewed flat in the wrong one.</div>
-          </div>
-        </div>
-        <div class="how-step">
-          <div class="how-step-num">→</div>
-          <div class="how-step-body">
-            <div class="how-step-title">After you arrive</div>
-            <div class="how-step-desc">Shows you what's actually nearby your address so you hit the ground running from day one.</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- HOW SCORING WORKS -->
-      <div class="how-section-title">How the score is built</div>
-      <div class="how-steps">
-        <div class="how-step">
-          <div class="how-step-num">1</div>
-          <div class="how-step-body">
-            <div class="how-step-title">8 dimensions measured</div>
-            <div class="how-step-desc">Food, mobility, culture, green space, quiet, character, air and essentials — each scored using live data.</div>
-          </div>
-        </div>
-        <div class="how-step">
-          <div class="how-step-num">2</div>
-          <div class="how-step-body">
-            <div class="how-step-title">Weighted to your persona</div>
-            <div class="how-step-desc">A solo traveller and a family need very different things. Your persona shifts how much each dimension counts in the final score.</div>
-          </div>
-        </div>
-        <div class="how-step">
-          <div class="how-step-num">3</div>
-          <div class="how-step-body">
-            <div class="how-step-title">A fit score, not a quality score</div>
-            <div class="how-step-desc">78 means this area fits you better than a 65 in the same city — not that it's objectively better. Use ⚖ to adjust weights yourself.</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- DATA SOURCES -->
-      <div class="how-section-title">Trusted data sources</div>
-      <div class="how-sources">
-        <div class="how-src-card">
-          <div class="how-src-icon" style="background:rgba(255,107,107,0.12)">🗺️</div>
-          <div>
-            <div class="how-src-name">Google Places</div>
-            <div class="how-src-desc">Live ratings and counts for restaurants, cafes, bars, supermarkets and transit — the same source powering Google Maps.</div>
-          </div>
-        </div>
-        <div class="how-src-card">
-          <div class="how-src-icon" style="background:rgba(78,205,196,0.12)">🌍</div>
-          <div>
-            <div class="how-src-name">OpenStreetMap</div>
-            <div class="how-src-desc">The world's largest open map database. Parks, playgrounds, beaches, walking paths — updated continuously by millions of contributors.</div>
-          </div>
-        </div>
-        <div class="how-src-card">
-          <div class="how-src-icon" style="background:rgba(255,230,109,0.12)">📖</div>
-          <div>
-            <div class="how-src-name">Wikivoyage</div>
-            <div class="how-src-desc">Neighbourhood character and vibe, written by travellers and locals who know these areas first-hand.</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- PERSONAS — Solo + Family only -->
-      <div class="how-section-title">Your travel persona</div>
-      <div class="how-personas">
-        <div class="how-persona-card">
-          <div class="how-persona-name">🧳 Solo</div>
-          <div class="how-persona-desc">Character, food scene and energy lead. Quiet matters less than authenticity.</div>
-        </div>
-        <div class="how-persona-card">
-          <div class="how-persona-name">👨‍👩‍👧 Family</div>
-          <div class="how-persona-desc">Parks, quiet streets and essentials dominate. Nightlife counts against.</div>
-        </div>
-      </div>
-
-      <!-- HONESTY NOTE -->
-      <div class="how-honesty">
-        <div class="how-honesty-label">Good to know</div>
-        <p>Scores don't include rent, safety or school data. European cities are well covered — other regions are growing. Use scores as a starting point, not the final word.</p>
-      </div>
-
-      <button class="how-close-btn" onclick="closeHowPanel()">Got it</button>
     </div>
   </div>
 
@@ -2358,7 +1977,7 @@ const WEIGHTS = {
   // food  mobility  culture  green   quiet   character  air    essentials  (must sum to 1.00)
   // solo: character dominates (0.35) — vibe/scene is the primary solo signal
   //        food 0.15, mobility 0.15, essentials 0.15, culture 0.10, green/quiet/air minimal
-  solo:   {food:0.16,mobility:0.12,culture:0.15,green:0.02,quiet:0.02,character:0.40,air:0.03,essentials:0.10},
+  solo:   {food:0.18,mobility:0.15,culture:0.15,green:0.02,quiet:0.02,character:0.35,air:0.03,essentials:0.10},
   couple: {food:0.20,mobility:0.10,culture:0.22,green:0.10,quiet:0.10,character:0.15,air:0.05,essentials:0.08},
   // family weights — each dimension now measures something genuinely relevant:
   //   food:      0.03  (quality of local cafes/restaurants — small but non-zero)
@@ -2381,16 +2000,6 @@ const DIM_LABELS = {
   food:'🍽 Food', mobility:'🚇 Mobility', culture:'🏛 Culture',
   green:'🌳 Green', quiet:'🔇 Quiet', character:'✨ Character',
   air:'💨 Air', essentials:'🛒 Essentials'
-};
-const DIM_SOURCES = {
-  food:      'Restaurant count & ratings · Google Places',
-  mobility:  'Transit stops & walkable paths · OpenStreetMap',
-  culture:   'Museums, galleries, historic sites · OpenStreetMap',
-  green:     'Parks, gardens & beaches · OpenStreetMap',
-  quiet:     'Nightlife venues & road traffic · Google Places + OSM',
-  character: 'Neighbourhood vibe & editorial tags · Wikivoyage',
-  air:       'Motorway & road density · OpenStreetMap',
-  essentials:'Supermarkets & pharmacies · Google Places + OSM'
 };
 
 function getActiveWeights() {
@@ -2927,21 +2536,51 @@ const NB_CHARS = {
 };
 
 // ── OSM OVERPASS API — fetch green space, culture, noise, walkability ──
+// ── STABLE SCORING ENGINE v2 ──
+// Architecture: separate data fetching (API calls) from scoring (pure math).
+// Raw API data is cached independently of persona/weights → eliminates API non-determinism.
+// Scoring is a pure function of cached data + persona + weights → always deterministic.
+
+// ── RAW DATA CACHE — stores API responses per neighbourhood, persona-independent ──
+let rawDataCache = {};
+const RAW_CACHE_VERSION = 'v18';
+const RAW_CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
+
+(function loadRawCache() {
+  try {
+    const saved = localStorage.getItem('roamly_raw_cache_' + RAW_CACHE_VERSION);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      // Evict expired entries
+      const now = Date.now();
+      for (const k of Object.keys(parsed)) {
+        if (now - (parsed[k]._ts || 0) > RAW_CACHE_TTL) delete parsed[k];
+      }
+      rawDataCache = parsed;
+    }
+  } catch(e) { rawDataCache = {}; }
+})();
+
+function saveRawCache() {
+  try { localStorage.setItem('roamly_raw_cache_' + RAW_CACHE_VERSION, JSON.stringify(rawDataCache)); } catch(e) {}
+}
+
+// ── OSM FETCH with completeness validation ──
 async function fetchOSMData(lat, lng) {
-  const query = `[out:json][timeout:20];
+  const query = `[out:json][timeout:30][maxsize:1073741824];
 (
-  way["leisure"~"^(park|garden)$"](around:600,${lat},${lng});
-  relation["leisure"~"^(park|garden)$"](around:600,${lat},${lng});
-  node["leisure"="playground"](around:600,${lat},${lng});
-  way["leisure"="playground"](around:600,${lat},${lng});
-  node["natural"="beach"](around:700,${lat},${lng});
-  way["natural"="beach"](around:700,${lat},${lng});
-  node["tourism"~"^(museum|gallery)$"](around:600,${lat},${lng});
-  way["tourism"~"^(museum|gallery)$"](around:600,${lat},${lng});
-  node["historic"~"^(monument|memorial|castle)$"](around:600,${lat},${lng});
-  node["amenity"~"^(theatre|cinema|arts_centre|pharmacy|hospital)$"](around:600,${lat},${lng});
-  way["highway"~"^(motorway|trunk)$"](around:250,${lat},${lng});
-  way["highway"~"^(footway|pedestrian|cycleway)$"](around:500,${lat},${lng});
+  way["leisure"~"^(park|garden)$"](around:800,${lat},${lng});
+  relation["leisure"~"^(park|garden)$"](around:800,${lat},${lng});
+  node["leisure"="playground"](around:800,${lat},${lng});
+  way["leisure"="playground"](around:800,${lat},${lng});
+  node["natural"="beach"](around:1000,${lat},${lng});
+  way["natural"="beach"](around:1000,${lat},${lng});
+  node["tourism"~"^(museum|gallery)$"](around:800,${lat},${lng});
+  way["tourism"~"^(museum|gallery)$"](around:800,${lat},${lng});
+  node["historic"~"^(monument|memorial|castle)$"](around:800,${lat},${lng});
+  node["amenity"~"^(theatre|cinema|arts_centre|pharmacy|hospital)$"](around:800,${lat},${lng});
+  way["highway"~"^(motorway|trunk)$"](around:300,${lat},${lng});
+  way["highway"~"^(footway|pedestrian|cycleway)$"](around:700,${lat},${lng});
 );
 out tags;`;
 
@@ -2959,13 +2598,14 @@ out tags;`;
   try { data = JSON.parse(text); }
   catch(e) { console.warn('OSM JSON parse error:', text.slice(0,200)); throw e; }
 
+  const elements = data.elements || [];
   const counts = {parks:0,playgrounds:0,beaches:0,cultural:0,pedestrian:0,noisy_roads:0,pharmacies:0};
-  for (const el of (data.elements||[])) {
+  for (const el of elements) {
     const t = el.tags||{};
     const lei=t.leisure||'', nat=t.natural||'', tour=t.tourism||'',
           hist=t.historic||'', am=t.amenity||'', hw=t.highway||'';
     if(['park','garden'].includes(lei)) counts.parks++;
-    if(lei==='playground') counts.playgrounds++;   // separated from parks
+    if(lei==='playground') counts.playgrounds++;
     if(nat==='beach') counts.beaches++;
     if(['museum','gallery','artwork'].includes(tour)||
        ['monument','memorial','castle','ruins'].includes(hist)||
@@ -2974,18 +2614,26 @@ out tags;`;
     if(['motorway','trunk'].includes(hw)) counts.noisy_roads++;
     if(['pharmacy','hospital'].includes(am)) counts.pharmacies++;
   }
+
+  // FIX B: Completeness validation — European city centres should return 5+ elements
+  // If suspiciously low, flag as partial so caller can retry with longer backoff
+  counts._elementCount = elements.length;
+  counts._partial = elements.length < 5;
   return counts;
 }
 
-// ── NEW 8-DIMENSION SCORING ENGINE ──
-// Single consolidated Places API call per neighbourhood (was 5 separate calls)
-// Saves ~80% of Google API spend
-async function scoreNeighbourhood(nb, persona, w) {
-  const lat=nb.lat, lng=nb.lng;
+// ── FETCH RAW DATA for a single neighbourhood (all 3 API calls) ──
+// Returns persona-independent raw data: { foodPlaces, transitPlaces, osm }
+// Result is cached by lat/lng key — same data used regardless of persona or weights
+async function fetchNeighbourhoodRawData(nb) {
+  const lat = nb.lat, lng = nb.lng;
+  const cacheKey = `${lat.toFixed(4)}_${lng.toFixed(4)}`;
 
-  // TWO Places API calls per neighbourhood — split by type group for reliability
-  // Call 1: food/nightlife/essentials (5 types, maxResults 20)
-  // Call 2: transit only (dedicated, ensures transit always returns results)
+  // Return cached data if available and not expired
+  if (rawDataCache[cacheKey] && !rawDataCache[cacheKey]._partial) {
+    return rawDataCache[cacheKey];
+  }
+
   const nearbyOptions = {
     method:'POST',
     headers:{
@@ -2994,6 +2642,7 @@ async function scoreNeighbourhood(nb, persona, w) {
       'X-Goog-FieldMask':'places.rating,places.userRatingCount,places.location,places.types'
     }
   };
+
   const foodFetch = fetch('https://places.googleapis.com/v1/places:searchNearby',{
     ...nearbyOptions,
     body:JSON.stringify({
@@ -3012,115 +2661,211 @@ async function scoreNeighbourhood(nb, persona, w) {
     })
   }).then(r=>r.json()).then(d=>d.places||[]).catch(e=>{console.warn('Transit fetch failed:',e);return[];});
 
-  // 3 parallel calls: food/nightlife, transit, OSM
+  // OSM with completeness validation and longer backoff
+  async function fetchOSMWithRetry() {
+    try {
+      const osm = await fetchOSMData(lat, lng);
+      if (osm._partial) {
+        console.warn('OSM partial result for', nb.n, '— retrying in 5s');
+        await new Promise(r => setTimeout(r, 5000));
+        const retry = await fetchOSMData(lat, lng);
+        return retry._partial ? osm : retry; // Use first result if retry also partial
+      }
+      return osm;
+    } catch(e) {
+      console.warn('OSM failed for', nb.n, '— retrying in 5s');
+      await new Promise(r => setTimeout(r, 5000));
+      try { return await fetchOSMData(lat, lng); }
+      catch(e2) { return {parks:0,playgrounds:0,beaches:0,cultural:0,pedestrian:0,noisy_roads:0,pharmacies:0,_partial:true,_elementCount:0}; }
+    }
+  }
+
   const [foodPlaces, transitPlaces, osm] = await Promise.all([
-    foodFetch,
-    transitFetch,
-    fetchOSMData(lat, lng).catch(async ()=>{
-      console.warn('OSM failed for',nb.n,'- retrying in 800ms');
-      await new Promise(r=>setTimeout(r,800));
-      return fetchOSMData(lat, lng).catch(()=>({parks:0,playgrounds:0,beaches:0,cultural:0,pedestrian:0,noisy_roads:0,pharmacies:0}));
-    })
+    foodFetch, transitFetch, fetchOSMWithRetry()
   ]);
+
+  // Classify places once — persona-independent
   const allPlaces = [...foodPlaces, ...transitPlaces];
-
-  // Filter client-side by type
-  // FIX: exclude dual-typed bar-restaurants from restaurant count (they inflate food score)
   const hasType = (p, t) => (p.types||[]).includes(t);
-  const bars         = allPlaces.filter(p => hasType(p,'bar') || hasType(p,'night_club'));
-  const restaurants  = allPlaces.filter(p => (hasType(p,'restaurant') || hasType(p,'cafe') || hasType(p,'bakery') || hasType(p,'meal_takeaway')) && !hasType(p,'bar'));
-  const transit      = allPlaces.filter(p => hasType(p,'transit_station'));
-  const attractions  = allPlaces.filter(p => hasType(p,'tourist_attraction'));
-  const supermarkets = allPlaces.filter(p => hasType(p,'supermarket') || hasType(p,'grocery_store') || hasType(p,'grocery_or_supermarket'));
 
-  const avgR = arr => arr.length ? arr.reduce((s,p)=>s+(p.rating||3.8),0)/arr.length : 3.8;
+  const rawData = {
+    restaurants: allPlaces.filter(p => (hasType(p,'restaurant') || hasType(p,'cafe') || hasType(p,'bakery') || hasType(p,'meal_takeaway')) && !hasType(p,'bar'))
+                   .map(p => ({rating: p.rating||3.8, reviews: p.userRatingCount||0})),
+    bars: allPlaces.filter(p => hasType(p,'bar') || hasType(p,'night_club'))
+           .map(p => ({rating: p.rating||3.8, reviews: p.userRatingCount||0})),
+    transit: transitPlaces.map(p => {
+      // Compute distance from centre to transit station
+      const loc = p.location || {};
+      const dLat = (loc.latitude||lat) - lat, dLng = (loc.longitude||lng) - lng;
+      return { dist_m: Math.round(Math.sqrt(dLat*dLat + dLng*dLng) * 111320) };
+    }),
+    supermarkets: allPlaces.filter(p => hasType(p,'supermarket') || hasType(p,'grocery_store') || hasType(p,'grocery_or_supermarket')).length,
+    attractions: allPlaces.filter(p => hasType(p,'tourist_attraction')).length,
+    osm: osm,
+    _ts: Date.now(),
+    _partial: osm._partial || false
+  };
+
+  rawDataCache[cacheKey] = rawData;
+  saveRawCache();
+  return rawData;
+}
+
+// ── PURE SCORING FUNCTION — no API calls, fully deterministic ──
+// Takes raw data + persona + weights → returns dimension scores + raw weighted total
+function computeScore(nb, rawData, personaKey, weights) {
+  const {restaurants, bars, transit, supermarkets, osm} = rawData;
   const clamp = (v,max=10) => Math.min(Math.max(v,0),max);
 
-  // D1 — Food & Social Scene
-  // For family: restaurants still matter (cafes, family dining) but density is less important.
-  // Rating quality weighted heavily; count contribution halved vs solo.
-  const rCapped = Math.min(restaurants.length, 5);
-  const foodScore = rCapped
-    ? persona === 'family'
-      ? clamp(((avgR(restaurants)-3.5)/1.5)*9 + (rCapped/5)*1)  // quality 90%, count 10%
-      : clamp(((avgR(restaurants)-3.5)/1.5)*8 + (rCapped/5)*2)  // quality 80%, count 20%
-    : 0;
+  // D1 — Food (review-count weighted quality + log variety)
+  let foodScore = 0;
+  if (restaurants.length > 0) {
+    // Quality: rating weighted by log(reviewCount) — high-volume acclaimed venues score higher
+    const weightedSum = restaurants.reduce((s,r) => s + r.rating * Math.log(r.reviews + 1), 0);
+    const weightTotal = restaurants.reduce((s,r) => s + Math.log(r.reviews + 1), 0);
+    const qualitySignal = weightTotal > 0 ? weightedSum / weightTotal : 3.8;
+    // Variety: diminishing returns via log (10 restaurants = 1.0)
+    const varietySignal = Math.log(restaurants.length + 1) / Math.log(10 + 1);
+    foodScore = personaKey === 'family'
+      ? clamp(((qualitySignal - 3.5) / 1.5) * 8 + varietySignal * 2)
+      : clamp(((qualitySignal - 3.5) / 1.5) * 7 + varietySignal * 3);
+  }
 
-  // D2 — Mobility & Connectivity (Google Places + OSM pedestrian paths)
-  const transitGoog = clamp((transit.length/4)*7, 7);
-  const pedestrianBonus = clamp((osm.pedestrian/8)*3, 3);
-  const mobilityScore = clamp(transitGoog + pedestrianBonus);
+  // D2 — Mobility (distance-weighted transit + pedestrian paths)
+  let transitScore = 0;
+  if (transit.length > 0) {
+    // Each station weighted inversely by distance: 200m=full, 800m=quarter
+    const transitWeighted = transit.reduce((s,t) => s + Math.min(1.0, 200 / Math.max(t.dist_m, 50)), 0);
+    transitScore = clamp(transitWeighted * 2.5, 7);
+  }
+  const pedestrianBonus = clamp((osm.pedestrian / 8) * 3, 3);
+  const mobilityScore = clamp(transitScore + pedestrianBonus);
 
-  // D3 — Culture (solo) OR Kid Infrastructure (family)
-  // For family: tourist attractions are irrelevant. Playgrounds + parks for kids = correct signal.
-  // For solo: tourist attractions + museums remain the right measure.
+  // D3 — Culture (solo) / Kid infrastructure (family) — logarithmic scaling
   let cultureScore;
-  if (persona === 'family') {
-    // Kid infrastructure: playgrounds nearby + green spaces (parks already in D4)
-    const playScore = clamp((osm.playgrounds / 2) * 7, 7);   // 2 playgrounds = score 7
-    const kidCultural = clamp((osm.cultural / 5) * 3, 3);    // some cultural venues good for kids too
+  if (personaKey === 'family') {
+    const playScore = osm.playgrounds > 0
+      ? clamp(Math.log2(osm.playgrounds + 1) / Math.log2(5) * 10, 7) : 0;
+    const kidCultural = clamp(Math.log2(osm.cultural + 1) / Math.log2(6) * 3, 3);
     cultureScore = clamp(playScore + kidCultural);
   } else {
-    // Solo culture: OSM cultural venues (museums, theatres, galleries) only
-    // tourist_attraction is unreliable — residential areas return 0 and get penalised unfairly
-    // Character dimension already captures neighbourhood vibrancy for solo
-    cultureScore = clamp((osm.cultural/5)*10);
+    cultureScore = osm.cultural > 0
+      ? clamp(Math.log2(osm.cultural + 1) / Math.log2(9) * 10) : 0;
   }
 
-  // D4 — Green & Nature (OSM only — completely new dimension)
-  const parkScore = clamp((osm.parks/3)*8, 8);
-  const beachBonus = osm.beaches > 0 ? 1 : 0;  // reduced from 2 — beach is bonus not primary signal
+  // D4 — Green (log scaling + beach bonus)
+  const parkScore = osm.parks > 0
+    ? clamp(Math.log2(osm.parks + 1) / Math.log2(7) * 8, 8) : 0;
+  const beachBonus = osm.beaches > 0 ? 1.5 : 0;
   const greenScore = clamp(parkScore + beachBonus);
 
-  // D5 — Quietness (OSM noise proxy + nightlife density)
-  // FIX: family gets stronger bar penalty (1.5 per bar, cap 7) — was 0.8 cap 4
+  // D5 — Quietness
   const noiseDeduct = clamp(osm.noisy_roads * 3, 8);
-  const nightDeduct = persona==='family'
+  const nightDeduct = personaKey === 'family'
     ? clamp(bars.length * 1.5, 7)
-    : clamp(bars.length * 0.3, 2);  // solo: very mild bar penalty — nightlife is desirable
+    : clamp(bars.length * 0.3, 2);
   const quietScore = clamp(10 - noiseDeduct - nightDeduct);
 
-  // D6 — Character & Vibe (Wikivoyage pre-computed tags)
+  // D6 — Character (best-of-N instead of simple average)
   const charKey = (nb._cityKey||'') + '/' + nb.n;
   const charData = NB_CHARS[charKey];
-  let charScore = 5; // neutral default
+  let charScore = 5;
   if (charData && charData.tags.length) {
     const tagScores = charData.tags
-      .map(tag => (CHARACTER_SCORES[tag]||{})[persona] || 5);
-    charScore = tagScores.reduce((s,v)=>s+v,0) / tagScores.length;
+      .map(tag => (CHARACTER_SCORES[tag]||{})[personaKey] || 5)
+      .sort((a,b) => b - a);
+    if (tagScores.length >= 3) {
+      charScore = tagScores[0] * 0.50 + tagScores[1] * 0.35 + tagScores[2] * 0.15;
+    } else if (tagScores.length === 2) {
+      charScore = tagScores[0] * 0.60 + tagScores[1] * 0.40;
+    } else {
+      charScore = tagScores[0];
+    }
   } else {
-    // Fallback: neutral 5 — consistent across all cities without NB_CHARS data
-    charScore = 5;
+    // Fallback: bar quality as vibe proxy
+    const avgBarR = bars.length ? bars.reduce((s,b) => s + b.rating, 0) / bars.length : 3.8;
+    charScore = bars.length ? clamp(((avgBarR - 3.5) / 1.5) * 5 + (bars.length / 5) * 5) : 4;
   }
 
-  // D7 — Air Quality (OSM road density as proxy — WAQI to be added in v2)
-  const airScore = clamp(10 - osm.noisy_roads * 2, 10);
+  // D7 — Air Quality (distinct signal: pedestrian density as walkable/low-traffic proxy)
+  const pedAir = clamp((osm.pedestrian / 10) * 5, 5);
+  const roadPenalty = clamp(osm.noisy_roads * 2.5, 5);
+  const airScore = clamp(pedAir + (5 - roadPenalty));
 
-  // D8 — Essentials Accessibility (Google supermarkets + OSM pharmacies)
-  const essGoog = clamp(supermarkets.length * 2.5, 7);
+  // D8 — Essentials
+  const essGoog = clamp(supermarkets * 2.5, 7);
   const essOSM = clamp(osm.pharmacies * 1.5, 3);
   const essScore = clamp(essGoog + essOSM);
 
-  // Weighted final score — w passed in from caller (captured once per run)
-  const raw = (foodScore*w.food + mobilityScore*w.mobility + cultureScore*w.culture +
+  // Weighted raw score (NOT clamped to 10-99 yet — normalization happens at city level)
+  const w = weights;
+  const rawScore = (foodScore*w.food + mobilityScore*w.mobility + cultureScore*w.culture +
     greenScore*w.green + quietScore*w.quiet + charScore*w.character +
     airScore*w.air + essScore*w.essentials) * 10;
-  const finalScore = Number.isFinite(raw) ? Math.min(Math.max(Math.round(raw), 10), 99) : 50;
 
   return {
-    ...nb,
-    score: finalScore,
+    rawScore,
+    charScore, // exposed for tiebreaking
     charLabel: charData ? charData.desc : null,
     dims: {
       '🍽 Food':                   Math.round(foodScore),
       '🚇 Mobility':               Math.round(mobilityScore),
-      [persona==='family' ? '🛝 Kid spots' : '🏛 Culture']: Math.round(cultureScore),
+      [personaKey==='family' ? '🛝 Kid spots' : '🏛 Culture']: Math.round(cultureScore),
       '🌳 Green':                  Math.round(greenScore),
       '🔇 Quietness':              Math.round(quietScore),
       '✨ Character':              Math.round(charScore),
       '💨 Air':                    Math.round(airScore),
       '🛒 Essentials':             Math.round(essScore),
     }
+  };
+}
+
+// ── CITY-RELATIVE NORMALIZATION + RANK STABILITY ──
+// Spreads scores across a readable range within each city.
+// Applies tiebreaking: if two scores are within 2 points, character score decides rank.
+function normalizeAndRank(scoredList) {
+  if (scoredList.length === 0) return [];
+  const rawScores = scoredList.map(s => s.rawScore);
+  const minRaw = Math.min(...rawScores);
+  const maxRaw = Math.max(...rawScores);
+  const spread = maxRaw - minRaw;
+
+  // Normalize to 30-90 range within the city
+  const normalized = scoredList.map(s => {
+    const normScore = spread > 0.5
+      ? 30 + 60 * (s.rawScore - minRaw) / spread
+      : 65; // All scores identical → put at midpoint
+    return { ...s, score: Math.round(normScore) };
+  });
+
+  // Sort with stability: score descending, tiebreak by character score
+  normalized.sort((a, b) => {
+    const diff = b.score - a.score;
+    if (Math.abs(diff) <= 2) {
+      // Within 2 points — use deterministic character score as tiebreaker
+      return b.charScore - a.charScore;
+    }
+    return diff;
+  });
+
+  return normalized;
+}
+
+// ── BACKWARD-COMPATIBLE WRAPPER — called from runAreaPicker ──
+// Fetches raw data (or uses cache), computes score for current persona/weights
+async function scoreNeighbourhood(nb) {
+  const rawData = await fetchNeighbourhoodRawData(nb);
+  const w = getActiveWeights();
+  const personaKey = document.querySelector('.persona-btn.active')?.dataset.p || 'solo';
+  const result = computeScore(nb, rawData, personaKey, w);
+  const finalScore = Number.isFinite(result.rawScore) ? Math.min(Math.max(Math.round(result.rawScore), 10), 99) : 50;
+  return {
+    ...nb,
+    score: finalScore,
+    rawScore: result.rawScore,
+    charScore: result.charScore,
+    charLabel: result.charLabel,
+    dims: result.dims
   };
 }
 
@@ -3147,18 +2892,12 @@ function openNbInfo(nb, marker, cityData) {
   if (apInfoWin) apInfoWin.close();
   if (infoWin) infoWin.close();
   const col = scoreColor(nb.score);
-  const _l2k = Object.fromEntries(Object.entries(DIM_LABELS).map(function(e){return [e[1],e[0]];}));
-  const dimBars = Object.entries(nb.dims).map(function(entry){
-    var label=entry[0], v=entry[1];
-    var src = DIM_SOURCES[_l2k[label]||''] || '';
-    var tip = src ? ' title="'+src+'"' : '';
-    var badge = src ? '<span class="dim-src-tip" title="'+src+'">ⓘ</span>' : '';
-    return '<div class="nb-bar-row"'+tip+'>'
-      +'<div class="nb-bar-label">'+label+badge+'</div>'
-      +'<div class="nb-bar-track"><div class="nb-bar-fill" style="width:'+(v*10)+'%;background:'+col+'"></div></div>'
-      +'<div class="nb-bar-val">'+v+'</div>'
-      +'</div>';
-  }).join('');
+  const dimBars = Object.entries(nb.dims).map(([label,v])=>`
+    <div class="nb-bar-row">
+      <div class="nb-bar-label">${label}</div>
+      <div class="nb-bar-track"><div class="nb-bar-fill" style="width:${v*10}%;background:${col}"></div></div>
+      <div class="nb-bar-val">${v}</div>
+    </div>`).join('');
   const charBlock = nb.charLabel
     ? `<div style="font-size:11px;color:#4ECDC4;background:rgba(78,205,196,0.1);border-radius:7px;padding:6px 9px;margin-bottom:10px;line-height:1.5">${nb.charLabel}</div>`
     : '';
@@ -3171,18 +2910,7 @@ function openNbInfo(nb, marker, cityData) {
     <div style="font-size:10px;color:var(--muted);margin-bottom:8px">Scored for ${pLabel[persona]||'solo'} traveller</div>
     ${charBlock}
     <div class="nb-bars">${dimBars}</div>
-    <div style="font-size:10px;color:rgba(255,255,255,0.25);margin-bottom:6px;line-height:1.4">Data: Google Places + OpenStreetMap + Wikivoyage</div>
-    <details style="margin-bottom:9px">
-      <summary style="font-size:10px;color:rgba(255,255,255,0.32);cursor:pointer;list-style:none;user-select:none">▸ How is this score calculated?</summary>
-      <div style="margin-top:6px;font-size:10px;line-height:1.65;color:rgba(255,255,255,0.42);padding:7px 9px;background:rgba(255,255,255,0.03);border-radius:7px">
-        8 dimensions scored using live data from Google Places &amp; OpenStreetMap, weighted by your persona (Solo / Family / Couple / Remote). Each dimension is rated 1–10. Hover the ⓘ on any bar to see its exact data source. The final score (out of 100) reflects how well this area fits <em>your</em> travel style — not an absolute quality ranking.
-      </div>
-    </details>
-    <div class="nb-fb-row">
-      <span style="font-size:10px;color:rgba(255,255,255,0.3)">Is this accurate?</span>
-      <button class="nb-fb-btn" onclick="submitFb(this,'${nb.n}','${cityData.name}',1)">👍 Yes</button>
-      <button class="nb-fb-btn" onclick="submitFb(this,'${nb.n}','${cityData.name}',0)">👎 No</button>
-    </div>
+    <div style="font-size:10px;color:rgba(255,255,255,0.25);margin-bottom:8px;line-height:1.4">Data: Google Places + OpenStreetMap + Wikivoyage</div>
     <button class="nb-explore-btn" onclick="exploreNeighbourhood('${nb.n.replace(/'/g,"\\'")}','${cityData.name}')">Explore this area in Roamly →</button>
   </div>`;
   apInfoWin = new google.maps.InfoWindow({content:html,disableAutoPan:false});
@@ -3201,18 +2929,19 @@ function clearApMarkers() {
   if (apInfoWin) { apInfoWin.close(); apInfoWin=null; }
 }
 
-// ── SCORE CACHE — persisted to localStorage for consistency across sessions ──
+// ── SCORE CACHE — computed scores per city+persona+weights, derived from rawDataCache ──
+// This is now a lightweight layer: raw API data lives in rawDataCache (24h TTL).
+// Score cache stores computed results and is invalidated when persona/weights change.
 let scoreCache = {};
+const CACHE_VERSION = 'v18';
 (function loadCache() {
   try {
-    // Cache versioned — bump version when scoring algorithm changes
-    const CACHE_VERSION = 'v18';
     const saved = localStorage.getItem('roamly_score_cache_' + CACHE_VERSION);
     if (saved) scoreCache = JSON.parse(saved);
   } catch(e) { scoreCache = {}; }
 })();
 function saveCache() {
-  try { localStorage.setItem('roamly_score_cache_v18', JSON.stringify(scoreCache)); } catch(e) {}
+  try { localStorage.setItem('roamly_score_cache_' + CACHE_VERSION, JSON.stringify(scoreCache)); } catch(e) {}
 }
 
 async function runAreaPicker() {
@@ -3236,6 +2965,28 @@ async function runAreaPicker() {
     ? Object.values(customWeights).map(v=>v.toFixed(3)).join(',')
     : persona;
   const cacheKey = cityKey + '__' + wFingerprint;
+
+  // Check if raw data is already cached for this city's neighbourhoods
+  const allRawCached = cityData.nb.every(nb => {
+    const rk = `${nb.lat.toFixed(4)}_${nb.lng.toFixed(4)}`;
+    return rawDataCache[rk] && !rawDataCache[rk]._partial;
+  });
+
+  // If raw data exists, we can re-score instantly for any persona/weight combo
+  if (allRawCached && !scoreCache[cacheKey]) {
+    const personaKey = document.querySelector('.persona-btn.active')?.dataset.p || 'solo';
+    const w = getActiveWeights();
+    const scoredRaw = cityData.nb.map(nb => {
+      const rk = `${nb.lat.toFixed(4)}_${nb.lng.toFixed(4)}`;
+      const rd = rawDataCache[rk];
+      const result = computeScore({...nb, _cityKey: cityKey}, rd, personaKey, w);
+      return { ...nb, ...result };
+    });
+    const scored = normalizeAndRank(scoredRaw);
+    scoreCache[cacheKey] = scored;
+    saveCache();
+  }
+
   if (scoreCache[cacheKey]) {
     btn.disabled=false; btn.textContent='Score areas →';
     document.getElementById('load-bar').classList.remove('on');
@@ -3265,44 +3016,56 @@ async function runAreaPicker() {
   openDrawer();
 
   try {
-    // Score sequentially with 300ms delay between calls — prevents OSM Overpass rate limiting
-    // (7 simultaneous requests caused throttling → some neighbourhoods got no OSM data → null scores)
-    const scored = [];
-    // Capture persona + weights ONCE — prevents mid-run UI changes from
-  // affecting scoring consistency across neighbourhoods in the same run
-  const runPersona = persona;
-  const runWeights = getActiveWeights();
+    // Fetch raw data sequentially with 300ms stagger (OSM rate limiting)
+    const personaKey = document.querySelector('.persona-btn.active')?.dataset.p || 'solo';
+    const w = getActiveWeights();
+    const scoredRaw = [];
 
-  for (let i = 0; i < cityData.nb.length; i++) {
-      if (i > 0) await new Promise(r => setTimeout(r, 100)); // stagger OSM calls
-      // Update progress indicator
+    for (let i = 0; i < cityData.nb.length; i++) {
+      if (i > 0) await new Promise(r => setTimeout(r, 300));
       const prog = document.getElementById('score-progress');
       if (prog) prog.textContent = `Scoring ${i+1} of ${cityData.nb.length} — ${cityData.nb[i].n}...`;
+
       try {
-        const result = await scoreNeighbourhood({...cityData.nb[i], _cityKey:cityKey}, runPersona, runWeights);
-        // Validate score — reject if not a valid finite number
-        if (result && Number.isFinite(result.score)) {
-          scored.push(result);
+        const nbData = {...cityData.nb[i], _cityKey: cityKey};
+        const rawData = await fetchNeighbourhoodRawData(nbData);
+        const result = computeScore(nbData, rawData, personaKey, w);
+
+        if (Number.isFinite(result.rawScore)) {
+          scoredRaw.push({ ...nbData, ...result });
         } else {
-          // Re-score once more before giving up
-          const retry = await scoreNeighbourhood({...cityData.nb[i], _cityKey:cityKey}, runPersona, runWeights);
-          scored.push({
-            ...cityData.nb[i],
-            score: (retry && Number.isFinite(retry.score)) ? retry.score : 50,
-            charLabel: retry?.charLabel || null,
-            dims: retry?.dims || {}
+          // Retry once
+          await new Promise(r => setTimeout(r, 500));
+          // Clear cached raw for this neighbourhood to force re-fetch
+          const rk = `${nbData.lat.toFixed(4)}_${nbData.lng.toFixed(4)}`;
+          delete rawDataCache[rk];
+          const rawData2 = await fetchNeighbourhoodRawData(nbData);
+          const result2 = computeScore(nbData, rawData2, personaKey, w);
+          scoredRaw.push({
+            ...nbData,
+            rawScore: Number.isFinite(result2.rawScore) ? result2.rawScore : 50,
+            charScore: result2.charScore || 5,
+            charLabel: result2.charLabel || null,
+            dims: result2.dims || {},
           });
         }
       } catch(nbErr) {
-        // Individual neighbourhood failed — use neutral score rather than breaking everything
         console.warn('Scoring failed for', cityData.nb[i].n, nbErr.message);
-        scored.push({...cityData.nb[i], score: 50, charLabel: null, dims: {}});
+        scoredRaw.push({
+          ...cityData.nb[i], _cityKey: cityKey,
+          rawScore: 50, charScore: 5, charLabel: null, dims: {}
+        });
       }
     }
-    scored.sort((a,b)=>b.score-a.score);
-    // Cache the result — scores won't change on repeat searches
+
+    // City-relative normalization + rank stability
+    const scored = normalizeAndRank(scoredRaw);
+
+    // Cache the normalized result
     scoreCache[cacheKey] = scored;
     saveCache();
+    saveRawCache();
+
     const bounds = new google.maps.LatLngBounds();
     for (let i=0;i<scored.length;i++) {
       const nb=scored[i];
@@ -3925,8 +3688,14 @@ document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('.persona-btn').forEach(x => x.classList.remove('active'));
       b.classList.add('active');
       persona = b.dataset.p;
+      // Clear computed score cache — raw API data is preserved so re-score is instant
+      Object.keys(scoreCache).forEach(k => delete scoreCache[k]);
       initCats();
       document.getElementById('family-badge').classList.toggle('on', persona==='family');
+      // If AreaPicker is active with results, auto-rescore for new persona
+      if (apMode && apMarkers.length > 0) {
+        runAreaPicker();
+      }
     });
   });
 
@@ -4000,13 +3769,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function hideSplash() {
     splash.classList.add('hiding');
-    setTimeout(() => { splash.classList.add('gone'); setTimeout(openWelcome, 100); }, 480);
+    setTimeout(() => splash.classList.add('gone'), 480);
     localStorage.setItem('roamly_seen', '1');
   }
 
   if (seen) {
     splash.classList.add('gone');
-    setTimeout(openWelcome, 300);
   }
 
   document.getElementById('skip-btn').addEventListener('click', hideSplash);
@@ -4054,41 +3822,6 @@ document.addEventListener('DOMContentLoaded', () => {
 (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await(a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})
 ({key:"AIzaSyA9410R5AlmHiaNM9mDOzTt15y6_N_tryY",v:"beta"});
 window.addEventListener('load', initMap);
-
-// ── FEEDBACK ─────────────────────────────────────────────────────
-window.submitFb = function(btn, nb, city, positive) {
-  try {
-    var arr = JSON.parse(localStorage.getItem('roamly_fb_v1')||'[]');
-    var p = document.querySelector('.persona-btn.active');
-    arr.push({nb:nb,city:city,ok:positive,persona:p?p.dataset.p:'solo',ts:Date.now()});
-    localStorage.setItem('roamly_fb_v1', JSON.stringify(arr.slice(-200)));
-  } catch(e){}
-  btn.parentElement.innerHTML = '<span style="font-size:10px;color:#4ECDC4">✓ Thanks!</span>';
-};
-
-
-// ── WELCOME POPUP ────────────────────────────────────────────────
-function openWelcome() {
-  document.getElementById('welcome-overlay').classList.add('open');
-  document.getElementById('welcome-popup').classList.add('open');
-}
-window.closeWelcome = function() {
-  document.getElementById('welcome-overlay').classList.remove('open');
-  document.getElementById('welcome-popup').classList.remove('open');
-};
-// ── HOW ROAMLY WORKS PANEL ────────────────────────────────────────
-window.openHowPanel = function() {
-  document.getElementById('how-overlay').classList.add('open');
-  document.getElementById('how-panel').classList.add('open');
-  document.body.style.overflow = 'hidden';
-};
-window.closeHowPanel = function() {
-  document.getElementById('how-overlay').classList.remove('open');
-  document.getElementById('how-panel').classList.remove('open');
-  document.body.style.overflow = '';
-};
-
-// ── ROAMLY CHAT ──────────────────────────────────────────────────────
 </script>
 <div id="city-dropdown"></div>
 </body>
