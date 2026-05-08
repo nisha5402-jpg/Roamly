@@ -1549,7 +1549,7 @@ function resetCity() {
   var rh2 = document.getElementById("results-header");
   if(rh2) rh2.style.display="none";
   clearMapMarkers();
-  if (document.getElementById('map-empty')) document.getElementById('map-empty').style.display='flex';
+  currentRanked = [];
   if (document.getElementById('map-key')) document.getElementById('map-key').style.display='none';
   document.getElementById("p-strip").style.display = "none";
   document.getElementById("budget-bar").style.display = "none";
@@ -1606,6 +1606,7 @@ function renderResults(){
     return Object.assign({},n,{score:r.score,penalty:r.penalty});
   });
   hoods.sort(function(a,b){return b.score-a.score;});
+  currentRanked = hoods;
 
   document.getElementById("now-showing").textContent= city.name+" · "+persona.name+(S.budget?" · Budget":"");
   var rh = document.getElementById("results-header");
@@ -1808,6 +1809,7 @@ renderPersonas();
 var gmap = null;
 var mapMarkers = [];
 var mapOverlays = [];
+var currentRanked = [];
 var CITY_CENTERS = {
   lisbon:{lat:38.7194,lng:-9.1433,zoom:12},
   porto:{lat:41.1493,lng:-8.6193,zoom:13},
