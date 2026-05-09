@@ -323,10 +323,103 @@ body::before{
   .map-key{font-size:8px;gap:6px;padding:4px 10px}
   .key-dot{width:7px;height:7px}
 }
+
+/* ── NEIGHBOURHOOD DETAIL PANEL ── */
+#detail-overlay{position:fixed;inset:0;z-index:450;pointer-events:none;
+  display:flex;align-items:flex-end;justify-content:flex-end}
+#detail-panel{width:420px;max-width:100vw;height:100%;max-height:100vh;
+  background:var(--cream);border-left:1px solid var(--ink10);
+  box-shadow:-8px 0 40px rgba(22,32,48,0.12);
+  display:flex;flex-direction:column;
+  transform:translateX(100%);transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);
+  pointer-events:all;overflow:hidden}
+#detail-panel.open{transform:translateX(0)}
+.dp-header{background:var(--ink);padding:1.1rem 1.25rem 1rem;flex-shrink:0;position:relative}
+.dp-close{position:absolute;top:12px;right:12px;background:rgba(255,255,255,0.15);
+  border:none;color:white;width:28px;height:28px;border-radius:50%;
+  font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:background 0.15s}
+.dp-close:hover{background:rgba(255,255,255,0.3)}
+.dp-eyebrow{font-family:var(--f-mono);font-size:0.6rem;letter-spacing:0.08em;
+  text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:4px}
+.dp-name{font-family:var(--f-serif);font-style:italic;font-size:1.6rem;font-weight:700;
+  color:white;line-height:1;margin-bottom:6px}
+.dp-tags{font-family:var(--f-mono);font-size:0.6rem;letter-spacing:0.06em;
+  color:rgba(255,255,255,0.45);text-transform:uppercase}
+.dp-score-pill{display:inline-flex;align-items:center;gap:5px;
+  background:var(--brass);color:var(--ink);border-radius:99px;
+  padding:3px 10px;font-family:var(--f-display);font-size:0.85rem;
+  font-weight:800;margin-top:8px}
+.dp-body{flex:1;overflow-y:auto;padding:1.25rem;scrollbar-width:thin;
+  scrollbar-color:var(--ink10) transparent}
+.dp-section-label{font-family:var(--f-mono);font-size:0.6rem;letter-spacing:0.1em;
+  text-transform:uppercase;color:var(--ink50);margin-bottom:8px;
+  display:flex;align-items:center;gap:8px}
+.dp-section-label::after{content:'';flex:1;height:1px;background:var(--ink10)}
+.dp-best-for{font-size:0.88rem;line-height:1.65;color:var(--ink);
+  margin-bottom:1.25rem;padding:12px 14px;background:white;
+  border-radius:var(--r-lg);border-left:3px solid var(--brass)}
+.dp-highlights{display:flex;flex-direction:column;gap:10px}
+.dp-highlight{display:flex;gap:12px;align-items:flex-start;
+  padding:10px 12px;background:white;border-radius:var(--r-lg);
+  border:1px solid var(--ink10);transition:border-color 0.15s;cursor:default}
+.dp-highlight:hover{border-color:var(--blue)}
+.dp-hi-icon{font-size:1.25rem;flex-shrink:0;margin-top:1px}
+.dp-hi-text{}
+.dp-hi-name{font-family:var(--f-display);font-size:0.95rem;font-weight:800;
+  text-transform:uppercase;letter-spacing:0.02em;color:var(--ink);margin-bottom:2px}
+.dp-hi-note{font-size:0.8rem;color:var(--ink50);line-height:1.45}
+.dp-loading{display:flex;align-items:center;justify-content:center;
+  height:200px;flex-direction:column;gap:12px;color:var(--ink50)}
+.dp-spinner{width:28px;height:28px;border:3px solid var(--ink10);
+  border-top-color:var(--blue);border-radius:50%;
+  animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.dp-no-data{padding:1.5rem;text-align:center;color:var(--ink50);font-size:0.84rem;line-height:1.6}
+
+/* Mobile — slide up from bottom */
+@media(max-width:600px){
+  #detail-overlay{align-items:flex-end;justify-content:stretch}
+  #detail-panel{width:100%;max-height:85vh;height:auto;border-left:none;
+    border-radius:16px 16px 0 0;border-top:1px solid var(--ink10);
+    transform:translateY(100%)}
+  #detail-panel.open{transform:translateY(0)}
+}
+/* Click outside to close */
+.detail-backdrop{position:fixed;inset:0;z-index:449;display:none;cursor:pointer}
+.detail-backdrop.on{display:block}
+
 /* ── LEFT PANEL WITH CARDS ── */
 #panel{width:100%;background:var(--cream);position:relative}
 #results-panel{width:100%;padding:0 0 40px}
 
+
+/* ── CLICK HINTS ── */
+/* Name row — name + explore badge inline */
+.fc-name-row{display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap}
+.fc-explore-badge{display:inline-flex;align-items:center;gap:3px;
+  background:var(--brass);color:var(--ink);border-radius:99px;
+  font-family:var(--f-mono);font-size:0.52rem;letter-spacing:0.07em;
+  text-transform:uppercase;padding:3px 8px;font-weight:700;white-space:nowrap;
+  cursor:pointer;flex-shrink:0;transition:all 0.15s;animation:badge-pulse 2.5s 1s 2}
+.fc-explore-badge:hover{background:white}
+@keyframes badge-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+
+.sc-name-row{display:flex;align-items:center;gap:6px;margin-bottom:4px;flex-wrap:wrap}
+.sc-explore-badge{display:inline-flex;align-items:center;gap:3px;
+  background:var(--blue);color:white;border-radius:99px;
+  font-family:var(--f-mono);font-size:0.5rem;letter-spacing:0.07em;
+  text-transform:uppercase;padding:2px 7px;font-weight:700;white-space:nowrap;
+  cursor:pointer;flex-shrink:0;transition:all 0.15s;animation:badge-pulse 2.5s 1.5s 2}
+.sc-explore-badge:hover{background:var(--ink)}
+
+/* First-load toast hint */
+.insights-toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--ink);color:white;padding:10px 18px;border-radius:99px;
+  font-family:var(--f-body);font-size:0.82rem;z-index:300;white-space:nowrap;
+  box-shadow:0 4px 20px rgba(0,0,0,0.25);pointer-events:none;
+  opacity:0;transition:opacity 0.4s, transform 0.4s}
+.insights-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 /* ── CONFIDENCE TIER BADGES ── */
 .tier-verified{display:inline-flex;align-items:center;gap:3px;font-family:var(--f-mono);
   font-size:0.58rem;letter-spacing:0.06em;text-transform:uppercase;padding:2px 7px;
@@ -1661,11 +1754,14 @@ function renderResults(){
 
   var tierNote=city.tier==='verified'?'OSM + Google Places + validated':city.tier==='data'?'OSM + Google Places data':'Expert editorial research';
   var featureHtml=
-    '<div class="feature-card anim" data-hood="'+top.id+'">'+
+    '<div class="feature-card anim" data-hood="'+top.id+'" data-detail="1">'+
       '<div class="fc-eyebrow">Best match for '+persona.name+'s'+(S.budget?' · Budget':'')+' in '+city.name+' &nbsp;·&nbsp; '+tierNote+'</div>'+
       '<div class="fc-body">'+
         '<div class="fc-left">'+
-          '<div class="fc-name">'+top.name+'</div>'+
+          '<div class="fc-name-row">'+
+            '<div class="fc-name">'+top.name+'</div>'+
+            '<span class="fc-explore-badge">✦ Explore</span>'+
+          '</div>'+
           '<div class="fc-tags">'+top.tags.split(" · ").map(function(t){return '<span class="fc-tag">'+t+'</span><span class="fc-tag" style="opacity:0.3">·</span>';}).join("")+'</div>'+
           '<div class="fc-desc">'+top.desc+'</div>'+
         '</div>'+
@@ -1718,10 +1814,13 @@ function renderResults(){
       '</div>';
     }).join("");
     cardsHtml+=
-      '<div class="s-card anim anim-'+(i+1)+'" data-hood="'+n.id+'">'+
+      '<div class="s-card anim anim-'+(i+1)+'" data-hood="'+n.id+'" data-detail="1">'+
         '<div class="sc-rank">0'+(i+2)+'</div>'+
         '<div class="sc-eyebrow">'+n.tags.split(" · ").map(function(t){return '<span>'+t+'</span>';}).join('<span class="sc-dot"></span>')+'</div>'+
-        '<div class="sc-name">'+n.name+'</div>'+
+        '<div class="sc-name-row">'+
+          '<div class="sc-name">'+n.name+'</div>'+
+          '<span class="sc-explore-badge">✦ Explore</span>'+
+        '</div>'+
         '<div class="sc-desc">'+n.desc+'</div>'+
         '<div class="sc-bars">'+barsHtml+'</div>'+
         (insText?'<div class="sc-insight"><span>✦</span><span>'+insText+'</span></div>':'')+
@@ -1740,6 +1839,8 @@ function renderResults(){
   requestAnimationFrame(function(){setTimeout(function(){
     document.querySelectorAll(".sb-fill").forEach(function(el){if(el.dataset.w)el.style.width=el.dataset.w+"%";});
   },80);});
+  // Show one-time toast hint on first results load
+  showInsightsToast();
   // Map markers plotted when overlay opens, not here (map is hidden)
 }
 
@@ -1813,6 +1914,8 @@ var d=new Date();
 document.getElementById("hero-date").textContent=String(d.getMonth()+1).padStart(2,"0")+" / "+String(d.getDate()).padStart(2,"0")+" / "+d.getFullYear();
 renderCities();
 renderPersonas();
+
+var INSIGHTS_SAMPLE = {"copenhagen/Indre By/solo": {"best_for": "Indre By is the ideal base for a solo traveller who wants to walk everywhere and never run out of things to discover. Strøget gives you shops by day, but the real Copenhagen is in the side streets — Latin Quarter alleys, canal bars, and Nyhavn in the evening when the tourists thin out.", "highlights": [{"icon": "🍽", "name": "Schønnemann", "note": "Copenhagen's oldest lunch restaurant — smørrebrød since 1877."}, {"icon": "🏛", "name": "Rundetaarn (Round Tower)", "note": "17th-century observatory with the best views of the old city."}, {"icon": "☕", "name": "Hvid Vindue", "note": "Tiny wine bar tucked into Nyhavn — locals only by midnight."}, {"icon": "🛍", "name": "Torvehallerne", "note": "Covered food market near Nørreport — best coffee and lunch in the city."}, {"icon": "💡", "name": "Botanical Garden", "note": "Free entry, greenhouse from 1874 — a hidden calm in the centre."}]}, "copenhagen/Indre By/family": {"best_for": "Indre By works brilliantly for families because everything is walkable and flat. Tivoli is right at the edge and takes a full day, while the National Museum has a dedicated children's section that genuinely engages young kids.", "highlights": [{"icon": "🎡", "name": "Tivoli Gardens", "note": "World's second-oldest amusement park — magical, safe, full day."}, {"icon": "🏛", "name": "National Museum of Denmark", "note": "Children's wing with Viking artefacts kids can actually touch."}, {"icon": "☕", "name": "Café Norden", "note": "Big, family-friendly corner café on Strøget — high chairs available."}, {"icon": "🛍", "name": "Strøget", "note": "Fully pedestrianised shopping street — pushchair and pram friendly."}, {"icon": "💡", "name": "Nyhavn boat tours", "note": "45-minute canal tour departs hourly — perfect for young children."}]}, "copenhagen/Indre By/foodie": {"best_for": "Indre By concentrates Copenhagen's finest dining into one walkable area. From Noma alumni restaurants to the legendary smørrebrød lunch tradition, this is where Danish food culture is at its most intense and accessible.", "highlights": [{"icon": "🍽", "name": "Marchal at Hotel d'Angleterre", "note": "New Nordic tasting menu in the city's grandest dining room."}, {"icon": "🏛", "name": "Torvehallerne food market", "note": "Two glass halls, 60 stalls — the definitive Copenhagen food experience."}, {"icon": "☕", "name": "The Coffee Collective (Torvehallerne)", "note": "Denmark's best specialty roaster — try the filter brew."}, {"icon": "🛍", "name": "Schønnemann", "note": "Open-faced smørrebrød since 1877 — book the herring platter."}, {"icon": "💡", "name": "Larsbjørnsstræde", "note": "Short street with four excellent independent restaurants side by side."}]}, "copenhagen/Indre By/culture": {"best_for": "Indre By is unmatched for cultural density in Copenhagen. The National Museum, Thorvaldsens Museum, the Round Tower observatory, and Christiansborg Palace are all within a 15-minute walk, making it the only neighbourhood where you can do a full cultural day without using transport.", "highlights": [{"icon": "🏛", "name": "Thorvaldsens Museum", "note": "Neoclassical masterpiece housing Denmark's greatest sculptor's work."}, {"icon": "🏛", "name": "Christiansborg Palace", "note": "Danish parliament — free tower climb gives 360° city views."}, {"icon": "☕", "name": "Café Victor", "note": "Classic Copenhagen café — order the open sandwiches and stay long."}, {"icon": "🛍", "name": "Royal Copenhagen flagship store", "note": "The original porcelain shop — the blue fluted pattern since 1775."}, {"icon": "💡", "name": "Gammel Strand", "note": "17th-century fish market street — best preserved historic streetscape."}]}, "copenhagen/Frederiksberg/solo": {"best_for": "Frederiksberg is where Copenhagen's creative professionals actually live — calm, bourgeois-bohemian, with excellent coffee and no tourist pressure. For a solo traveller wanting to feel local rather than visiting, this is the neighbourhood that delivers it.", "highlights": [{"icon": "🍽", "name": "Bror", "note": "Neighbourhood restaurant run by two Noma alumni — genuinely brilliant."}, {"icon": "🏛", "name": "Frederiksberg Palace", "note": "Royal summer palace open to visitors — gardens are always free."}, {"icon": "☕", "name": "The Bread Station (Bageriet)", "note": "Best sourdough bakery in Frederiksberg — queue worth it."}, {"icon": "🛍", "name": "Frederiksberg Allé boutiques", "note": "Independent fashion and home shops along the tree-lined boulevard."}, {"icon": "💡", "name": "Cisternerne underground museum", "note": "Former water cistern turned atmospheric exhibition space."}]}, "copenhagen/Frederiksberg/family": {"best_for": "Frederiksberg is Copenhagen's top family neighbourhood by a clear margin. Frederiksberg Gardens is a 32-hectare royal park with playgrounds and ducks, and the Copenhagen Zoo borders it directly — you can spend a full day without leaving the area.", "highlights": [{"icon": "🎡", "name": "Copenhagen Zoo", "note": "One of Europe's oldest zoos — elephant house by Norman Foster."}, {"icon": "🏛", "name": "Frederiksberg Gardens", "note": "32 hectares of royal park — canal boats, playgrounds, ducks."}, {"icon": "☕", "name": "Granola", "note": "Retro café on Værnedamsvej — pancakes, family-friendly always."}, {"icon": "🛍", "name": "Værnedamsvej", "note": "Copenhagen's most charming food street — cheese, wine, deli."}, {"icon": "💡", "name": "Søndermarken park", "note": "Adjacent to Frederiksberg Have — less crowded, bigger playgrounds."}]}, "copenhagen/Frederiksberg/foodie": {"best_for": "Frederiksberg hides some of Copenhagen's most serious cooking behind quiet residential streets. Værnedamsvej — nicknamed the 'Little Paris street' — alone has more quality food producers per metre than anywhere in Denmark.", "highlights": [{"icon": "🍽", "name": "Mes", "note": "Outstanding modern Danish restaurant — bookings essential, weeks ahead."}, {"icon": "🏛", "name": "Værnedamsvej", "note": "Street of food artisans — fromagerie, butcher, wine shop in 100 metres."}, {"icon": "☕", "name": "Lidkoeb", "note": "Three-storey whisky bar in an old pharmacy — remarkable back bar."}, {"icon": "🛍", "name": "Thiemers Magasin", "note": "Family-run deli since 1912 — smørrebrød ingredients to take home."}, {"icon": "💡", "name": "Søren K restaurant", "note": "Black Diamond library restaurant — stunning harbour views, underrated."}]}, "copenhagen/Frederiksberg/culture": {"best_for": "Frederiksberg has a quieter, more residential cultural identity than the city centre but rewards those who look. The Storm P Museum and Cisternerne are two of Copenhagen's most distinctive cultural experiences, both entirely off the tourist trail.", "highlights": [{"icon": "🏛", "name": "Storm P. Museum", "note": "Dedicated to Denmark's most beloved cartoonist — small and perfect."}, {"icon": "🏛", "name": "Cisternerne", "note": "Victorian water cistern now showing contemporary art installations."}, {"icon": "☕", "name": "Café Frederiksberg Have", "note": "Café inside the palace gardens — open in summer, very peaceful."}, {"icon": "🛍", "name": "Frederiksberg Antik", "note": "Cluster of antique dealers near Frederiksberg station."}, {"icon": "💡", "name": "Frederiksberg Palace Chapel", "note": "Active royal chapel — free concerts on selected Sundays."}]}, "copenhagen/Vesterbro/solo": {"best_for": "Vesterbro is Copenhagen's most exciting neighbourhood for solo travellers — the Meatpacking District alone has more bars, restaurants and clubs than most European capitals' entire nightlife districts. During the day it's laid-back and creative; after midnight it's the best place in Scandinavia.", "highlights": [{"icon": "🍽", "name": "Kødbyens Mad & Marked", "note": "Street food market inside the Meatpacking District — weekends only."}, {"icon": "🏛", "name": "Kødbyen (Meatpacking District)", "note": "White-tiled former abattoir now full of galleries, bars and clubs."}, {"icon": "☕", "name": "Mikkeller Bar", "note": "Legendary craft beer bar — 20 rotating taps from the world's best brewery."}, {"icon": "🛍", "name": "Istedgade", "note": "Vesterbro's main street — vintage shops, independent bookshops, cafes."}, {"icon": "💡", "name": "Jolene", "note": "Vinyl bar with a proper sound system — best dancing in Copenhagen."}]}, "copenhagen/Vesterbro/family": {"best_for": "Vesterbro works well for families visiting Copenhagen — it's calmer by day, the Carlsberg City district has playgrounds and the new Carlsberg Glyptotek museum extension is genuinely great for older children. Just book accommodation away from Istedgade for quieter nights.", "highlights": [{"icon": "🍽", "name": "Warpigs", "note": "Texas BBQ and craft beer in a huge Meatpacking hall — kids love it."}, {"icon": "🏛", "name": "Ny Carlsberg Glyptotek", "note": "Antiquities and Impressionist art — free on Sundays, free café."}, {"icon": "☕", "name": "Democratic Coffee", "note": "Spacious, kid-friendly café with good pastries and ample space."}, {"icon": "🛍", "name": "Carlsberg Byens Torv", "note": "New neighbourhood square in the Carlsberg district — playgrounds, fountains."}, {"icon": "💡", "name": "Carlsberg Visitor Centre", "note": "History of Danish brewing with hands-on exhibits for children."}]}, "copenhagen/Vesterbro/foodie": {"best_for": "Vesterbro is the eating and drinking epicentre of Copenhagen. The Meatpacking District transformed from working abattoir to culinary destination in one decade — it now has more Michelin-recommended restaurants per block than anywhere in Scandinavia.", "highlights": [{"icon": "🍽", "name": "Høst", "note": "New Nordic interior and cuisine — the most instagrammed restaurant in Copenhagen."}, {"icon": "🏛", "name": "Kødbyen Fiskebar", "note": "Exceptional seafood in a raw industrial setting — book weeks ahead."}, {"icon": "☕", "name": "Mikkeller Bar", "note": "20 craft taps, brilliant food menu — the original Vesterbro institution."}, {"icon": "🛍", "name": "Torvehallerne (10 min walk)", "note": "Best food market — combine with Vesterbro for the full food day."}, {"icon": "💡", "name": "Gorilla", "note": "Natural wine bar with small plates — industry professionals' favourite."}]}, "copenhagen/Vesterbro/culture": {"best_for": "Vesterbro's cultural identity is rooted in its transformation from red-light district to creative powerhouse. The Ny Carlsberg Glyptotek is one of Europe's finest small museums, and the Meatpacking District architecture itself is a cultural landmark.", "highlights": [{"icon": "🏛", "name": "Ny Carlsberg Glyptotek", "note": "Rodin sculptures, Degas bronzes, Egyptian mummies — extraordinary collection."}, {"icon": "🏛", "name": "Copenhagen Museum", "note": "City history museum — excellent on Vesterbro's own transformation."}, {"icon": "☕", "name": "Café Glyptoteket", "note": "Museum café under a glass dome with a winter garden — stunning."}, {"icon": "🛍", "name": "Dansk Design Center", "note": "Danish design history and current exhibitions — just outside Vesterbro."}, {"icon": "💡", "name": "Copenhagen Contemporary", "note": "Major contemporary art venue in a converted industrial building."}]}, "copenhagen/Osterbro/solo": {"best_for": "Østerbro is Copenhagen at its most liveable — affluent, calm, with excellent cafes and restaurants that serve locals rather than tourists. Fælledparken is the city's Central Park and worth an afternoon; the neighbourhood around Trianglen Square is where Copenhagen's young professionals spend their weekends.", "highlights": [{"icon": "🍽", "name": "Llama", "note": "Peruvian-Nordic fusion on Østerbrogade — outstanding ceviches and cocktails."}, {"icon": "🏛", "name": "Fælledparken", "note": "58-hectare park — free concerts, Sunday football, the city's breathing room."}, {"icon": "☕", "name": "Rist Kaffebar", "note": "Specialty coffee roaster with the best espresso in Østerbro."}, {"icon": "🛍", "name": "Trianglen", "note": "The neighbourhood's main square — Saturday market, independent shops."}, {"icon": "💡", "name": "Kastellet fortress", "note": "17th-century star fortress still in use — moat walk is free and beautiful."}]}, "copenhagen/Osterbro/family": {"best_for": "Østerbro is the highest-scoring family neighbourhood in Copenhagen for good reason. It combines the lowest crime rate, Fælledparken's 58 hectares of open space, excellent schools and playgrounds, and a calm residential atmosphere that makes travelling with children genuinely easy.", "highlights": [{"icon": "🎡", "name": "Fælledparken playgrounds", "note": "Multiple themed playgrounds inside the park — free, enormous, brilliant."}, {"icon": "🏛", "name": "The Little Mermaid (nearby)", "note": "10-minute walk to Copenhagen's most famous landmark — great photo stop."}, {"icon": "☕", "name": "Granola Østerbro", "note": "Family-friendly brunch spot — pancakes and big tables, very relaxed."}, {"icon": "🛍", "name": "Østerbrogade", "note": "Long, calm shopping street — all daily needs plus good children's shops."}, {"icon": "💡", "name": "Experimentarium", "note": "Science museum for children 5–15 — hands-on, exhausting, brilliant."}]}, "copenhagen/Osterbro/foodie": {"best_for": "Østerbro punches above its weight for food lovers — it's where Copenhagen's chefs go to eat on their days off. The neighbourhood has avoided touristification and its restaurants are genuinely local, price-conscious and high quality.", "highlights": [{"icon": "🍽", "name": "Sticks'n'Sushi Østerbro", "note": "The original location of Copenhagen's best sushi chain — always excellent."}, {"icon": "🏛", "name": "Torvehallerne (15 min walk)", "note": "Best food market in Copenhagen — combine with an Østerbro dinner."}, {"icon": "☕", "name": "The Coffee Collective Godthåbsvej", "note": "The best of the Copenhagen specialty coffee wave."}, {"icon": "🛍", "name": "Præstøgade food shops", "note": "Cluster of local butcher, baker and fishmonger — authentic neighbourhood shopping."}, {"icon": "💡", "name": "Amass (20 min walk)", "note": "Matt Orlando's Michelin-starred restaurant — book months ahead."}]}, "copenhagen/Osterbro/culture": {"best_for": "Østerbro's cultural highlights are undervisited precisely because they're not in the tourist centre. Kastellet fortress, the Hirschsprung art collection, and the National Stadium create a cultural triangle that takes a full, rewarding day.", "highlights": [{"icon": "🏛", "name": "Hirschsprung Collection", "note": "Best Danish Golden Age paintings in the city — small, perfect, underrated."}, {"icon": "🏛", "name": "Kastellet fortress", "note": "1664 star fortress — one of Europe's best preserved, still operational."}, {"icon": "☕", "name": "Café Retro", "note": "1950s-style café inside a heritage building — excellent coffee and cake."}, {"icon": "🛍", "name": "Østerbro Antikvariat", "note": "Independent bookshop with strong Danish art history section."}, {"icon": "💡", "name": "Church of Our Lady (Marmorkirken)", "note": "Marble church dome open on weekends — panoramic city views."}]}, "copenhagen/Amager/solo": {"best_for": "Amager — specifically Islands Brygge and the surrounding area — is Copenhagen's best kept secret for solo travellers on a budget. Harbour baths, a thriving bar scene on the waterfront, and 40% lower accommodation costs than the centre make it the smart base for an extended stay.", "highlights": [{"icon": "🍽", "name": "Amass", "note": "Matt Orlando's Michelin-starred restaurant in a converted warehouse — exceptional."}, {"icon": "🏛", "name": "Islands Brygge Harbour Baths", "note": "Public sea swimming in the city centre — unique in Northern Europe."}, {"icon": "☕", "name": "Bryggeriet Apollo", "note": "Copenhagen's oldest brewpub right on the water — great summer terrace."}, {"icon": "🛍", "name": "Islands Brygge weekend market", "note": "Saturday organic food market with local producers — relaxed and local."}, {"icon": "💡", "name": "Amager Strandpark", "note": "4km beach 15 minutes by metro — empty on weekday mornings."}]}, "copenhagen/Amager/family": {"best_for": "Amager has become genuinely family-friendly since the harbour baths and beach park opened. Islands Brygge has the only free sea swimming in central Copenhagen, and the Ørestad neighbourhood has modern playgrounds and wide flat streets ideal for young children.", "highlights": [{"icon": "🎡", "name": "Amager Strandpark", "note": "Family beach with shallow water, playground and café — free."}, {"icon": "🏛", "name": "Islands Brygge Harbour Baths", "note": "Five pools cut into the harbour — safe for all ages, free entry."}, {"icon": "☕", "name": "Café Espersen", "note": "Classic family café on the waterfront — good cakes and children's menu."}, {"icon": "🛍", "name": "Copenhagen Airport Tietgen Hall", "note": "Fascinating circular student residence — free to walk around."}, {"icon": "💡", "name": "Kalvebod Fælled nature reserve", "note": "Wild nature area 20 minutes from centre — deer, birds, free."}]}, "copenhagen/Amager/foodie": {"best_for": "Amager is home to the most talked-about restaurant in Copenhagen — Amass — in a former industrial building by the waterfront. Beyond that anchor, the neighbourhood has a growing food scene that's authentically local and significantly cheaper than the tourist centre.", "highlights": [{"icon": "🍽", "name": "Amass", "note": "Hyper-seasonal tasting menu by ex-Noma chef — one of Europe's best."}, {"icon": "🏛", "name": "Islands Brygge food market", "note": "Saturday market with the best local producers — everything to picnic with."}, {"icon": "☕", "name": "Forloren Espresso", "note": "The neighbourhood's serious specialty coffee shop — single origin filter."}, {"icon": "🛍", "name": "Torvehallerne (metro away)", "note": "Copenhagen's great food hall — 15 minutes by metro from Amager."}, {"icon": "💡", "name": "Reffen street food market", "note": "Copenhagen's largest street food market — 60 stalls in a harbourside container park."}]}, "copenhagen/Amager/culture": {"best_for": "Amager holds two of Copenhagen's most architecturally significant buildings — the Copenhagen Opera House and the DR Concert Hall — and the industrial waterfront has become a genuine arts district around Amass and Reffen.", "highlights": [{"icon": "🏛", "name": "Copenhagen Opera House", "note": "Henning Larsen masterpiece — guided tours run daily, free on some evenings."}, {"icon": "🏛", "name": "DR Concert Hall", "note": "Jean Nouvel-designed building — concerts from 100 DKK, world-class acoustics."}, {"icon": "☕", "name": "Café La Hacienda", "note": "Arts quarter café near the Opera House — popular with musicians."}, {"icon": "🛍", "name": "Reffen creative market", "note": "Repurposed harbour with artist studios and makers' workshops."}, {"icon": "💡", "name": "Amager Museum", "note": "Small local history museum — surprising and free, covers the island's past."}]}};
 
 // ── MAP ───────────────────────────────────────────────────────────────────────
 var gmap = null;
@@ -2095,4 +2198,171 @@ document.addEventListener('DOMContentLoaded', function() {
   document.head.appendChild(style);
 });
 
+
+// ── NEIGHBOURHOOD DETAIL PANEL ─────────────────────────────────────────────
+var insightsData  = null;
+var insightsLoading = false;
+
+// Delegated listener — any element with data-detail="1" opens the panel
+document.addEventListener('click', function(e) {
+  var el = e.target.closest('[data-detail="1"]');
+  if (!el || !S.city) return;
+  var hoodId = el.dataset.hood;
+  if (!hoodId) return;
+  var hoods = NH[S.city] || [];
+  var h = hoods.find(function(n){ return n.id === hoodId; });
+  if (!h) return;
+  var score = h.score || (currentRanked.indexOf(h) >= 0
+    ? Math.round(55 + (1 - currentRanked.indexOf(h)/Math.max(currentRanked.length-1,1)) * 30)
+    : 60);
+  openDetail(S.city, hoodId, h.name, h.tags, score, h.desc || '');
+});
+
+function loadInsights(cb) {
+  if (insightsData) { cb(insightsData); return; }
+  if (insightsLoading) { setTimeout(function(){ loadInsights(cb); }, 200); return; }
+  insightsLoading = true;
+  // Use embedded sample data first; then try to fetch full file
+  var base = (typeof INSIGHTS_SAMPLE !== 'undefined') ? INSIGHTS_SAMPLE : {};
+  fetch('roamly_insights.json')
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      insightsData = Object.assign({}, base, d);
+      insightsLoading = false; cb(insightsData);
+    })
+    .catch(function(){
+      insightsData = base;
+      insightsLoading = false; cb(insightsData);
+    });
+}
+
+
+
+
+var insightsToastShown = false;
+function showInsightsToast() {
+  if (insightsToastShown) return;
+  insightsToastShown = true;
+  var t = document.getElementById('insights-toast');
+  if (!t) return;
+  setTimeout(function(){ t.classList.add('show'); }, 400);
+  setTimeout(function(){ t.classList.remove('show'); }, 4000);
+}
+function closeDetail() {
+  document.getElementById('detail-panel').classList.remove('open');
+  document.getElementById('detail-backdrop').classList.remove('on');
+  document.body.style.overflow = '';
+}
+var insightsData = null;    // loaded lazily on first click
+var insightsLoading = false;
+
+function loadInsights(cb) {
+  if (insightsData) { cb(insightsData); return; }
+  if (insightsLoading) { setTimeout(function(){ loadInsights(cb); }, 200); return; }
+  insightsLoading = true;
+  fetch('roamly_insights.json')
+    .then(function(r){ return r.json(); })
+    .then(function(d){ insightsData = d; insightsLoading = false; cb(d); })
+    .catch(function(){
+      insightsLoading = false;
+      insightsData = {};
+      cb({});
+    });
+}
+
+function openDetail(cityKey, hoodId, hoodName, hoodTags, hoodScore, hoodDesc) {
+  var p = PERSONAS.find(function(p){ return p.id === S.persona; }) || PERSONAS[0];
+
+  // Header
+  document.getElementById('dp-eyebrow').textContent = 'Best for ' + p.name + 's in ' + 
+    (CITIES.find(function(c){ return c.id === cityKey; }) || {name: cityKey}).name;
+  document.getElementById('dp-name').textContent     = hoodName;
+  document.getElementById('dp-tags').textContent     = hoodTags;
+  document.getElementById('dp-score-pill').textContent = hoodScore + ' / 100';
+
+  // Open panel
+  document.getElementById('detail-panel').classList.add('open');
+  document.getElementById('detail-backdrop').classList.add('on');
+  document.body.style.overflow = 'hidden';
+
+  // Show loading state
+  var body = document.getElementById('dp-body');
+  body.innerHTML = '<div class="dp-loading"><div class="dp-spinner"></div><span>Loading highlights…</span></div>';
+
+  // Load insights
+  loadInsights(function(data) {
+    var key = cityKey + '/' + hoodName + '/' + S.persona;
+    var insight = data[key];
+
+    if (!insight) {
+      body.innerHTML =
+        '<div class="dp-no-data">' +
+        '<div style="font-size:2rem;margin-bottom:12px">🗺</div>' +
+        '<strong>' + hoodName + '</strong><br>' +
+        hoodDesc + '<br><br>' +
+        '<span style="font-size:0.75rem;color:var(--ink50)">Deep-dive content coming soon.</span>' +
+        '</div>';
+      return;
+    }
+
+    var html =
+      '<div class="dp-section-label">Why it works for you</div>' +
+      '<div class="dp-best-for">' + insight.best_for + '</div>' +
+      '<div class="dp-section-label">Top highlights</div>' +
+      '<div class="dp-highlights">';
+
+    (insight.highlights || []).forEach(function(h) {
+      html +=
+        '<div class="dp-highlight">' +
+          '<div class="dp-hi-icon">' + h.icon + '</div>' +
+          '<div class="dp-hi-text">' +
+            '<div class="dp-hi-name">' + h.name + '</div>' +
+            '<div class="dp-hi-note">' + h.note + '</div>' +
+          '</div>' +
+        '</div>';
+    });
+
+    html += '</div>';
+    body.innerHTML = html;
+  });
+}
+
+
+var insightsToastShown = false;
+function showInsightsToast() {
+  if (insightsToastShown) return;
+  insightsToastShown = true;
+  var t = document.getElementById('insights-toast');
+  if (!t) return;
+  setTimeout(function(){ t.classList.add('show'); }, 400);
+  setTimeout(function(){ t.classList.remove('show'); }, 4000);
+}
+function closeDetail() {
+  document.getElementById('detail-panel').classList.remove('open');
+  document.getElementById('detail-backdrop').classList.remove('on');
+  document.body.style.overflow = '';
+}
+
 </script>
+
+<!-- ── NEIGHBOURHOOD DETAIL PANEL ── -->
+<div class="detail-backdrop" id="detail-backdrop" onclick="closeDetail()"></div>
+<div id="detail-overlay">
+  <div id="detail-panel">
+    <div class="dp-header">
+      <button class="dp-close" onclick="closeDetail()">✕</button>
+      <div class="dp-eyebrow" id="dp-eyebrow"></div>
+      <div class="dp-name" id="dp-name"></div>
+      <div class="dp-tags" id="dp-tags"></div>
+      <div class="dp-score-pill" id="dp-score-pill"></div>
+    </div>
+    <div class="dp-body" id="dp-body"></div>
+  </div>
+</div>
+
+<!-- First-load insights toast -->
+<div class="insights-toast" id="insights-toast">
+  💡 Tap any neighbourhood card for highlights &amp; tips
+</div>
+</body>
+</html>
