@@ -2212,9 +2212,9 @@ document.addEventListener('click', function(e) {
   var hoods = NH[S.city] || [];
   var h = hoods.find(function(n){ return n.id === hoodId; });
   if (!h) return;
-  var score = h.score || (currentRanked.indexOf(h) >= 0
-    ? Math.round(55 + (1 - currentRanked.indexOf(h)/Math.max(currentRanked.length-1,1)) * 30)
-    : 60);
+  // Look up score from currentRanked (which has computed scores) by id
+  var ranked = currentRanked.find(function(r){ return r.id === hoodId; });
+  var score = (ranked && ranked.score) ? ranked.score : 60;
   openDetail(S.city, hoodId, h.name, h.tags, score, h.desc || '');
 });
 
