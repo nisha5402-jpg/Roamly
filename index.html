@@ -2274,28 +2274,46 @@ document.addEventListener('click', function(e) {
 var insightsData    = null;
 var insightsLoading = false;
 
+// Per-entry cache — stores fetched insights in memory for the session
+var insightsCache = {};
+
 function loadInsights(cb) {
-  if (insightsData) { cb(insightsData); return; }
-  if (insightsLoading) { setTimeout(function(){ loadInsights(cb); }, 200); return; }
-  insightsLoading = true;
-  // Use embedded Copenhagen sample while full file loads
-  var base = (typeof INSIGHTS_SAMPLE !== 'undefined') ? INSIGHTS_SAMPLE : {};
-  fetch('roamly_insights.json')
-    .then(function(r){
-      if (!r.ok) throw new Error('HTTP ' + r.status);
-      return r.json();
+  // insightsData kept for Copenhagen embedded sample fallback
+  if (!insightsData) {
+    insightsData = (typeof INSIGHTS_SAMPLE !== 'undefined') ? INSIGHTS_SAMPLE : {};
+  }
+  cb(insightsData);
+}
+
+function fetchInsight(cityKey, hoodName, persona, cb) {
+  var key = cityKey + '/' + hoodName + '/' + persona;
+
+  // 1. Check session cache first — free, instant
+  if (insightsCache[key]) { cb(insightsCache[key]); return; }
+
+  // 2. Check embedded sample (Copenhagen)
+  if (insightsData && insightsData[key]) {
+    insightsCache[key] = insightsData[key];
+    cb(insightsData[key]);
+    return;
+  }
+
+  // 3. Fetch single entry from secure API — never exposes the full dataset
+  var url = '/api/insights?city=' + encodeURIComponent(cityKey) +
+            '&hood=' + encodeURIComponent(hoodName) +
+            '&persona=' + encodeURIComponent(persona);
+
+  fetch(url)
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d && d.best_for) {
+        insightsCache[key] = d;
+        cb(d);
+      } else {
+        cb(null);
+      }
     })
-    .then(function(d){
-      insightsData = Object.assign({}, base, d);
-      insightsLoading = false;
-      cb(insightsData);
-    })
-    .catch(function(err){
-      console.warn('roamly_insights.json not found or failed:', err);
-      insightsData = base;
-      insightsLoading = false;
-      cb(insightsData);
-    });
+    .catch(function() { cb(null); });
 }
 
 function openDetail(cityKey, hoodId, hoodName, hoodTags, hoodScore, hoodDesc) {
@@ -2318,9 +2336,7 @@ function openDetail(cityKey, hoodId, hoodName, hoodTags, hoodScore, hoodDesc) {
   body.innerHTML = '<div class="dp-loading"><div class="dp-spinner"></div><span>Loading highlights…</span></div>';
 
   // Load insights
-  loadInsights(function(data) {
-    var key = cityKey + '/' + hoodName + '/' + S.persona;
-    var insight = data[key];
+  fetchInsight(cityKey, hoodName, S.persona, function(insight) {
 
     if (!insight) {
       body.innerHTML =
