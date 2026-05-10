@@ -2265,55 +2265,30 @@ document.addEventListener('click', function(e) {
   openDetail(S.city, hoodId, h.name, h.tags, score, h.desc || '');
 });
 
-function loadInsights(cb) {
-  if (insightsData) { cb(insightsData); return; }
-  if (insightsLoading) { setTimeout(function(){ loadInsights(cb); }, 200); return; }
-  insightsLoading = true;
-  // Use embedded sample data first; then try to fetch full file
-  var base = (typeof INSIGHTS_SAMPLE !== 'undefined') ? INSIGHTS_SAMPLE : {};
-  fetch('roamly_insights.json')
-    .then(function(r){ return r.json(); })
-    .then(function(d){
-      insightsData = Object.assign({}, base, d);
-      insightsLoading = false; cb(insightsData);
-    })
-    .catch(function(){
-      insightsData = base;
-      insightsLoading = false; cb(insightsData);
-    });
-}
-
-
-
-
-var insightsToastShown = false;
-function showInsightsToast() {
-  if (insightsToastShown) return;
-  insightsToastShown = true;
-  var t = document.getElementById('insights-toast');
-  if (!t) return;
-  setTimeout(function(){ t.classList.add('show'); }, 400);
-  setTimeout(function(){ t.classList.remove('show'); }, 4000);
-}
-function closeDetail() {
-  document.getElementById('detail-panel').classList.remove('open');
-  document.getElementById('detail-backdrop').classList.remove('on');
-  document.body.style.overflow = '';
-}
-var insightsData = null;    // loaded lazily on first click
+var insightsData    = null;
 var insightsLoading = false;
 
 function loadInsights(cb) {
   if (insightsData) { cb(insightsData); return; }
   if (insightsLoading) { setTimeout(function(){ loadInsights(cb); }, 200); return; }
   insightsLoading = true;
+  // Use embedded Copenhagen sample while full file loads
+  var base = (typeof INSIGHTS_SAMPLE !== 'undefined') ? INSIGHTS_SAMPLE : {};
   fetch('roamly_insights.json')
-    .then(function(r){ return r.json(); })
-    .then(function(d){ insightsData = d; insightsLoading = false; cb(d); })
-    .catch(function(){
+    .then(function(r){
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
+    .then(function(d){
+      insightsData = Object.assign({}, base, d);
       insightsLoading = false;
-      insightsData = {};
-      cb({});
+      cb(insightsData);
+    })
+    .catch(function(err){
+      console.warn('roamly_insights.json not found or failed:', err);
+      insightsData = base;
+      insightsLoading = false;
+      cb(insightsData);
     });
 }
 
