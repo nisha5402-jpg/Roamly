@@ -166,7 +166,8 @@ body::before{
 .budget-tag.show{display:inline-block}
 
 /* ── FEATURE CARD (#1) ── */
-.feature-card{background:var(--ink);border-radius:var(--r-xl);padding:1.1rem;position:relative;overflow:hidden;margin-bottom:0.75rem;cursor:pointer;transition:transform 0.2s;}
+.feature-card{background:var(--ink);border-radius:var(--r-xl);padding:1.1rem;position:relative;overflow:hidden;margin-bottom:0.75rem;cursor:pointer;transition:all 0.2s;}
+.feature-card:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(22,32,48,0.25)}
 .feature-card:hover{transform:translateY(-2px)}
 .feature-card::before{content:'';position:absolute;right:-40px;bottom:-40px;width:200px;height:200px;border-radius:50%;background:var(--blue-d);opacity:0.6;}
 .feature-card::after{content:'';position:absolute;right:60px;bottom:30px;width:100px;height:100px;border-radius:50%;background:var(--brass);opacity:0.15;}
@@ -199,6 +200,7 @@ body::before{
 /* ── SECONDARY CARDS ── */
 .card-grid{display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:1rem;padding-bottom:1rem}
 .s-card{background:white;border-radius:var(--r-xl);border:1px solid var(--ink10);padding:1.2rem;cursor:pointer;transition:all 0.18s;position:relative;overflow:hidden;}
+.s-card:hover{border-color:var(--blue);box-shadow:0 4px 20px rgba(22,32,48,0.10);transform:translateY(-2px)}
 .s-card:hover{border-color:var(--blue);box-shadow:0 6px 20px rgba(22,32,48,0.08);transform:translateY(-2px)}
 .sc-rank{font-family:var(--f-display);font-size:3rem;font-weight:900;color:var(--ink10);position:absolute;right:12px;top:6px;line-height:1;pointer-events:none;}
 .sc-eyebrow{font-family:var(--f-mono);font-size:0.58rem;letter-spacing:0.07em;text-transform:uppercase;color:var(--ink50);margin-bottom:5px;display:flex;gap:6px;align-items:center;}
@@ -458,29 +460,38 @@ body::before{
 /* ── CLICK HINTS ── */
 /* Name row — name + explore badge inline */
 .fc-name-row{display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap}
-.fc-explore-badge{display:inline-flex;align-items:center;gap:3px;
-  background:var(--brass);color:var(--ink);border-radius:99px;
-  font-family:var(--f-mono);font-size:0.52rem;letter-spacing:0.07em;
-  text-transform:uppercase;padding:3px 8px;font-weight:700;white-space:nowrap;
-  cursor:pointer;flex-shrink:0;transition:all 0.15s;animation:badge-pulse 2.5s 1s 2}
-.fc-explore-badge:hover{background:white}
-@keyframes badge-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.fc-explore-badge{display:inline-flex;align-items:center;gap:4px;
+  background:var(--brass);color:var(--ink);border-radius:6px;
+  font-family:var(--f-mono);font-size:0.58rem;letter-spacing:0.05em;
+  text-transform:uppercase;padding:4px 10px;font-weight:700;white-space:nowrap;
+  cursor:pointer;flex-shrink:0;transition:all 0.2s;
+  box-shadow:0 2px 6px rgba(191,160,64,0.4);
+  animation:badge-pulse 2s 1.5s 3}
+.fc-explore-badge:hover{background:white;transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,0.2)}
+@keyframes badge-pulse{0%,100%{transform:scale(1);box-shadow:0 2px 6px rgba(191,160,64,0.4)}
+  50%{transform:scale(1.06);box-shadow:0 4px 16px rgba(191,160,64,0.7)}}
 
 .sc-name-row{display:flex;align-items:center;gap:6px;margin-bottom:4px;flex-wrap:wrap}
-.sc-explore-badge{display:inline-flex;align-items:center;gap:3px;
-  background:var(--blue);color:white;border-radius:99px;
-  font-family:var(--f-mono);font-size:0.5rem;letter-spacing:0.07em;
-  text-transform:uppercase;padding:2px 7px;font-weight:700;white-space:nowrap;
-  cursor:pointer;flex-shrink:0;transition:all 0.15s;animation:badge-pulse 2.5s 1.5s 2}
-.sc-explore-badge:hover{background:var(--ink)}
+.sc-explore-badge{display:inline-flex;align-items:center;gap:4px;
+  background:var(--blue);color:white;border-radius:6px;
+  font-family:var(--f-mono);font-size:0.54rem;letter-spacing:0.05em;
+  text-transform:uppercase;padding:3px 9px;font-weight:700;white-space:nowrap;
+  cursor:pointer;flex-shrink:0;transition:all 0.2s;
+  box-shadow:0 2px 6px rgba(43,92,138,0.35);
+  animation:badge-pulse-sc 2s 2s 3}
+.sc-explore-badge:hover{background:var(--ink);transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,0.2)}
+@keyframes badge-pulse-sc{0%,100%{transform:scale(1);box-shadow:0 2px 6px rgba(43,92,138,0.35)}
+  50%{transform:scale(1.06);box-shadow:0 4px 16px rgba(43,92,138,0.6)}}
 
 /* First-load toast hint */
-.insights-toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);
-  background:var(--ink);color:white;padding:10px 18px;border-radius:99px;
-  font-family:var(--f-body);font-size:0.82rem;z-index:300;white-space:nowrap;
-  box-shadow:0 4px 20px rgba(0,0,0,0.25);pointer-events:none;
-  opacity:0;transition:opacity 0.4s, transform 0.4s}
+.insights-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(30px);
+  background:var(--ink);color:white;padding:12px 22px;border-radius:12px;
+  font-family:var(--f-body);font-size:0.88rem;z-index:300;white-space:nowrap;
+  box-shadow:0 8px 32px rgba(22,32,48,0.35);pointer-events:none;
+  opacity:0;transition:opacity 0.5s, transform 0.5s;
+  border:1px solid rgba(255,255,255,0.1)}
 .insights-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(max-width:600px){.insights-toast{font-size:0.78rem;padding:10px 16px;bottom:16px}}
 /* ── CONFIDENCE TIER BADGES ── */
 .tier-verified{display:inline-flex;align-items:center;gap:3px;font-family:var(--f-mono);
   font-size:0.58rem;letter-spacing:0.06em;text-transform:uppercase;padding:2px 7px;
@@ -1807,7 +1818,7 @@ function renderResults(){
         '<div class="fc-left">'+
           '<div class="fc-name-row">'+
             '<div class="fc-name">'+top.name+'</div>'+
-            '<span class="fc-explore-badge">✦ Explore</span>'+
+            '<span class="fc-explore-badge">Tap for highlights &amp; tips →</span>'+
           '</div>'+
           '<div class="fc-tags">'+top.tags.split(" · ").map(function(t){return '<span class="fc-tag">'+t+'</span><span class="fc-tag" style="opacity:0.3">·</span>';}).join("")+'</div>'+
           '<div class="fc-desc">'+top.desc+'</div>'+
@@ -1866,7 +1877,7 @@ function renderResults(){
         '<div class="sc-eyebrow">'+n.tags.split(" · ").map(function(t){return '<span>'+t+'</span>';}).join('<span class="sc-dot"></span>')+'</div>'+
         '<div class="sc-name-row">'+
           '<div class="sc-name">'+n.name+'</div>'+
-          '<span class="sc-explore-badge">✦ Explore</span>'+
+          '<span class="sc-explore-badge">Highlights &amp; tips →</span>'+
         '</div>'+
         '<div class="sc-desc">'+n.desc+'</div>'+
         '<div class="sc-bars">'+barsHtml+'</div>'+
@@ -2451,7 +2462,7 @@ function showInsightsToast() {
   var t = document.getElementById('insights-toast');
   if (!t) return;
   setTimeout(function(){ t.classList.add('show'); }, 400);
-  setTimeout(function(){ t.classList.remove('show'); }, 4000);
+  setTimeout(function(){ t.classList.remove('show'); }, 6000);
 }
 function closeDetail() {
   document.getElementById('detail-panel').classList.remove('open');
@@ -2478,7 +2489,7 @@ function closeDetail() {
 
 <!-- First-load insights toast -->
 <div class="insights-toast" id="insights-toast">
-  💡 Tap any neighbourhood card for highlights &amp; tips
+  👆 Tap any card to unlock highlights, local tips &amp; insider picks
 </div>
 </body>
 </html>
