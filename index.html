@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -324,6 +324,67 @@ body::before{
   .key-dot{width:7px;height:7px}
 }
 
+
+
+/* ── DETAIL PANEL — RICH SECTIONS ── */
+.dp-not-for{font-size:0.8rem;padding:8px 12px;border-radius:var(--r);
+  background:rgba(231,76,60,0.08);border-left:3px solid #E74C3C;
+  color:var(--ink);margin-bottom:1rem;line-height:1.5}
+.dp-not-for strong{color:#E74C3C;font-size:0.65rem;font-family:var(--f-mono);
+  letter-spacing:0.08em;text-transform:uppercase;display:block;margin-bottom:3px}
+.dp-day-sketch{font-size:0.82rem;line-height:1.65;padding:10px 14px;
+  background:rgba(52,152,219,0.06);border-radius:var(--r);
+  border-left:3px solid var(--blue);color:var(--ink);margin-bottom:1rem}
+.dp-day-sketch strong{color:var(--blue);font-size:0.62rem;font-family:var(--f-mono);
+  letter-spacing:0.08em;text-transform:uppercase;display:block;margin-bottom:4px}
+.dp-hl-group{margin-bottom:1rem}
+.dp-hl-title{font-family:var(--f-mono);font-size:0.6rem;letter-spacing:0.08em;
+  text-transform:uppercase;color:var(--ink50);margin-bottom:6px;
+  display:flex;align-items:center;gap:6px}
+.dp-hl-title::after{content:'';flex:1;height:1px;background:var(--ink10)}
+.dp-hl-item{display:flex;align-items:flex-start;gap:10px;padding:8px 10px;
+  background:white;border-radius:var(--r);border:1px solid var(--ink10);
+  margin-bottom:5px;cursor:default}
+.dp-hl-item:hover{border-color:var(--blue)}
+.dp-hl-icon{font-size:1rem;flex-shrink:0;width:20px;text-align:center}
+.dp-hl-info{flex:1;min-width:0}
+.dp-hl-name{font-size:0.82rem;font-weight:600;color:var(--ink);margin-bottom:1px}
+.dp-hl-note{font-size:0.72rem;color:var(--ink50);line-height:1.4}
+.dp-hl-badge{font-family:var(--f-mono);font-size:0.55rem;padding:1px 5px;
+  border-radius:99px;flex-shrink:0;margin-top:2px}
+.dp-hl-badge.free{background:rgba(46,204,113,0.12);color:#27ae60}
+.dp-hl-badge.paid{background:rgba(231,76,60,0.08);color:#e74c3c}
+.dp-hl-badge.price{background:rgba(22,32,48,0.06);color:var(--ink50)}
+.dp-hl-badge.type-rooftop{background:rgba(52,152,219,0.1);color:var(--blue)}
+.dp-logistics{padding:12px 14px;background:white;border-radius:var(--r);
+  border:1px solid var(--ink10);margin-bottom:1rem}
+.dp-log-row{display:flex;gap:10px;padding:5px 0;border-bottom:1px solid var(--ink10);
+  font-size:0.78rem;line-height:1.5}
+.dp-log-row:last-child{border-bottom:none;padding-bottom:0}
+.dp-log-label{font-family:var(--f-mono);font-size:0.6rem;letter-spacing:0.06em;
+  text-transform:uppercase;color:var(--ink50);min-width:80px;padding-top:1px;flex-shrink:0}
+.dp-log-val{color:var(--ink)}
+.dp-trips{display:flex;flex-wrap:wrap;gap:5px;margin-top:2px}
+.dp-trip-tag{font-size:0.72rem;padding:2px 8px;border-radius:99px;
+  background:rgba(22,32,48,0.05);color:var(--ink50);border:1px solid var(--ink10)}
+.dp-watch{font-size:0.8rem;padding:8px 12px;border-radius:var(--r);
+  background:rgba(243,156,18,0.08);border-left:3px solid #F39C12;
+  color:var(--ink);line-height:1.5;margin-bottom:1rem}
+.dp-watch strong{color:#F39C12;font-size:0.62rem;font-family:var(--f-mono);
+  letter-spacing:0.08em;text-transform:uppercase;display:block;margin-bottom:3px}
+/* ── LOCAL INSIGHT BLOCK ── */
+.dp-local{margin-bottom:1.25rem;padding:14px 16px;
+  background:var(--ink);border-radius:var(--r-xl);position:relative;overflow:hidden}
+.dp-local::before{content:'';position:absolute;right:-20px;bottom:-20px;
+  width:80px;height:80px;border-radius:50%;background:var(--brass);opacity:0.12}
+.dp-local-label{font-family:var(--f-mono);font-size:0.58rem;letter-spacing:0.1em;
+  text-transform:uppercase;color:var(--brass);margin-bottom:6px;
+  display:flex;align-items:center;gap:6px}
+.dp-local-type{font-family:var(--f-mono);font-size:0.52rem;letter-spacing:0.08em;
+  text-transform:uppercase;padding:1px 6px;border-radius:99px;
+  background:rgba(191,160,64,0.15);color:var(--brass)}
+.dp-local-text{font-size:0.85rem;line-height:1.6;color:rgba(255,255,255,0.9);
+  font-style:italic}
 /* ── NEIGHBOURHOOD DETAIL PANEL ── */
 #detail-overlay{position:fixed;inset:0;z-index:450;pointer-events:none;
   display:flex;align-items:flex-end;justify-content:flex-end}
@@ -570,9 +631,7 @@ body::before{
         </div>
       </div>
       <div class="source-note" id="source-note" style="display:none">
-        <strong>✦ Verified</strong> (Lisbon, Copenhagen) — OSM + Google Places data, cross-validated. &nbsp;
-        <strong>◉ Real data</strong> (all other cities) — scored from real OpenStreetMap + Google Places.
-        Safety and affordability manually curated. Refreshed annually.
+        Powered by Data &amp; AI
       </div>
     </div>
 
@@ -615,116 +674,116 @@ body::before{
 // ── DATA ─────────────────────────────────────────────────────────────────────
 
 var CITIES = [
-  {id:"lisbon",name:"Lisbon",country:"Portugal",flag:"🇵🇹",tier:"verified",n:12,hook:"12 areas · OSM + Google verified",on:true},
-  {id:"porto",name:"Porto",country:"Portugal",flag:"🇵🇹",tier:"data",n:5,hook:"Real OSM + Google Places data",on:true},
-  {id:"algarve",name:"Algarve",country:"Portugal",flag:"🏙️",tier:"data",n:3,hook:"Real OSM + Google Places data",on:true},
-  {id:"coimbra",name:"Coimbra",country:"Portugal",flag:"🏙️",tier:"data",n:3,hook:"Real OSM + Google Places data",on:true},
-  {id:"barcelona",name:"Barcelona",country:"Spain",flag:"🇪🇸",tier:"data",n:6,hook:"Real OSM + Google Places data",on:true},
-  {id:"madrid",name:"Madrid",country:"Spain",flag:"🇪🇸",tier:"data",n:7,hook:"Real OSM + Google Places data",on:true},
-  {id:"seville",name:"Seville",country:"Spain",flag:"🏙️",tier:"data",n:5,hook:"Real OSM + Google Places data",on:true},
-  {id:"valencia",name:"Valencia",country:"Spain",flag:"🏙️",tier:"data",n:5,hook:"Real OSM + Google Places data",on:true},
-  {id:"bilbao",name:"Bilbao",country:"Spain",flag:"🏙️",tier:"data",n:4,hook:"Real OSM + Google Places data",on:true},
-  {id:"granada",name:"Granada",country:"Spain",flag:"🏙️",tier:"data",n:3,hook:"Real OSM + Google Places data",on:true},
-  {id:"malaga",name:"Malaga",country:"Spain",flag:"🏙️",tier:"data",n:3,hook:"Real OSM + Google Places data",on:true},
-  {id:"san_sebastian",name:"San Sebastian",country:"Spain",flag:"🏙️",tier:"data",n:3,hook:"Real OSM + Google Places data",on:true},
-  {id:"palma_mallorca",name:"Palma Mallorca",country:"Spain",flag:"🏙️",tier:"data",n:3,hook:"Real OSM + Google Places data",on:true},
-  {id:"paris",name:"Paris",country:"France",flag:"🇫🇷",tier:"data",n:9,hook:"Real OSM + Google Places data",on:true},
-  {id:"lyon",name:"Lyon",country:"France",flag:"🏙️",tier:"data",n:4,hook:"Real OSM + Google Places data",on:true},
-  {id:"nice",name:"Nice",country:"France",flag:"🏙️",tier:"data",n:3,hook:"Real OSM + Google Places data",on:true},
-  {id:"bordeaux",name:"Bordeaux",country:"France",flag:"🏙️",tier:"data",n:3,hook:"Real OSM + Google Places data",on:true},
-  {id:"marseille",name:"Marseille",country:"France",flag:"🏙️",tier:"data",n:3,hook:"Real OSM + Google Places data",on:true},
-  {id:"strasbourg",name:"Strasbourg",country:"France",flag:"🏙️",tier:"data",n:3,hook:"Real OSM + Google Places data",on:true},
-  {id:"montpellier",name:"Montpellier",country:"France",flag:"🏙️",tier:"data",n:3,hook:"Real OSM + Google Places data",on:true},
-  {id:"rome",name:"Rome",country:"Italy",flag:"🇮🇹",tier:"data",n:6,hook:"Real OSM + Google Places data",on:true},
-  {id:"venice",name:"Venice",country:"Italy",flag:"🇮🇹",tier:"data",n:5,hook:"Real OSM + Google Places data",on:true},
-  {id:"milan",name:"Milan",country:"Italy",flag:"🇮🇹",tier:"data",n:5,hook:"Real OSM + Google Places data",on:true},
-  {id:"naples",name:"Naples",country:"Italy",flag:"🏙️",tier:"data",n:4,hook:"Real OSM + Google Places data",on:true},
-  {id:"florence",name:"Florence",country:"Italy",flag:"🇮🇹",tier:"data",n:5,hook:"Real OSM + Google Places data",on:true},
-  {id:"bologna",name:"Bologna",country:"Italy",flag:"🏙️",tier:"data",n:3,hook:"Real OSM + Google Places data",on:true},
-  {id:"turin",name:"Turin",country:"Italy",flag:"🏙️",tier:"data",n:3,hook:"Real OSM + Google Places data",on:true},
-  {id:"verona",name:"Verona",country:"Italy",flag:"🏙️",tier:"data",n:2,hook:"Real OSM + Google Places data",on:true},
-  {id:"palermo",name:"Palermo",country:"Italy",flag:"🏙️",tier:"data",n:2,hook:"Real OSM + Google Places data",on:true},
-  {id:"berlin",name:"Berlin",country:"Germany",flag:"🇩🇪",tier:"data",n:7,hook:"Real OSM + Google Places data",on:true},
-  {id:"munich",name:"Munich",country:"Germany",flag:"🇩🇪",tier:"data",n:6,hook:"Real OSM + Google Places data",on:true},
-  {id:"hamburg",name:"Hamburg",country:"Germany",flag:"🇩🇪",tier:"data",n:5,hook:"Real OSM + Google Places data",on:true},
-  {id:"cologne",name:"Cologne",country:"Germany",flag:"🏙️",tier:"data",n:3,hook:"Real OSM + Google Places data",on:true},
-  {id:"frankfurt",name:"Frankfurt",country:"Germany",flag:"🏙️",tier:"data",n:3,hook:"Real OSM + Google Places data",on:true},
-  {id:"dresden",name:"Dresden",country:"Germany",flag:"🏙️",tier:"data",n:3,hook:"Real OSM + Google Places data",on:true},
-  {id:"düsseldorf",name:"Düsseldorf",country:"Germany",flag:"🏙️",tier:"data",n:2,hook:"Real OSM + Google Places data",on:true},
-  {id:"stuttgart",name:"Stuttgart",country:"Germany",flag:"🏙️",tier:"data",n:2,hook:"Real OSM + Google Places data",on:true},
-  {id:"vienna",name:"Vienna",country:"Austria",flag:"🇦🇹",tier:"data",n:6,hook:"Real OSM + Google Places data",on:true},
-  {id:"salzburg",name:"Salzburg",country:"Austria",flag:"🏙️",tier:"data",n:3,hook:"Real OSM + Google Places data",on:true},
-  {id:"graz",name:"Graz",country:"Austria",flag:"🏙️",tier:"data",n:2,hook:"Real OSM + Google Places data",on:true},
-  {id:"innsbruck",name:"Innsbruck",country:"Austria",flag:"🏙️",tier:"data",n:2,hook:"Real OSM + Google Places data",on:true},
-  {id:"zurich",name:"Zurich",country:"Switzerland",flag:"🇨🇭",tier:"data",n:4,hook:"Real OSM + Google Places data",on:true},
-  {id:"geneva",name:"Geneva",country:"Switzerland",flag:"🏙️",tier:"data",n:3,hook:"Real OSM + Google Places data",on:true},
-  {id:"lucerne",name:"Lucerne",country:"Switzerland",flag:"🏙️",tier:"data",n:2,hook:"Real OSM + Google Places data",on:true},
-  {id:"basel",name:"Basel",country:"Switzerland",flag:"🏙️",tier:"data",n:2,hook:"Real OSM + Google Places data",on:true},
-  {id:"interlaken",name:"Interlaken",country:"Switzerland",flag:"🏙️",tier:"data",n:2,hook:"Real OSM + Google Places data",on:true},
-  {id:"amsterdam",name:"Amsterdam",country:"Netherlands",flag:"🇳🇱",tier:"data",n:5,hook:"Real OSM + Google Places data",on:true},
-  {id:"rotterdam",name:"Rotterdam",country:"Netherlands",flag:"🏙️",tier:"data",n:3,hook:"Real OSM + Google Places data",on:true},
-  {id:"utrecht",name:"Utrecht",country:"Netherlands",flag:"🏙️",tier:"data",n:2,hook:"Real OSM + Google Places data",on:true},
-  {id:"brussels",name:"Brussels",country:"Belgium",flag:"🇧🇪",tier:"data",n:4,hook:"Real OSM + Google Places data",on:true},
-  {id:"bruges",name:"Bruges",country:"Belgium",flag:"🇧🇪",tier:"data",n:2,hook:"Real OSM + Google Places data",on:true},
-  {id:"ghent",name:"Ghent",country:"Belgium",flag:"🏙️",tier:"data",n:3,hook:"Real OSM + Google Places data",on:true},
-  {id:"antwerp",name:"Antwerp",country:"Belgium",flag:"🏙️",tier:"data",n:3,hook:"Real OSM + Google Places data",on:true},
-  {id:"london",name:"London",country:"UK",flag:"🇬🇧",tier:"data",n:8,hook:"Real OSM + Google Places data",on:true},
-  {id:"edinburgh",name:"Edinburgh",country:"UK",flag:"🇬🇧",tier:"data",n:5,hook:"Real OSM + Google Places data",on:true},
-  {id:"manchester",name:"Manchester",country:"UK",flag:"🏙️",tier:"data",n:4,hook:"Real OSM + Google Places data",on:true},
-  {id:"liverpool",name:"Liverpool",country:"UK",flag:"🏙️",tier:"data",n:3,hook:"Real OSM + Google Places data",on:true},
-  {id:"bath",name:"Bath",country:"UK",flag:"🏙️",tier:"data",n:2,hook:"Real OSM + Google Places data",on:true},
-  {id:"glasgow",name:"Glasgow",country:"UK",flag:"🏙️",tier:"data",n:3,hook:"Real OSM + Google Places data",on:true},
-  {id:"bristol",name:"Bristol",country:"UK",flag:"🏙️",tier:"data",n:3,hook:"Real OSM + Google Places data",on:true},
-  {id:"york",name:"York",country:"UK",flag:"🏙️",tier:"data",n:2,hook:"Real OSM + Google Places data",on:true},
-  {id:"brighton",name:"Brighton",country:"UK",flag:"🏙️",tier:"data",n:3,hook:"Real OSM + Google Places data",on:true},
-  {id:"oxford",name:"Oxford",country:"UK",flag:"🏙️",tier:"data",n:2,hook:"Real OSM + Google Places data",on:true},
-  {id:"dublin",name:"Dublin",country:"Ireland",flag:"🏙️",tier:"data",n:5,hook:"Real OSM + Google Places data",on:true},
-  {id:"cork",name:"Cork",country:"Ireland",flag:"🏙️",tier:"data",n:2,hook:"Real OSM + Google Places data",on:true},
-  {id:"galway",name:"Galway",country:"Ireland",flag:"🏙️",tier:"data",n:2,hook:"Real OSM + Google Places data",on:true},
-  {id:"copenhagen",name:"Copenhagen",country:"Denmark",flag:"🇩🇰",tier:"verified",n:7,hook:"7 areas · OSM + Google verified",on:true},
-  {id:"aarhus",name:"Aarhus",country:"Denmark",flag:"🏙️",tier:"data",n:3,hook:"Real OSM + Google Places data",on:true},
-  {id:"stockholm",name:"Stockholm",country:"Sweden",flag:"🇸🇪",tier:"data",n:6,hook:"Real OSM + Google Places data",on:true},
-  {id:"gothenburg",name:"Gothenburg",country:"Sweden",flag:"🏙️",tier:"data",n:3,hook:"Real OSM + Google Places data",on:true},
-  {id:"malmö",name:"Malmö",country:"Sweden",flag:"🏙️",tier:"data",n:3,hook:"Real OSM + Google Places data",on:true},
-  {id:"oslo",name:"Oslo",country:"Norway",flag:"🇳🇴",tier:"data",n:5,hook:"Real OSM + Google Places data",on:true},
-  {id:"bergen",name:"Bergen",country:"Norway",flag:"🏙️",tier:"data",n:3,hook:"Real OSM + Google Places data",on:true},
-  {id:"helsinki",name:"Helsinki",country:"Finland",flag:"🏙️",tier:"data",n:4,hook:"Real OSM + Google Places data",on:true},
-  {id:"rovaniemi",name:"Rovaniemi",country:"Finland",flag:"🏙️",tier:"data",n:2,hook:"Real OSM + Google Places data",on:true},
-  {id:"reykjavik",name:"Reykjavik",country:"Iceland",flag:"🏙️",tier:"data",n:2,hook:"Real OSM + Google Places data",on:true},
-  {id:"prague",name:"Prague",country:"Czech Rep",flag:"🇨🇿",tier:"data",n:6,hook:"Real OSM + Google Places data",on:true},
-  {id:"brno",name:"Brno",country:"Czech Rep",flag:"🏙️",tier:"data",n:2,hook:"Real OSM + Google Places data",on:true},
-  {id:"budapest",name:"Budapest",country:"Hungary",flag:"🇭🇺",tier:"data",n:6,hook:"Real OSM + Google Places data",on:true},
-  {id:"warsaw",name:"Warsaw",country:"Poland",flag:"🇵🇱",tier:"data",n:4,hook:"Real OSM + Google Places data",on:true},
-  {id:"krakow",name:"Krakow",country:"Poland",flag:"🇵🇱",tier:"data",n:4,hook:"Real OSM + Google Places data",on:true},
-  {id:"gdansk",name:"Gdansk",country:"Poland",flag:"🏙️",tier:"data",n:3,hook:"Real OSM + Google Places data",on:true},
-  {id:"wroclaw",name:"Wroclaw",country:"Poland",flag:"🏙️",tier:"data",n:2,hook:"Real OSM + Google Places data",on:true},
-  {id:"bratislava",name:"Bratislava",country:"Slovakia",flag:"🏙️",tier:"data",n:2,hook:"Real OSM + Google Places data",on:true},
-  {id:"ljubljana",name:"Ljubljana",country:"Slovenia",flag:"🏙️",tier:"data",n:2,hook:"Real OSM + Google Places data",on:true},
-  {id:"dubrovnik",name:"Dubrovnik",country:"Croatia",flag:"🇭🇷",tier:"data",n:3,hook:"Real OSM + Google Places data",on:true},
-  {id:"split",name:"Split",country:"Croatia",flag:"🏙️",tier:"data",n:3,hook:"Real OSM + Google Places data",on:true},
-  {id:"zagreb",name:"Zagreb",country:"Croatia",flag:"🏙️",tier:"data",n:3,hook:"Real OSM + Google Places data",on:true},
-  {id:"belgrade",name:"Belgrade",country:"Serbia",flag:"🏙️",tier:"data",n:4,hook:"Real OSM + Google Places data",on:true},
-  {id:"bucharest",name:"Bucharest",country:"Romania",flag:"🏙️",tier:"data",n:3,hook:"Real OSM + Google Places data",on:true},
-  {id:"cluj_napoca",name:"Cluj-Napoca",country:"Romania",flag:"🏙️",tier:"data",n:2,hook:"Real OSM + Google Places data",on:true},
-  {id:"sofia",name:"Sofia",country:"Bulgaria",flag:"🏙️",tier:"data",n:3,hook:"Real OSM + Google Places data",on:true},
-  {id:"plovdiv",name:"Plovdiv",country:"Bulgaria",flag:"🏙️",tier:"data",n:2,hook:"Real OSM + Google Places data",on:true},
-  {id:"sarajevo",name:"Sarajevo",country:"Bosnia",flag:"🏙️",tier:"data",n:3,hook:"Real OSM + Google Places data",on:true},
-  {id:"skopje",name:"Skopje",country:"North Macedonia",flag:"🏙️",tier:"data",n:2,hook:"Real OSM + Google Places data",on:true},
-  {id:"tirana",name:"Tirana",country:"Albania",flag:"🏙️",tier:"data",n:2,hook:"Real OSM + Google Places data",on:true},
-  {id:"tallinn",name:"Tallinn",country:"Estonia",flag:"🇪🇪",tier:"data",n:3,hook:"Real OSM + Google Places data",on:true},
-  {id:"riga",name:"Riga",country:"Latvia",flag:"🏙️",tier:"data",n:3,hook:"Real OSM + Google Places data",on:true},
-  {id:"vilnius",name:"Vilnius",country:"Lithuania",flag:"🏙️",tier:"data",n:3,hook:"Real OSM + Google Places data",on:true},
-  {id:"athens",name:"Athens",country:"Greece",flag:"🇬🇷",tier:"data",n:5,hook:"Real OSM + Google Places data",on:true},
-  {id:"thessaloniki",name:"Thessaloniki",country:"Greece",flag:"🏙️",tier:"data",n:3,hook:"Real OSM + Google Places data",on:true},
-  {id:"santorini",name:"Santorini",country:"Greece",flag:"🏙️",tier:"data",n:3,hook:"Real OSM + Google Places data",on:true},
-  {id:"mykonos",name:"Mykonos",country:"Greece",flag:"🏙️",tier:"data",n:2,hook:"Real OSM + Google Places data",on:true},
-  {id:"heraklion_(crete)",name:"Heraklion (Crete)",country:"Greece",flag:"🏙️",tier:"data",n:2,hook:"Real OSM + Google Places data",on:true},
-  {id:"rhodes",name:"Rhodes",country:"Greece",flag:"🏙️",tier:"data",n:2,hook:"Real OSM + Google Places data",on:true},
-  {id:"valletta",name:"Valletta",country:"Malta",flag:"🇲🇹",tier:"data",n:3,hook:"Real OSM + Google Places data",on:true},
-  {id:"limassol",name:"Limassol",country:"Cyprus",flag:"🏙️",tier:"data",n:2,hook:"Real OSM + Google Places data",on:true},
-  {id:"nicosia",name:"Nicosia",country:"Cyprus",flag:"🏙️",tier:"data",n:2,hook:"Real OSM + Google Places data",on:true},
-  {id:"luxembourg_city",name:"Luxembourg City",country:"Luxembourg",flag:"🏙️",tier:"data",n:2,hook:"Real OSM + Google Places data",on:true},
-  {id:"kotor",name:"Kotor",country:"Montenegro",flag:"🏙️",tier:"data",n:2,hook:"Real OSM + Google Places data",on:true},
+  {id:"lisbon",name:"Lisbon",country:"Portugal",flag:"🇵🇹",tier:"verified",n:12,hook:"Powered by Data &amp; AI",on:true},
+  {id:"porto",name:"Porto",country:"Portugal",flag:"🇵🇹",tier:"data",n:5,hook:"Powered by Data &amp; AI",on:true},
+  {id:"algarve",name:"Algarve",country:"Portugal",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
+  {id:"coimbra",name:"Coimbra",country:"Portugal",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
+  {id:"barcelona",name:"Barcelona",country:"Spain",flag:"🇪🇸",tier:"data",n:6,hook:"Powered by Data &amp; AI",on:true},
+  {id:"madrid",name:"Madrid",country:"Spain",flag:"🇪🇸",tier:"data",n:7,hook:"Powered by Data &amp; AI",on:true},
+  {id:"seville",name:"Seville",country:"Spain",flag:"🏙️",tier:"data",n:5,hook:"Powered by Data &amp; AI",on:true},
+  {id:"valencia",name:"Valencia",country:"Spain",flag:"🏙️",tier:"data",n:5,hook:"Powered by Data &amp; AI",on:true},
+  {id:"bilbao",name:"Bilbao",country:"Spain",flag:"🏙️",tier:"data",n:4,hook:"Powered by Data &amp; AI",on:true},
+  {id:"granada",name:"Granada",country:"Spain",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
+  {id:"malaga",name:"Malaga",country:"Spain",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
+  {id:"san_sebastian",name:"San Sebastian",country:"Spain",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
+  {id:"palma_mallorca",name:"Palma Mallorca",country:"Spain",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
+  {id:"paris",name:"Paris",country:"France",flag:"🇫🇷",tier:"data",n:9,hook:"Powered by Data &amp; AI",on:true},
+  {id:"lyon",name:"Lyon",country:"France",flag:"🏙️",tier:"data",n:4,hook:"Powered by Data &amp; AI",on:true},
+  {id:"nice",name:"Nice",country:"France",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
+  {id:"bordeaux",name:"Bordeaux",country:"France",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
+  {id:"marseille",name:"Marseille",country:"France",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
+  {id:"strasbourg",name:"Strasbourg",country:"France",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
+  {id:"montpellier",name:"Montpellier",country:"France",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
+  {id:"rome",name:"Rome",country:"Italy",flag:"🇮🇹",tier:"data",n:6,hook:"Powered by Data &amp; AI",on:true},
+  {id:"venice",name:"Venice",country:"Italy",flag:"🇮🇹",tier:"data",n:5,hook:"Powered by Data &amp; AI",on:true},
+  {id:"milan",name:"Milan",country:"Italy",flag:"🇮🇹",tier:"data",n:5,hook:"Powered by Data &amp; AI",on:true},
+  {id:"naples",name:"Naples",country:"Italy",flag:"🏙️",tier:"data",n:4,hook:"Powered by Data &amp; AI",on:true},
+  {id:"florence",name:"Florence",country:"Italy",flag:"🇮🇹",tier:"data",n:5,hook:"Powered by Data &amp; AI",on:true},
+  {id:"bologna",name:"Bologna",country:"Italy",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
+  {id:"turin",name:"Turin",country:"Italy",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
+  {id:"verona",name:"Verona",country:"Italy",flag:"🏙️",tier:"data",n:2,hook:"Powered by Data &amp; AI",on:true},
+  {id:"palermo",name:"Palermo",country:"Italy",flag:"🏙️",tier:"data",n:2,hook:"Powered by Data &amp; AI",on:true},
+  {id:"berlin",name:"Berlin",country:"Germany",flag:"🇩🇪",tier:"data",n:7,hook:"Powered by Data &amp; AI",on:true},
+  {id:"munich",name:"Munich",country:"Germany",flag:"🇩🇪",tier:"data",n:6,hook:"Powered by Data &amp; AI",on:true},
+  {id:"hamburg",name:"Hamburg",country:"Germany",flag:"🇩🇪",tier:"data",n:5,hook:"Powered by Data &amp; AI",on:true},
+  {id:"cologne",name:"Cologne",country:"Germany",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
+  {id:"frankfurt",name:"Frankfurt",country:"Germany",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
+  {id:"dresden",name:"Dresden",country:"Germany",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
+  {id:"düsseldorf",name:"Düsseldorf",country:"Germany",flag:"🏙️",tier:"data",n:2,hook:"Powered by Data &amp; AI",on:true},
+  {id:"stuttgart",name:"Stuttgart",country:"Germany",flag:"🏙️",tier:"data",n:2,hook:"Powered by Data &amp; AI",on:true},
+  {id:"vienna",name:"Vienna",country:"Austria",flag:"🇦🇹",tier:"data",n:6,hook:"Powered by Data &amp; AI",on:true},
+  {id:"salzburg",name:"Salzburg",country:"Austria",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
+  {id:"graz",name:"Graz",country:"Austria",flag:"🏙️",tier:"data",n:2,hook:"Powered by Data &amp; AI",on:true},
+  {id:"innsbruck",name:"Innsbruck",country:"Austria",flag:"🏙️",tier:"data",n:2,hook:"Powered by Data &amp; AI",on:true},
+  {id:"zurich",name:"Zurich",country:"Switzerland",flag:"🇨🇭",tier:"data",n:4,hook:"Powered by Data &amp; AI",on:true},
+  {id:"geneva",name:"Geneva",country:"Switzerland",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
+  {id:"lucerne",name:"Lucerne",country:"Switzerland",flag:"🏙️",tier:"data",n:2,hook:"Powered by Data &amp; AI",on:true},
+  {id:"basel",name:"Basel",country:"Switzerland",flag:"🏙️",tier:"data",n:2,hook:"Powered by Data &amp; AI",on:true},
+  {id:"interlaken",name:"Interlaken",country:"Switzerland",flag:"🏙️",tier:"data",n:2,hook:"Powered by Data &amp; AI",on:true},
+  {id:"amsterdam",name:"Amsterdam",country:"Netherlands",flag:"🇳🇱",tier:"data",n:5,hook:"Powered by Data &amp; AI",on:true},
+  {id:"rotterdam",name:"Rotterdam",country:"Netherlands",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
+  {id:"utrecht",name:"Utrecht",country:"Netherlands",flag:"🏙️",tier:"data",n:2,hook:"Powered by Data &amp; AI",on:true},
+  {id:"brussels",name:"Brussels",country:"Belgium",flag:"🇧🇪",tier:"data",n:4,hook:"Powered by Data &amp; AI",on:true},
+  {id:"bruges",name:"Bruges",country:"Belgium",flag:"🇧🇪",tier:"data",n:2,hook:"Powered by Data &amp; AI",on:true},
+  {id:"ghent",name:"Ghent",country:"Belgium",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
+  {id:"antwerp",name:"Antwerp",country:"Belgium",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
+  {id:"london",name:"London",country:"UK",flag:"🇬🇧",tier:"data",n:8,hook:"Powered by Data &amp; AI",on:true},
+  {id:"edinburgh",name:"Edinburgh",country:"UK",flag:"🇬🇧",tier:"data",n:5,hook:"Powered by Data &amp; AI",on:true},
+  {id:"manchester",name:"Manchester",country:"UK",flag:"🏙️",tier:"data",n:4,hook:"Powered by Data &amp; AI",on:true},
+  {id:"liverpool",name:"Liverpool",country:"UK",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
+  {id:"bath",name:"Bath",country:"UK",flag:"🏙️",tier:"data",n:2,hook:"Powered by Data &amp; AI",on:true},
+  {id:"glasgow",name:"Glasgow",country:"UK",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
+  {id:"bristol",name:"Bristol",country:"UK",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
+  {id:"york",name:"York",country:"UK",flag:"🏙️",tier:"data",n:2,hook:"Powered by Data &amp; AI",on:true},
+  {id:"brighton",name:"Brighton",country:"UK",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
+  {id:"oxford",name:"Oxford",country:"UK",flag:"🏙️",tier:"data",n:2,hook:"Powered by Data &amp; AI",on:true},
+  {id:"dublin",name:"Dublin",country:"Ireland",flag:"🏙️",tier:"data",n:5,hook:"Powered by Data &amp; AI",on:true},
+  {id:"cork",name:"Cork",country:"Ireland",flag:"🏙️",tier:"data",n:2,hook:"Powered by Data &amp; AI",on:true},
+  {id:"galway",name:"Galway",country:"Ireland",flag:"🏙️",tier:"data",n:2,hook:"Powered by Data &amp; AI",on:true},
+  {id:"copenhagen",name:"Copenhagen",country:"Denmark",flag:"🇩🇰",tier:"verified",n:7,hook:"Powered by Data &amp; AI",on:true},
+  {id:"aarhus",name:"Aarhus",country:"Denmark",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
+  {id:"stockholm",name:"Stockholm",country:"Sweden",flag:"🇸🇪",tier:"data",n:6,hook:"Powered by Data &amp; AI",on:true},
+  {id:"gothenburg",name:"Gothenburg",country:"Sweden",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
+  {id:"malmö",name:"Malmö",country:"Sweden",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
+  {id:"oslo",name:"Oslo",country:"Norway",flag:"🇳🇴",tier:"data",n:5,hook:"Powered by Data &amp; AI",on:true},
+  {id:"bergen",name:"Bergen",country:"Norway",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
+  {id:"helsinki",name:"Helsinki",country:"Finland",flag:"🏙️",tier:"data",n:4,hook:"Powered by Data &amp; AI",on:true},
+  {id:"rovaniemi",name:"Rovaniemi",country:"Finland",flag:"🏙️",tier:"data",n:2,hook:"Powered by Data &amp; AI",on:true},
+  {id:"reykjavik",name:"Reykjavik",country:"Iceland",flag:"🏙️",tier:"data",n:2,hook:"Powered by Data &amp; AI",on:true},
+  {id:"prague",name:"Prague",country:"Czech Rep",flag:"🇨🇿",tier:"data",n:6,hook:"Powered by Data &amp; AI",on:true},
+  {id:"brno",name:"Brno",country:"Czech Rep",flag:"🏙️",tier:"data",n:2,hook:"Powered by Data &amp; AI",on:true},
+  {id:"budapest",name:"Budapest",country:"Hungary",flag:"🇭🇺",tier:"data",n:6,hook:"Powered by Data &amp; AI",on:true},
+  {id:"warsaw",name:"Warsaw",country:"Poland",flag:"🇵🇱",tier:"data",n:4,hook:"Powered by Data &amp; AI",on:true},
+  {id:"krakow",name:"Krakow",country:"Poland",flag:"🇵🇱",tier:"data",n:4,hook:"Powered by Data &amp; AI",on:true},
+  {id:"gdansk",name:"Gdansk",country:"Poland",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
+  {id:"wroclaw",name:"Wroclaw",country:"Poland",flag:"🏙️",tier:"data",n:2,hook:"Powered by Data &amp; AI",on:true},
+  {id:"bratislava",name:"Bratislava",country:"Slovakia",flag:"🏙️",tier:"data",n:2,hook:"Powered by Data &amp; AI",on:true},
+  {id:"ljubljana",name:"Ljubljana",country:"Slovenia",flag:"🏙️",tier:"data",n:2,hook:"Powered by Data &amp; AI",on:true},
+  {id:"dubrovnik",name:"Dubrovnik",country:"Croatia",flag:"🇭🇷",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
+  {id:"split",name:"Split",country:"Croatia",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
+  {id:"zagreb",name:"Zagreb",country:"Croatia",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
+  {id:"belgrade",name:"Belgrade",country:"Serbia",flag:"🏙️",tier:"data",n:4,hook:"Powered by Data &amp; AI",on:true},
+  {id:"bucharest",name:"Bucharest",country:"Romania",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
+  {id:"cluj_napoca",name:"Cluj-Napoca",country:"Romania",flag:"🏙️",tier:"data",n:2,hook:"Powered by Data &amp; AI",on:true},
+  {id:"sofia",name:"Sofia",country:"Bulgaria",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
+  {id:"plovdiv",name:"Plovdiv",country:"Bulgaria",flag:"🏙️",tier:"data",n:2,hook:"Powered by Data &amp; AI",on:true},
+  {id:"sarajevo",name:"Sarajevo",country:"Bosnia",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
+  {id:"skopje",name:"Skopje",country:"North Macedonia",flag:"🏙️",tier:"data",n:2,hook:"Powered by Data &amp; AI",on:true},
+  {id:"tirana",name:"Tirana",country:"Albania",flag:"🏙️",tier:"data",n:2,hook:"Powered by Data &amp; AI",on:true},
+  {id:"tallinn",name:"Tallinn",country:"Estonia",flag:"🇪🇪",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
+  {id:"riga",name:"Riga",country:"Latvia",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
+  {id:"vilnius",name:"Vilnius",country:"Lithuania",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
+  {id:"athens",name:"Athens",country:"Greece",flag:"🇬🇷",tier:"data",n:5,hook:"Powered by Data &amp; AI",on:true},
+  {id:"thessaloniki",name:"Thessaloniki",country:"Greece",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
+  {id:"santorini",name:"Santorini",country:"Greece",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
+  {id:"mykonos",name:"Mykonos",country:"Greece",flag:"🏙️",tier:"data",n:2,hook:"Powered by Data &amp; AI",on:true},
+  {id:"heraklion_(crete)",name:"Heraklion (Crete)",country:"Greece",flag:"🏙️",tier:"data",n:2,hook:"Powered by Data &amp; AI",on:true},
+  {id:"rhodes",name:"Rhodes",country:"Greece",flag:"🏙️",tier:"data",n:2,hook:"Powered by Data &amp; AI",on:true},
+  {id:"valletta",name:"Valletta",country:"Malta",flag:"🇲🇹",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
+  {id:"limassol",name:"Limassol",country:"Cyprus",flag:"🏙️",tier:"data",n:2,hook:"Powered by Data &amp; AI",on:true},
+  {id:"nicosia",name:"Nicosia",country:"Cyprus",flag:"🏙️",tier:"data",n:2,hook:"Powered by Data &amp; AI",on:true},
+  {id:"luxembourg_city",name:"Luxembourg City",country:"Luxembourg",flag:"🏙️",tier:"data",n:2,hook:"Powered by Data &amp; AI",on:true},
+  {id:"kotor",name:"Kotor",country:"Montenegro",flag:"🏙️",tier:"data",n:2,hook:"Powered by Data &amp; AI",on:true},
 ];
 
 var NH = {
@@ -1596,11 +1655,7 @@ function renderDropdown(query) {
     dd.innerHTML = '<div class="cd-empty">No cities found — more coming soon</div>';
   } else {
     dd.innerHTML = filtered.map(function(c){
-      var tierBadge = c.tier==='verified'
-        ? '<span class="tier-verified tier-inline">✦ Verified</span>'
-        : c.tier==='data'
-        ? '<span class="tier-verified tier-inline" style="background:rgba(43,92,138,0.12);color:var(--blue);border-color:rgba(43,92,138,0.25);">◉ Real data</span>'
-        : '<span class="tier-editorial tier-inline">◎ Editorial</span>';
+      var tierBadge = '';
       return '<div class="cd-item" '+(c.on?'onclick="pickCity(\''+c.id+'\');"':'')+'>'+
         '<span class="cd-flag">'+c.flag+'</span>'+
         '<div class="cd-info">'+
@@ -1713,11 +1768,7 @@ function renderResults(){
   document.getElementById("now-showing").textContent= city.name+" · "+persona.name+(S.budget?" · Budget":"");
   var rh = document.getElementById("results-header");
   if(rh) rh.style.display="flex";
-  var tierLabel = city.tier==='verified'
-    ? '<span class="tier-verified">✦ Verified — OSM + Google Places + editorial validation</span>'
-    : city.tier==='data'
-    ? '<span class="tier-verified" style="background:rgba(43,92,138,0.08);color:var(--blue);">◉ Real data — OSM + Google Places</span>'
-    : '<span class="tier-editorial">◎ Editorial — expert travel research</span>';
+  var tierLabel = '<span style="font-family:var(--f-mono);font-size:0.6rem;letter-spacing:0.06em;color:var(--ink50)">Powered by Data &amp; AI</span>';
   document.getElementById("issue-meta").innerHTML=city.n+" areas &nbsp;·&nbsp; "+tierLabel;
 
   var strip=document.getElementById("p-strip");
@@ -1752,7 +1803,7 @@ function renderResults(){
     penSection='<div class="penalty-note">⚠ Lower '+top.penalty.fired[0].lbl.toLowerCase().replace(' below threshold','')+' rating for this area — check recent reviews before booking.</div>';
   }
 
-  var tierNote=city.tier==='verified'?'OSM + Google Places + validated':city.tier==='data'?'OSM + Google Places data':'Expert editorial research';
+  var tierNote='Powered by Data &amp; AI';
   var featureHtml=
     '<div class="feature-card anim" data-hood="'+top.id+'" data-detail="1">'+
       '<div class="fc-eyebrow">Best match for '+persona.name+'s'+(S.budget?' · Budget':'')+' in '+city.name+' &nbsp;·&nbsp; '+tierNote+'</div>'+
@@ -1872,11 +1923,7 @@ function handleMapOverlayClick(e){
 function pickCity(id){
   S.city=id;
   var city = CITIES.find(function(c){return c.id===id;});
-  var tierHTML = city.tier==='verified'
-    ? ' <span class="tier-verified tier-inline">✦ Verified</span>'
-    : city.tier==='data'
-    ? ' <span class="tier-verified tier-inline" style="background:rgba(43,92,138,0.12);color:var(--blue);border-color:rgba(43,92,138,0.25);">◉ Real data</span>'
-    : ' <span class="tier-editorial tier-inline">◎ Editorial</span>';
+  var tierHTML = '';
   document.getElementById("cs-flag").textContent = city.flag;
   document.getElementById("cs-name").innerHTML = city.name + tierHTML;
   // show selected pill, hide search
