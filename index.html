@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>LocaleChoice — Find your neighbourhood in Europe</title>
-<meta name="description" content="Ranked neighbourhood guide for 110 European cities. Find where to stay based on your travel style — solo, family, foodie or culture. Scored from real OpenStreetMap data and expert editorial research."/>
-<meta property="og:title" content="LocaleChoice — European Neighbourhood Picker"/>
+<title>LocaleChoice — The right neighbourhood in Europe, ranked for how you travel</title>
+<meta name="description" content="The right neighbourhood in Europe, ranked for the way you travel. 110 cities, 384 neighbourhoods scored for solo explorers, families, foodies and culture seekers."/>
+<meta property="og:title" content="LocaleChoice — The right neighbourhood in Europe, ranked for how you travel"/>
 <meta property="og:description" content="110 cities. 384 neighbourhoods. Ranked by what matters to you."/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -71,13 +71,13 @@ body::before{
 .nav-badge{padding:5px 14px;border-radius:99px;border:1px solid rgba(255,255,255,0.2);font-size:0.72rem;font-family:var(--f-mono);color:rgba(255,255,255,0.5);letter-spacing:0.04em;}
 
 /* ── HERO — compact banner ── */
-.hero{background:var(--ink);padding:0.75rem 2rem;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;}
+.hero{background:var(--ink);padding:0.6rem 2rem;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;}
 .hero::after{content:'';position:absolute;right:-40px;top:-40px;width:140px;height:140px;border-radius:50%;background:var(--brass);opacity:0.08;pointer-events:none;}
-.hero-left{display:flex;align-items:baseline;gap:1rem;flex-wrap:wrap;}
+.hero-left{display:flex;flex-direction:column;align-items:flex-start;gap:0.15rem;}
 .hero-vol{font-family:var(--f-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.3);}
 .hero-headline{font-family:var(--f-display);font-size:clamp(1.4rem,2.5vw,1.9rem);font-weight:900;line-height:1;color:var(--cream);letter-spacing:-0.01em;text-transform:uppercase;}
 .hero-headline em{font-style:italic;color:var(--brass);font-family:var(--f-serif);font-weight:700;font-size:clamp(1.5rem,2.7vw,2rem);text-transform:none;line-height:1;}
-.hero-sub{display:none;}
+.hero-sub{font-family:var(--f-body);font-size:0.78rem;color:rgba(255,255,255,0.45);letter-spacing:0.01em;font-weight:400;}
 .hero-bottom{display:none;}
 .hero-right{display:flex;align-items:center;gap:10px;flex-shrink:0;position:relative;z-index:1;}
 .hero-cta{display:inline-flex;align-items:center;gap:7px;padding:7px 16px;border-radius:var(--r-xl);background:var(--blue);color:white;font-family:var(--f-display);font-size:0.88rem;font-weight:700;letter-spacing:0.03em;text-transform:uppercase;cursor:pointer;border:none;transition:all 0.18s;}
@@ -207,7 +207,7 @@ body::before{
 .sc-desc{font-size:0.75rem;color:var(--ink50);line-height:1.5;margin-bottom:10px}
 .sc-bars{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
 .sb-row{display:flex;align-items:center;gap:6px}
-.sb-lbl{font-family:var(--f-mono);font-size:0.58rem;text-transform:uppercase;letter-spacing:0.04em;color:var(--ink50);width:40px;flex-shrink:0;}
+.sb-lbl{font-family:var(--f-mono);font-size:0.58rem;text-transform:uppercase;letter-spacing:0.04em;color:var(--ink50);width:52px;flex-shrink:0;}
 .sb-right{flex:1;display:flex;flex-direction:column;gap:2px}
 .sb-track{width:100%;height:3px;background:var(--cream2);border-radius:99px;overflow:hidden}
 .sb-fill{height:100%;border-radius:99px;width:0%;transition:width 0.85s cubic-bezier(0.23,1,0.32,1)}
@@ -563,20 +563,16 @@ body::before{
 
 <nav class="nav">
   <div class="logo">Locale<em>Choice</em></div>
-  <div class="nav-pills">
-    <a class="nav-pill active">Area Picker</a>
-  </div>
-  <div class="nav-badge">EU EDITION</div>
 </nav>
 
 <div class="hero">
   <div class="hero-left">
-    <div class="hero-vol">Area Picker</div>
-    <h1 class="hero-headline">Where in <em>Europe</em> do you stay?</h1>
+    <div class="hero-vol">110 cities · 384 neighbourhoods</div>
+    <h1 class="hero-headline">The right neighbourhood<br>in <em>Europe.</em></h1>
+    <div class="hero-sub">Ranked for the way you travel.</div>
   </div>
   <div class="hero-right">
     <button class="hero-cta" onclick="openQ()">Personalise →</button>
-    <div class="hero-date" id="hero-date"></div>
   </div>
 </div>
 
@@ -1851,7 +1847,7 @@ function renderResults(){
     var penFlag=n.penalty&&n.penalty.fired.length>0
       ?'<div class="sc-db"><span>⚠</span><span>Lower '+n.penalty.fired[0].lbl.toLowerCase().replace(' below threshold','')+' rating — check reviews before booking</span></div>'
       :'';
-    var FLABEL={walk:"Walk",transit:"Transit",safety:"Safety",food:"Food",vibe:"Vibe"};
+    var FLABEL={walk:"Walk",transit:"Transit",safety:"Safety",food:"Food",vibe:"Vibe",family:"Family",cost:"Cost"};
     var barsHtml=dispF.map(function(f){
       var val=n.f[f],ctxR=ctxOf(val,f,S.city),l=lv(val);
       var fc=ctxR.c==="ctx-gold"?"gd":l;
@@ -1957,8 +1953,7 @@ function selQ(qid,val,el){S.ans[qid]=val;el.closest(".q-opts").querySelectorAll(
 function applyQ(){closeQ();renderResults();}
 
 // ── QUESTIONNAIRE ──────────────────────────────────────────────────────────────
-var d=new Date();
-document.getElementById("hero-date").textContent=String(d.getMonth()+1).padStart(2,"0")+" / "+String(d.getDate()).padStart(2,"0")+" / "+d.getFullYear();
+
 renderCities();
 renderPersonas();
 
