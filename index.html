@@ -569,6 +569,17 @@ body::before{
   }
 })();
 </script>
+<!-- Google Analytics GA4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-JP4YG5NBXW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-JP4YG5NBXW', {
+    page_title: 'LocaleChoice',
+    page_location: window.location.href
+  });
+</script>
 </head>
 <body>
 
@@ -1584,6 +1595,13 @@ var INS = {
 
 // ── STATE ──────────────────────────────────────────────────────────────────────
 var S = {city:null, persona:"solo", ans:{}, budget:false};
+
+// ── GOOGLE ANALYTICS 4 — CUSTOM EVENTS ─────────────────────────────────────
+function gaEvent(name, params) {
+  if (typeof gtag !== 'undefined') {
+    gtag('event', name, params || {});
+  }
+}
 var AID = "REPLACE_WITH_YOUR_AID";
 
 // ── SCORING ────────────────────────────────────────────────────────────────────
@@ -1844,7 +1862,7 @@ function renderResults(){
       '</div>'+
       (insTopText?'<div class="fc-insight">✦ '+insTopText+'</div>':'')+
       penSection+
-      '<button class="fc-book" onclick="window.open(\''+bookUrl+'\',\'_blank\')">See stays in '+top.name+' →</button>'+
+      '<button class="fc-book" onclick="gaEvent(\'hotel_search_clicked\',{city:\''+S.city+'\',neighbourhood:\''+top.name+'\',persona:\''+S.persona+'\',rank:1});window.open(\''+bookUrl+'\',\'_blank\')">See stays in '+top.name+' →</button>'+
     '</div>';
 
   var shortlistLabel='<div class="shortlist-label">Also worth considering <span>in '+city.name+'</span></div>';
@@ -1904,6 +1922,7 @@ function renderResults(){
 
 // ── ACTIONS ────────────────────────────────────────────────────────────────────
 function openMap(){
+  gaEvent('map_opened', {city: S.city || 'none', persona: S.persona});
   document.getElementById("map-overlay").classList.add("open");
   document.body.style.overflow="hidden";
   // Give the overlay CSS transition time to make container visible,
@@ -1941,8 +1960,9 @@ function pickCity(id){
   // show map button
   var mb=document.getElementById("map-btn"); if(mb) mb.style.display="flex";
   renderPersonas();renderResults();
+  gaEvent('city_selected', {city_name: city.name, city_id: id});
 }
-function pickPersona(id){S.persona=id;renderPersonas();renderResults();}
+function pickPersona(id){S.persona=id;gaEvent('persona_selected',{persona:id,city:S.city||'none'});renderPersonas();renderResults();}
 function toggleBudget(){
   S.budget=!S.budget;
   var t=document.getElementById("toggle-track"),l=document.getElementById("toggle-lbl"),b=document.getElementById("budget-tag");
@@ -2317,6 +2337,12 @@ function fetchInsight(cityKey, hoodName, persona, cb) {
 }
 
 function openDetail(cityKey, hoodId, hoodName, hoodTags, hoodScore, hoodDesc) {
+  gaEvent('neighbourhood_explored', {
+    city: cityKey,
+    neighbourhood: hoodName,
+    persona: S.persona,
+    score: hoodScore
+  });
   var p = PERSONAS.find(function(p){ return p.id === S.persona; }) || PERSONAS[0];
 
   // Header
