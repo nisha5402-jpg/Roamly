@@ -2327,25 +2327,124 @@ function openDetail(cityKey, hoodId, hoodName, hoodTags, hoodScore, hoodDesc) {
       return;
     }
 
-    var html =
+    // ── helpers ──────────────────────────────────────────────
+    function hlItem(icon, name, note, badge) {
+      return '<div class="dp-hl-item">' +
+        '<div class="dp-hl-icon">' + icon + '</div>' +
+        '<div class="dp-hl-info">' +
+          '<div class="dp-hl-name">' + name + '</div>' +
+          (note ? '<div class="dp-hl-note">' + note + '</div>' : '') +
+        '</div>' +
+        (badge || '') +
+      '</div>';
+    }
+    function hlSection(title, items) {
+      if (!items || !items.length) return '';
+      var s = '<div class="dp-hl-group"><div class="dp-hl-title">' + title + '</div>';
+      items.forEach(function(i){ s += i; });
+      return s + '</div>';
+    }
+
+    var h  = insight.highlights || {};
+    var lg = insight.logistics  || {};
+
+    // food
+    var foodItems = (Array.isArray(h.food) ? h.food : [])
+      .filter(function(f){ return f && f.name; })
+      .map(function(f){
+        return hlItem('🍽', f.name, f.note,
+          f.price ? '<span class="dp-hl-badge price">' + f.price + '</span>' : '');
+      });
+
+    // culture
+    var cultItems = (Array.isArray(h.culture) ? h.culture : [])
+      .filter(function(f){ return f && f.name; })
+      .map(function(f){
+        var badge = f.free === true
+          ? '<span class="dp-hl-badge free">Free</span>'
+          : f.free === false ? '<span class="dp-hl-badge paid">Paid</span>' : '';
+        return hlItem('🏛', f.name, f.note, badge);
+      });
+
+    // beaches
+    var beachItems = (Array.isArray(h.beaches) ? h.beaches : [])
+      .filter(function(f){ return f && f.name && f.name !== 'null' && f.name !== null; })
+      .map(function(f){ return hlItem('🏖', f.name, f.note, ''); });
+
+    // bars & cafes
+    var barItems = (Array.isArray(h.bars_cafes) ? h.bars_cafes : [])
+      .filter(function(f){ return f && f.name; })
+      .map(function(f){
+        var icon = f.type==='cafe' ? '☕' : f.type==='rooftop' ? '🌆' : f.type==='wine' ? '🍷' : '🍺';
+        return hlItem(icon, f.name, f.note,
+          f.type ? '<span class="dp-hl-badge">' + f.type + '</span>' : '');
+      });
+
+    // markets
+    var mktItems = (Array.isArray(h.markets) ? h.markets : [])
+      .filter(function(f){ return f && f.name && f.name !== 'null' && f.name !== null; })
+      .map(function(f){ return hlItem('🛍', f.name, f.note, ''); });
+
+    // local insight
+    var localBlock = '';
+    if (insight.local_insight && insight.local_insight.text) {
+      var li = insight.local_insight;
+      localBlock = '<div class="dp-local">' +
+        '<div class="dp-local-label">📍 Local insight' +
+          (li.type ? ' <span class="dp-local-type">' + li.type + '</span>' : '') +
+        '</div>' +
+        '<div class="dp-local-text">' + li.text + '</div>' +
+      '</div>';
+    }
+
+    // not for
+    var notForBlock = insight.not_for
+      ? '<div class="dp-not-for"><strong>⚠ Not ideal if</strong>' + insight.not_for + '</div>'
+      : '';
+
+    // day sketch
+    var dayBlock = insight.day_sketch
+      ? '<div class="dp-day-sketch"><strong>☀ A day here</strong>' + insight.day_sketch + '</div>'
+      : '';
+
+    // logistics
+    var logBlock = '';
+    if (lg.airport_transfer || lg.getting_around || (lg.best_base_for && lg.best_base_for.length)) {
+      logBlock = '<div class="dp-hl-title">Getting around</div>' +
+        '<div class="dp-logistics">';
+      if (lg.airport_transfer)
+        logBlock += '<div class="dp-log-row"><span class="dp-log-label">Airport</span>' +
+          '<span class="dp-log-val">' + lg.airport_transfer + '</span></div>';
+      if (lg.getting_around)
+        logBlock += '<div class="dp-log-row"><span class="dp-log-label">Daily</span>' +
+          '<span class="dp-log-val">' + lg.getting_around + '</span></div>';
+      if (lg.best_base_for && lg.best_base_for.length)
+        logBlock += '<div class="dp-log-row"><span class="dp-log-label">Day trips</span>' +
+          '<div class="dp-trips">' +
+          lg.best_base_for.map(function(t){
+            return '<span class="dp-trip-tag">→ ' + t + '</span>';
+          }).join('') + '</div></div>';
+      logBlock += '</div>';
+    }
+
+    // watch out
+    var watchBlock = (insight.watch_out && insight.watch_out !== 'null' && insight.watch_out !== null)
+      ? '<div class="dp-watch"><strong>⚡ Watch out</strong>' + insight.watch_out + '</div>'
+      : '';
+
+    body.innerHTML =
       '<div class="dp-section-label">Why it works for you</div>' +
       '<div class="dp-best-for">' + insight.best_for + '</div>' +
-      '<div class="dp-section-label">Top highlights</div>' +
-      '<div class="dp-highlights">';
-
-    (insight.highlights || []).forEach(function(h) {
-      html +=
-        '<div class="dp-highlight">' +
-          '<div class="dp-hi-icon">' + h.icon + '</div>' +
-          '<div class="dp-hi-text">' +
-            '<div class="dp-hi-name">' + h.name + '</div>' +
-            '<div class="dp-hi-note">' + h.note + '</div>' +
-          '</div>' +
-        '</div>';
-    });
-
-    html += '</div>';
-    body.innerHTML = html;
+      notForBlock +
+      dayBlock +
+      localBlock +
+      hlSection('🍽 Food — budget to splurge', foodItems) +
+      hlSection('🏛 Culture & monuments', cultItems) +
+      (beachItems.length ? hlSection('🏖 Beaches', beachItems) : '') +
+      hlSection('☕ Bars & cafes', barItems) +
+      (mktItems.length ? hlSection('🛍 Markets', mktItems) : '') +
+      logBlock +
+      watchBlock;
   });
 }
 
