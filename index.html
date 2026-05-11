@@ -82,7 +82,6 @@ body::before{
 .hero-right{display:flex;align-items:center;gap:10px;flex-shrink:0;position:relative;z-index:1;}
 .hero-cta{display:inline-flex;align-items:center;gap:7px;padding:7px 16px;border-radius:var(--r-xl);background:var(--blue);color:white;font-family:var(--f-display);font-size:0.88rem;font-weight:700;letter-spacing:0.03em;text-transform:uppercase;cursor:pointer;border:none;transition:all 0.18s;}
 .hero-cta:hover{background:var(--blue-d)}
-.hero-date{font-family:var(--f-mono);font-size:0.6rem;color:rgba(255,255,255,0.22);letter-spacing:0.06em;}
 
 /* ── MAIN SHELL ── */
 .shell{display:block;min-height:calc(100vh - 104px);}
@@ -452,6 +451,20 @@ body::before{
 .detail-backdrop{position:fixed;inset:0;z-index:449;display:none;cursor:pointer}
 .detail-backdrop.on{display:block}
 
+
+/* ── SHARE BUTTON ── */
+.share-bar{display:none;align-items:center;gap:10px;
+  padding:10px 0 4px;margin-bottom:4px}
+.share-bar.show{display:flex}
+.share-btn{display:inline-flex;align-items:center;gap:6px;
+  padding:7px 14px;border-radius:99px;border:1.5px solid var(--ink20);
+  background:white;font-family:var(--f-mono);font-size:0.6rem;
+  letter-spacing:0.06em;text-transform:uppercase;cursor:pointer;
+  color:var(--ink50);transition:all 0.15s;font-weight:600}
+.share-btn:hover{border-color:var(--blue);color:var(--blue);background:rgba(43,92,138,0.04)}
+.share-btn.copied{border-color:#2ECC71;color:#2ECC71;background:rgba(46,204,113,0.06)}
+.share-label{font-family:var(--f-mono);font-size:0.58rem;letter-spacing:0.06em;
+  text-transform:uppercase;color:var(--ink50)}
 /* ── LEFT PANEL WITH CARDS ── */
 #panel{width:100%;background:var(--cream);position:relative}
 #results-panel{width:100%;padding:0 0 40px}
@@ -641,6 +654,12 @@ body::before{
       <div id="results-header" style="display:none;align-items:baseline;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:4px;padding-top:4px">
         <div class="now-showing" id="now-showing"></div>
         <div class="issue-meta" id="issue-meta"></div>
+      </div>
+      <div class="share-bar" id="share-bar">
+        <span class="share-label">Share</span>
+        <button class="share-btn" id="share-btn" onclick="shareResult()">
+          🔗 Copy link
+        </button>
       </div>
       <div id="results">
         <div class="empty">
@@ -1730,6 +1749,8 @@ function resetCity() {
     '<div class="empty"><div class="empty-title">Select a city</div><div class="empty-sub">Choose from the left panel to see ranked neighbourhoods.</div></div>';
   var rh2 = document.getElementById("results-header");
   if(rh2) rh2.style.display="none";
+  var sb2 = document.getElementById("share-bar");
+  if(sb2) sb2.classList.remove("show");
   clearMapMarkers();
   currentRanked = [];
   if (document.getElementById('map-key')) document.getElementById('map-key').style.display='none';
@@ -1793,6 +1814,8 @@ function renderResults(){
   document.getElementById("now-showing").textContent= city.name+" · "+persona.name+(S.budget?" · Budget":"");
   var rh = document.getElementById("results-header");
   if(rh) rh.style.display="flex";
+  var sb = document.getElementById("share-bar");
+  if(sb) sb.classList.add("show");
   var tierLabel = '<span style="font-family:var(--f-mono);font-size:0.6rem;letter-spacing:0.06em;color:var(--ink50)">Powered by Data &amp; AI</span>';
   document.getElementById("issue-meta").innerHTML=city.n+" areas &nbsp;·&nbsp; "+tierLabel;
 
@@ -1836,7 +1859,7 @@ function renderResults(){
         '<div class="fc-left">'+
           '<div class="fc-name-row">'+
             '<div class="fc-name">'+top.name+'</div>'+
-            '<span class="fc-explore-badge">Tap for highlights &amp; tips →</span>'+
+            '<span class="fc-explore-badge" onclick="event.stopPropagation();trackBadge(S.city,S.persona,1)">Tap for highlights &amp; tips →</span>'+
           '</div>'+
           '<div class="fc-tags">'+top.tags.split(" · ").map(function(t){return '<span class="fc-tag">'+t+'</span><span class="fc-tag" style="opacity:0.3">·</span>';}).join("")+'</div>'+
           '<div class="fc-desc">'+top.desc+'</div>'+
@@ -1895,7 +1918,7 @@ function renderResults(){
         '<div class="sc-eyebrow">'+n.tags.split(" · ").map(function(t){return '<span>'+t+'</span>';}).join('<span class="sc-dot"></span>')+'</div>'+
         '<div class="sc-name-row">'+
           '<div class="sc-name">'+n.name+'</div>'+
-          '<span class="sc-explore-badge">Highlights &amp; tips →</span>'+
+          '<span class="sc-explore-badge" onclick="event.stopPropagation();trackBadge(S.city,S.persona,'+(i+2)+')">Highlights &amp; tips →</span>'+
         '</div>'+
         '<div class="sc-desc">'+n.desc+'</div>'+
         '<div class="sc-bars">'+barsHtml+'</div>'+
@@ -1965,6 +1988,7 @@ function pickCity(id){
 function pickPersona(id){S.persona=id;gaEvent('persona_selected',{persona:id,city:S.city||'none'});renderPersonas();renderResults();}
 function toggleBudget(){
   S.budget=!S.budget;
+  gaEvent('budget_toggle',{enabled:S.budget,city:S.city||'none'});
   var t=document.getElementById("toggle-track"),l=document.getElementById("toggle-lbl"),b=document.getElementById("budget-tag");
   t.classList.toggle("on",S.budget);l.textContent=S.budget?"On":"Off";if(b)b.classList.toggle("show",S.budget);
   renderResults();
@@ -2266,6 +2290,7 @@ function scoreColorClass(s) {
 
 // Add map-highlight CSS safely after DOM ready
 document.addEventListener('DOMContentLoaded', function() {
+  readShareParams();
   var style = document.createElement('style');
   style.textContent = '.nb-card.map-highlight{border-color:var(--brass)!important;background:rgba(191,160,64,0.1)!important;transition:all 0.3s}';
   document.head.appendChild(style);
@@ -2506,7 +2531,66 @@ function showInsightsToast() {
   setTimeout(function(){ t.classList.add('show'); }, 400);
   setTimeout(function(){ t.classList.remove('show'); }, 6000);
 }
+
+// ── SHARE RESULT ─────────────────────────────────────────────────────────────
+function shareResult() {
+  if (!S.city) return;
+  var url = window.location.origin + window.location.pathname +
+            '?city=' + encodeURIComponent(S.city) +
+            '&persona=' + encodeURIComponent(S.persona) +
+            (S.budget ? '&budget=1' : '');
+
+  // Try native share sheet first (mobile)
+  if (navigator.share) {
+    navigator.share({
+      title: 'LocaleChoice — ' + S.city + ' for ' + S.persona + ' travellers',
+      text: 'Check out the best neighbourhoods in ' + S.city + ' ranked for ' + S.persona + ' travellers',
+      url: url
+    }).then(function() {
+      gaEvent('result_shared', {method: 'native_share', city: S.city, persona: S.persona});
+    }).catch(function(){});
+    return;
+  }
+
+  // Desktop — copy to clipboard
+  navigator.clipboard.writeText(url).then(function() {
+    var btn = document.getElementById('share-btn');
+    var original = btn.innerHTML;
+    btn.innerHTML = '✓ Link copied!';
+    btn.classList.add('copied');
+    setTimeout(function() {
+      btn.innerHTML = original;
+      btn.classList.remove('copied');
+    }, 2500);
+    gaEvent('result_shared', {method: 'clipboard', city: S.city, persona: S.persona});
+  }).catch(function() {
+    // Fallback — prompt with the URL
+    window.prompt('Copy this link:', url);
+    gaEvent('result_shared', {method: 'prompt', city: S.city, persona: S.persona});
+  });
+}
+
+// ── READ SHARED URL PARAMS ON LOAD ───────────────────────────────────────────
+function readShareParams() {
+  var params = new URLSearchParams(window.location.search);
+  var city    = params.get('city');
+  var persona = params.get('persona');
+  var budget  = params.get('budget');
+  if (city) {
+    // Auto-select city and persona from shared link
+    if (persona && ['solo','family','foodie','culture'].includes(persona)) {
+      S.persona = persona;
+    }
+    if (budget === '1') S.budget = true;
+    pickCity(city);
+    gaEvent('shared_link_opened', {city: city, persona: S.persona});
+  }
+}
+function trackBadge(city, persona, rank) {
+  gaEvent('highlights_badge_clicked', {city: city||'none', persona: persona, card_rank: rank});
+}
 function closeDetail() {
+  gaEvent('detail_panel_closed', {city: S.city||'none', persona: S.persona});
   document.getElementById('detail-panel').classList.remove('open');
   document.getElementById('detail-backdrop').classList.remove('on');
   document.body.style.overflow = '';
