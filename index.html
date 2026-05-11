@@ -1859,7 +1859,7 @@ function renderResults(){
         '<div class="fc-left">'+
           '<div class="fc-name-row">'+
             '<div class="fc-name">'+top.name+'</div>'+
-            '<span class="fc-explore-badge" onclick="event.stopPropagation();trackBadge(S.city,S.persona,1)">Tap for highlights &amp; tips →</span>'+
+            '<span class="fc-explore-badge" onclick="trackBadge(S.city,S.persona,1)">Tap for highlights &amp; tips →</span>'+
           '</div>'+
           '<div class="fc-tags">'+top.tags.split(" · ").map(function(t){return '<span class="fc-tag">'+t+'</span><span class="fc-tag" style="opacity:0.3">·</span>';}).join("")+'</div>'+
           '<div class="fc-desc">'+top.desc+'</div>'+
@@ -1918,7 +1918,7 @@ function renderResults(){
         '<div class="sc-eyebrow">'+n.tags.split(" · ").map(function(t){return '<span>'+t+'</span>';}).join('<span class="sc-dot"></span>')+'</div>'+
         '<div class="sc-name-row">'+
           '<div class="sc-name">'+n.name+'</div>'+
-          '<span class="sc-explore-badge" onclick="event.stopPropagation();trackBadge(S.city,S.persona,'+(i+2)+')">Highlights &amp; tips →</span>'+
+          '<span class="sc-explore-badge" onclick="trackBadge(S.city,S.persona,'+(i+2)+')">Highlights &amp; tips →</span>'+
         '</div>'+
         '<div class="sc-desc">'+n.desc+'</div>'+
         '<div class="sc-bars">'+barsHtml+'</div>'+
