@@ -453,18 +453,34 @@ body::before{
 
 
 /* ── SHARE BUTTON ── */
-.share-bar{display:none;align-items:center;gap:10px;
-  padding:10px 0 4px;margin-bottom:4px}
+.share-bar{display:none;justify-content:flex-end;align-items:center;
+  padding:8px 0 4px;margin-bottom:4px}
 .share-bar.show{display:flex}
 .share-btn{display:inline-flex;align-items:center;gap:6px;
-  padding:7px 14px;border-radius:99px;border:1.5px solid var(--ink20);
-  background:white;font-family:var(--f-mono);font-size:0.6rem;
-  letter-spacing:0.06em;text-transform:uppercase;cursor:pointer;
-  color:var(--ink50);transition:all 0.15s;font-weight:600}
+  padding:6px 14px;border-radius:99px;border:1.5px solid var(--ink20);
+  background:white;font-size:0.82rem;cursor:pointer;
+  color:var(--ink50);transition:all 0.15s}
+.share-btn em strong{font-style:italic;font-weight:700;font-family:var(--f-body);
+  font-size:0.82rem;color:var(--ink)}
 .share-btn:hover{border-color:var(--blue);color:var(--blue);background:rgba(43,92,138,0.04)}
+.share-btn:hover em strong{color:var(--blue)}
 .share-btn.copied{border-color:#2ECC71;color:#2ECC71;background:rgba(46,204,113,0.06)}
-.share-label{font-family:var(--f-mono);font-size:0.58rem;letter-spacing:0.06em;
-  text-transform:uppercase;color:var(--ink50)}
+.share-btn.copied em strong{color:#2ECC71}
+
+/* ── FOOTER ── */
+.site-footer{background:var(--ink);padding:2.5rem 2rem;margin-top:3rem}
+.footer-inner{max-width:900px;margin:0 auto;display:flex;flex-direction:column;
+  align-items:center;gap:10px;text-align:center}
+.footer-brand{font-family:var(--f-display);font-size:1.4rem;font-weight:900;
+  color:var(--cream);letter-spacing:0.02em}
+.footer-brand em{font-style:italic;color:var(--brass)}
+.footer-tagline{font-size:0.82rem;color:rgba(255,255,255,0.4);
+  font-family:var(--f-body);max-width:400px;line-height:1.5}
+.footer-contact{font-size:0.8rem;color:rgba(255,255,255,0.5)}
+.footer-contact a{color:var(--brass);text-decoration:none;font-weight:500}
+.footer-contact a:hover{color:white}
+.footer-copy{font-family:var(--f-mono);font-size:0.58rem;letter-spacing:0.08em;
+  text-transform:uppercase;color:rgba(255,255,255,0.2);margin-top:6px}
 /* ── LEFT PANEL WITH CARDS ── */
 #panel{width:100%;background:var(--cream);position:relative}
 #results-panel{width:100%;padding:0 0 40px}
@@ -593,6 +609,151 @@ body::before{
     page_location: window.location.href
   });
 </script>
+
+  <!-- ══ SEO & AI VISIBILITY ══════════════════════════════════════════════ -->
+
+  <!-- Canonical & Robots -->
+  <link rel="canonical" href="https://www.localechoice.com/"/>
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large"/>
+
+  <!-- Core Meta -->
+  <meta name="keywords" content="best neighbourhood Europe, where to stay Europe, neighbourhood ranking, European city guide, best area to stay Paris, best neighbourhood Lisbon, best area Barcelona, travel neighbourhood guide, solo travel Europe, family travel Europe"/>
+  <meta name="author" content="LocaleChoice"/>
+
+  <!-- Open Graph — controls how link looks when shared on WhatsApp, LinkedIn, Facebook -->
+  <meta property="og:type" content="website"/>
+  <meta property="og:site_name" content="LocaleChoice"/>
+  <meta property="og:url" content="https://www.localechoice.com/"/>
+  <meta property="og:title" content="LocaleChoice — Find the Right Neighbourhood in Europe"/>
+  <meta property="og:description" content="Stop guessing where to stay. LocaleChoice scores 384 European neighbourhoods across 110 cities — ranked differently for solo travellers, families, foodies and culture seekers. Book your hotel in the right part of town."/>
+  <meta property="og:image" content="https://www.localechoice.com/og-image.png"/>
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
+  <meta property="og:locale" content="en_GB"/>
+
+  <!-- Twitter / X Card -->
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:site" content="@localechoice"/>
+  <meta name="twitter:title" content="LocaleChoice — The right neighbourhood in Europe, ranked"/>
+  <meta name="twitter:description" content="384 European neighbourhoods scored and ranked for solo travellers, families, foodies and culture seekers. Find your perfect base and book direct."/>
+  <meta name="twitter:image" content="https://www.localechoice.com/og-image.png"/>
+
+  <!-- Structured Data — JSON-LD: tells Google and AI agents what LocaleChoice is -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "@id": "https://www.localechoice.com/#app",
+        "name": "LocaleChoice",
+        "url": "https://www.localechoice.com/",
+        "description": "LocaleChoice scores 384 European neighbourhoods across 110 cities and ranks them for four traveller personas — solo explorer, family, foodie and culture seeker. Users discover hyper-local neighbourhood insights, curated restaurants, day itineraries and practical travel tips, then book their hotel directly.",
+        "applicationCategory": "TravelApplication",
+        "operatingSystem": "Web",
+        "browserRequirements": "Requires JavaScript",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "EUR"
+        },
+        "featureList": [
+          "Neighbourhood ranking for 110 European cities",
+          "384 neighbourhoods scored by real data",
+          "Personalised for solo, family, foodie and culture travellers",
+          "Hyper-local neighbourhood insights",
+          "Day itinerary planning",
+          "Hotel booking integration",
+          "Interactive map with score pins"
+        ],
+        "screenshot": "https://www.localechoice.com/og-image.png",
+        "inLanguage": "en"
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://www.localechoice.com/#org",
+        "name": "LocaleChoice",
+        "url": "https://www.localechoice.com/",
+        "description": "Data-driven European neighbourhood recommendation tool helping travellers find the right part of town before they book.",
+        "email": "localechoice@gmail.com",
+        "sameAs": [
+          "https://www.localechoice.com/"
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://www.localechoice.com/#website",
+        "url": "https://www.localechoice.com/",
+        "name": "LocaleChoice",
+        "description": "Find the right neighbourhood in Europe — ranked for the way you travel.",
+        "publisher": {"@id": "https://www.localechoice.com/#org"},
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "https://www.localechoice.com/?city={city}&persona={persona}"
+          },
+          "query-input": "required name=city"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is LocaleChoice?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "LocaleChoice is a free tool that scores and ranks 384 European neighbourhoods across 110 cities using real data from OpenStreetMap and Google Places. It ranks neighbourhoods differently for four traveller types: solo explorers, families, foodies and culture seekers, so you find the exact part of town that suits your trip."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How does LocaleChoice rank neighbourhoods?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "LocaleChoice scores each neighbourhood across 7 factors: walkability, transit access, food scene, family-friendliness, safety, cost and local vibe. These factors are weighted differently for each traveller persona. A family gets higher weight on safety and parks; a foodie gets higher weight on restaurant density and quality."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Which European cities does LocaleChoice cover?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "LocaleChoice covers 110 European cities including Lisbon, Barcelona, Paris, Amsterdam, Copenhagen, Rome, Berlin, Vienna, Prague, Budapest, London, Madrid and many more. Each city has 3-12 scored neighbourhoods."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is LocaleChoice free to use?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, LocaleChoice is completely free. You can search any city, compare neighbourhoods and read full local insights at no cost."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What is the best neighbourhood to stay in Lisbon?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "It depends on how you travel. For solo explorers, Bairro Alto ranks highest in Lisbon with a walk score of 90 and vibe score of 92. For families, Estrela ranks highest with a safety score of 84 and the city's best park. For foodies, Bairro Alto is again top with the highest food density in the city."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What is the best neighbourhood to stay in Barcelona?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "LocaleChoice ranks El Born as the top neighbourhood in Barcelona for solo explorers and foodies, with high walkability and food scores. For families, Eixample ranks higher due to its grid layout, safety and proximity to parks."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+  <!-- ══ END SEO ════════════════════════════════════════════════════════════ -->
+
 </head>
 <body>
 
@@ -602,7 +763,7 @@ body::before{
 
 <div class="hero">
   <div class="hero-left">
-    <div class="hero-vol">110 cities · 384 neighbourhoods</div>
+    <div class="hero-vol">110 cities · 384 neighbourhoods analysed and experienced to give you customised answers</div>
     <h1 class="hero-headline">The right neighbourhood<br>in <em>Europe.</em></h1>
     <div class="hero-sub">Ranked for the way you travel.</div>
   </div>
@@ -656,9 +817,9 @@ body::before{
         <div class="issue-meta" id="issue-meta"></div>
       </div>
       <div class="share-bar" id="share-bar">
-        <span class="share-label">Share</span>
         <button class="share-btn" id="share-btn" onclick="shareResult()">
-          🔗 Copy link
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          <em><strong>Share this result</strong></em>
         </button>
       </div>
       <div id="results">
@@ -2556,7 +2717,7 @@ function shareResult() {
   navigator.clipboard.writeText(url).then(function() {
     var btn = document.getElementById('share-btn');
     var original = btn.innerHTML;
-    btn.innerHTML = '✓ Link copied!';
+    btn.innerHTML = '<em><strong>✓ Link copied!</strong></em>';
     btn.classList.add('copied');
     setTimeout(function() {
       btn.innerHTML = original;
@@ -2617,5 +2778,18 @@ function closeDetail() {
 <div class="insights-toast" id="insights-toast">
   👆 Tap any card to unlock highlights, local tips &amp; insider picks
 </div>
+
+<!-- ── FOOTER ── -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">Locale<em>Choice</em></div>
+    <div class="footer-tagline">The right neighbourhood in Europe, ranked for the way you travel.</div>
+    <div class="footer-contact">
+      Questions or feedback?
+      <a href="mailto:localechoice@gmail.com">localechoice@gmail.com</a>
+    </div>
+    <div class="footer-copy">© 2025 LocaleChoice · 110 cities · 384 neighbourhoods</div>
+  </div>
+</footer>
 </body>
 </html>
