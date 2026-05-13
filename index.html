@@ -817,7 +817,13 @@ body::before{
         <div class="now-showing" id="now-showing"></div>
         <div class="issue-meta" id="issue-meta"></div>
       </div>
-      <div class="share-bar" id="share-bar">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+        <a id="full-guide-link" href="#" style="display:none;align-items:center;gap:6px;
+           padding:6px 14px;border-radius:99px;background:#bfa040;color:#162030;
+           text-decoration:none;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase">
+          📖 Full neighbourhood guide →
+        </a>
+        <div class="share-bar" id="share-bar" style="margin:0">
         <button class="share-btn" id="share-btn" onclick="shareResult()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
           <em><strong>Share this result</strong></em>
@@ -1913,6 +1919,8 @@ function resetCity() {
   if(rh2) rh2.style.display="none";
   var sb2 = document.getElementById("share-bar");
   if(sb2) sb2.classList.remove("show");
+  var fg2 = document.getElementById("full-guide-link");
+  if(fg2) fg2.style.display='none';
   clearMapMarkers();
   currentRanked = [];
   if (document.getElementById('map-key')) document.getElementById('map-key').style.display='none';
@@ -1978,6 +1986,12 @@ function renderResults(){
   if(rh) rh.style.display="flex";
   var sb = document.getElementById("share-bar");
   if(sb) sb.classList.add("show");
+  // Show full guide link
+  var fg = document.getElementById("full-guide-link");
+  if(fg && S.city) {
+    fg.href = '/' + S.city;
+    fg.style.display = 'inline-flex';
+  }
   var tierLabel = '<span style="font-family:var(--f-mono);font-size:0.6rem;letter-spacing:0.06em;color:var(--ink50)">Powered by Data &amp; AI</span>';
   document.getElementById("issue-meta").innerHTML=city.n+" areas &nbsp;·&nbsp; "+tierLabel;
 
