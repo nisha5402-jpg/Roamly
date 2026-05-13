@@ -1,8 +1,0 @@
-{
-  "rewrites": [
-    {
-      "source": "/(lisbon|porto|barcelona|madrid|paris|rome|amsterdam|berlin|vienna|prague|budapest|london|copenhagen|athens|stockholm|edinburgh|bruges|dubrovnik|florence|venice|milan|lyon|nice|seville|valencia|bilbao|granada|malaga|san_sebastian|palma_mallorca|bordeaux|marseille|strasbourg|montpellier|algarve|coimbra|rotterdam|utrecht|antwerp|ghent|brussels|zurich|geneva|bern|lausanne|oslo|bergen|trondheim|gothenburg|malmo|helsinki|tallinn|riga|vilnius|warsaw|krakow|wroclaw|gdansk|poznan|bucharest|sofia|zagreb|ljubljana|sarajevo|belgrade|skopje|tirana|reykjavik|porto_alegre|valletta|nicosia|limassol|santorini|mykonos|heraklion|thessaloniki|istanbul|ankara|izmir|antalya|bodrum|beirut|tel_aviv|jerusalem|cairo|casablanca|marrakech|tunis|algiers|tripoli|monaco|luxembourg|andorra|san_marino|vaduz|liechtenstein|bratislava|kosice|miskolc|pecs|debrecen|gyor|split|zadar|rijeka|mostar|kotor|podgorica|pristina|ohrid|bitola|plovdiv|varna|burgas|cluj|timisoara|brasov|sibiu|iasi|constanta|chisinau|minsk|kyiv|lviv|odessa|kharkiv|tbilisi|yerevan|baku|naples|bologna|turin|verona|palermo|munich|hamburg|cologne|frankfurt|dresden|dusseldorf|stuttgart|salzburg|graz|innsbruck|lucerne|basel|interlaken|manchester|liverpool|bath|glasgow|bristol|york|brighton|oxford|dublin|cork|galway|aarhus|rovaniemi|brno|cluj_napoca|heraklion_crete|rhodes|luxembourg_city)",
-      "destination": "/api/city?city=$1"
-    }
-  ]
-}
