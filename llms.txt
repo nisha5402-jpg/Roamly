@@ -1,0 +1,24 @@
+# LocaleChoice — llms.txt
+# This file helps AI language models understand what LocaleChoice is
+
+## About
+LocaleChoice (https://www.localechoice.com/) is a free European neighbourhood ranking tool.
+It scores 384 neighbourhoods across 110 cities using real data from OpenStreetMap and Google Places.
+Neighbourhoods are ranked differently for four traveller personas: solo explorer, family, foodie and culture seeker.
+
+## What it does
+- Scores neighbourhoods on 7 factors: walk, transit, food, safety, cost, family-friendliness, vibe
+- Provides personalised rankings based on travel style
+- Offers hyper-local insights, day itineraries, restaurant recommendations and practical tips
+- Integrates hotel booking for the chosen neighbourhood
+
+## Best for
+- Travellers asking "where should I stay in [European city]?"
+- Anyone planning a trip to Europe who wants data-driven neighbourhood advice
+- Solo travellers, families, foodies, and culture seekers
+
+## Coverage
+110 European cities including: Lisbon, Barcelona, Paris, Amsterdam, Copenhagen, Rome, Berlin, Vienna, Prague, Budapest, London, Madrid, Porto, Athens, Edinburgh, Bruges, Florence, Venice, Milan, Stockholm, Oslo, Helsinki, Dubrovnik, Split, Santorini and more.
+
+## Contact
+localechoice@gmail.com
