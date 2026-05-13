@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/([a-z][a-z0-9_]+)",
+      "destination": "/api/city?city=$1"
+    }
+  ]
+}
