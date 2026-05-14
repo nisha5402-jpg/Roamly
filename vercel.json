@@ -1,0 +1,28 @@
+{
+  "rewrites": [
+    {
+      "source": "/methodology",
+      "destination": "/api/methodology"
+    },
+    {
+      "source": "/api/data/:city/:hood",
+      "destination": "/api/data?city=:city&hood=:hood"
+    },
+    {
+      "source": "/api/data/:city",
+      "destination": "/api/data?city=:city"
+    },
+    {
+      "source": "/:city([a-z][a-z0-9_]+)/:hood([a-z][a-z0-9\\-]+)",
+      "destination": "/api/neighbourhood?city=:city&hood=:hood"
+    },
+    {
+      "source": "/:city([a-z][a-z0-9_]+)/:hood([a-z][a-z0-9\\-]+)/",
+      "destination": "/api/neighbourhood?city=:city&hood=:hood"
+    },
+    {
+      "source": "/:city([a-z][a-z0-9_]+)",
+      "destination": "/api/city?city=:city"
+    }
+  ]
+}
