@@ -1,0 +1,9 @@
+{
+  "name": "localechoice",
+  "version": "1.0.0",
+  "description": "European neighbourhood ranking for first-time travellers",
+  "private": true,
+  "scripts": {
+    "build": "node build.js"
+  }
+}
