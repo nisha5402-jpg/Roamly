@@ -83,6 +83,72 @@ body::before{
 .hero-cta{display:inline-flex;align-items:center;gap:7px;padding:7px 16px;border-radius:var(--r-xl);background:var(--blue);color:white;font-family:var(--f-display);font-size:0.88rem;font-weight:700;letter-spacing:0.03em;text-transform:uppercase;cursor:pointer;border:none;transition:all 0.18s;}
 .hero-cta:hover{background:var(--blue-d)}
 
+/* ════════════════════════════════════════════════════════════════
+   MAGAZINE LANDING — new homepage hero + asymmetric city grid
+   ════════════════════════════════════════════════════════════════ */
+.mag-section{background:var(--cream);padding:48px 24px 32px;position:relative;z-index:1}
+.mag-container{max-width:1280px;margin:0 auto}
+
+.mag-hero{text-align:center;margin-bottom:40px}
+.mag-headline{font-family:var(--f-serif);font-size:clamp(2rem,5vw,3.6rem);font-weight:500;line-height:1.04;color:var(--ink);letter-spacing:-.015em;margin-bottom:18px}
+.mag-headline em{font-style:italic;color:#5d5645;font-weight:500;display:block}
+.mag-sub{font-family:var(--f-body);font-size:clamp(.95rem,1.4vw,1.05rem);color:var(--ink50);line-height:1.55;max-width:580px;margin:0 auto;font-weight:400}
+
+/* Asymmetric grid: 1 hero card + 3 smaller cards (4 total) */
+.mag-grid{display:grid;gap:14px;margin-bottom:24px}
+.mag-grid-4{grid-template-columns:1.5fr 1fr;grid-template-rows:auto auto auto}
+.mag-grid-4 > .mag-card:first-child{grid-column:1;grid-row:1 / span 3}
+.mag-grid-4 > .mag-card:not(:first-child){grid-column:2}
+@media(max-width:760px){
+  .mag-grid-4{grid-template-columns:1fr;grid-template-rows:auto}
+  .mag-grid-4 > .mag-card:first-child{grid-column:1;grid-row:auto;aspect-ratio:16/9}
+  .mag-grid-4 > .mag-card:not(:first-child){grid-column:1}
+}
+
+.mag-card{position:relative;overflow:hidden;border-radius:var(--r-lg);cursor:pointer;transition:transform .25s ease,box-shadow .25s ease;background:var(--ink);aspect-ratio:1/1;min-height:220px}
+.mag-grid-4 > .mag-card:first-child{aspect-ratio:auto;min-height:480px}
+@media(max-width:760px){.mag-grid-4 > .mag-card:first-child{min-height:auto}}
+.mag-card:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(22,32,48,.18)}
+.mag-card img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(1.05) brightness(.92);transition:filter .3s,transform .5s ease}
+.mag-card:hover img{filter:saturate(1.1) brightness(1);transform:scale(1.03)}
+.mag-card-fallback{position:absolute;inset:0;background:linear-gradient(135deg,#162030 0%,#1a2540 100%);display:flex;align-items:center;justify-content:center}
+.mag-card-fallback::after{content:attr(data-glyph);font-family:var(--f-serif);font-style:italic;font-weight:700;font-size:140px;color:rgba(191,160,64,.18);line-height:1;letter-spacing:-.04em}
+.mag-card-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(22,32,48,0) 40%,rgba(22,32,48,.72) 88%,rgba(22,32,48,.88) 100%);pointer-events:none}
+.mag-card-content{position:absolute;left:18px;right:18px;bottom:16px;color:#fff;pointer-events:none}
+.mag-card-country{font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(247,244,238,.78);margin-bottom:4px}
+.mag-card-name{font-family:var(--f-serif);font-size:clamp(1.25rem,2.4vw,1.75rem);font-weight:500;line-height:1;letter-spacing:-.005em}
+.mag-grid-4 > .mag-card:first-child .mag-card-name{font-size:clamp(1.6rem,3.2vw,2.2rem)}
+
+/* Persona pills */
+.mag-personas{text-align:center;padding:8px 0 24px}
+.mag-personas-label{font-family:var(--f-serif);font-size:1.05rem;color:var(--ink);font-weight:500;margin-bottom:18px;font-style:italic}
+.mag-pill-row{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:14px}
+.mag-pill{padding:9px 20px;border-radius:99px;background:#fff;border:1px solid var(--ink20);font-family:var(--f-body);font-size:.85rem;color:var(--ink);cursor:pointer;transition:all .15s;font-weight:500}
+.mag-pill:hover{border-color:var(--ink);transform:translateY(-1px)}
+.mag-pill.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+.mag-refine{font-family:var(--f-serif);font-style:italic;font-size:.92rem;color:#9c3a1f;cursor:pointer;display:inline-block;border-bottom:1px solid rgba(156,58,31,.3);padding-bottom:2px;transition:color .15s}
+.mag-refine:hover{color:#7a2914}
+
+/* Search section */
+.mag-search-wrap{max-width:520px;margin:0 auto 40px;position:relative}
+.mag-search-label{font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink50);margin-bottom:8px;text-align:center}
+.mag-search-input{width:100%;padding:14px 48px 14px 18px;border-radius:var(--r-lg);border:1.5px solid var(--ink20);background:#fff;font-family:var(--f-body);font-size:.95rem;color:var(--ink);outline:none;transition:border-color .15s,box-shadow .15s}
+.mag-search-input:focus{border-color:var(--brass);box-shadow:0 0 0 3px rgba(191,160,64,.12)}
+.mag-search-icon{position:absolute;right:18px;top:50%;transform:translateY(2px);font-size:1.05rem;pointer-events:none;color:var(--ink50)}
+.mag-search-dropdown{position:absolute;top:calc(100% + 6px);left:0;right:0;background:#fff;border:1px solid var(--ink10);border-radius:var(--r-lg);box-shadow:0 12px 32px rgba(22,32,48,.12);z-index:500;max-height:340px;overflow-y:auto;display:none}
+.mag-search-dropdown.open{display:block}
+.mag-search-item{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;transition:background .12s;border-bottom:1px solid var(--ink10)}
+.mag-search-item:last-child{border-bottom:none}
+.mag-search-item:hover{background:var(--cream2)}
+.mag-search-flag{font-size:1rem;flex-shrink:0}
+.mag-search-name{flex:1;font-size:.9rem;color:var(--ink);font-weight:500}
+.mag-search-meta{font-size:.7rem;color:var(--ink50);font-family:var(--f-mono)}
+.mag-search-empty{padding:18px;text-align:center;color:var(--ink50);font-size:.85rem}
+
+/* Divider above existing app shell */
+.mag-divider{max-width:1280px;margin:8px auto 0;padding:0 24px}
+.mag-divider-inner{border-top:1px solid var(--ink10);padding-top:18px;text-align:center;font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink50)}
+
 /* ── MAIN SHELL ── */
 .shell{display:block;min-height:calc(100vh - 104px);}
 
@@ -762,39 +828,75 @@ body::before{
   <div class="logo">Locale<em>Choice</em></div>
 </nav>
 
-<div class="hero">
-  <div class="hero-left">
-    <div class="hero-vol">110 cities · 384 neighbourhoods analysed and experienced to give you customised answers</div>
-    <h1 class="hero-headline">Where to stay<br>in <em>Europe.</em></h1>
-    <div class="hero-sub">For your first trip. Ranked by walkability, food, safety & vibe.</div>
+<!-- ════ MAGAZINE LANDING ════ -->
+<section class="mag-section">
+  <div class="mag-container">
+
+    <!-- Hero text -->
+    <div class="mag-hero">
+      <h1 class="mag-headline">Find your neighbourhood,<em>not just your city.</em></h1>
+      <p class="mag-sub">110 European cities ranked by 7 factors. Free, data-driven, and updated monthly. Find where to stay before you book.</p>
+    </div>
+
+    <!-- Search input for other cities -->
+    <div class="mag-search-wrap">
+      <div class="mag-search-label">Or search 110 cities</div>
+      <input
+        class="mag-search-input"
+        id="mag-search-input"
+        type="text"
+        placeholder="Type a city — e.g. Berlin, Athens, Krakow..."
+        autocomplete="off"
+        spellcheck="false"
+        oninput="magFilterCities(this.value)"
+        onfocus="magOpenDropdown()"/>
+      <span class="mag-search-icon">⌕</span>
+      <div class="mag-search-dropdown" id="mag-search-dropdown"></div>
+    </div>
+
+    <!-- Persona pills -->
+    <div class="mag-personas">
+      <div class="mag-personas-label">I am travelling as a…</div>
+      <div class="mag-pill-row" id="mag-pill-row">
+        <button class="mag-pill" data-persona="solo" onclick="magSelectPersona('solo')">Solo Explorer</button>
+        <button class="mag-pill" data-persona="family" onclick="magSelectPersona('family')">Families</button>
+        <button class="mag-pill" data-persona="foodie" onclick="magSelectPersona('foodie')">Foodie</button>
+        <button class="mag-pill" data-persona="culture" onclick="magSelectPersona('culture')">Culture Seeker</button>
+      </div>
+    </div>
+
+    <!-- Featured city grid (top 4) -->
+    <div class="mag-grid mag-grid-4" id="mag-grid">
+      <!-- populated by JS using FEATURED_CITIES + CITY_HERO_IMAGES -->
+    </div>
+
   </div>
-  <div class="hero-right">
-    <button class="hero-cta" onclick="openQ()">Personalise →</button>
-  </div>
-</div>
+</section>
+
+<!-- ════ DIVIDER → original interactive UI continues below (hidden on homepage) ════ -->
 
 <div class="shell">
   <div id="panel">
 
-    <!-- ── CONTROL BAR ── -->
-    <div id="topbar">
+    <!-- ── CONTROL BAR (hidden on homepage — magazine landing replaces it) ── -->
+    <div id="topbar" style="display:none">
       <div class="topbar-inner">
-        <!-- City search -->
-        <div class="city-search-wrap" id="city-search-wrap" style="flex:1;min-width:180px;max-width:280px">
+        <!-- City search (hidden — moved to magazine landing above) -->
+        <div class="city-search-wrap" id="city-search-wrap" style="flex:1;min-width:180px;max-width:280px;display:none">
           <input class="city-search-input" id="city-input" type="text" placeholder="Search city…"
             oninput="filterCities(this.value)" onfocus="openDropdown()" autocomplete="off" spellcheck="false"/>
           <span class="city-search-icon" id="search-icon">⌕</span>
           <button class="city-search-clear" id="search-clear" onclick="clearSearch()">✕</button>
           <div class="city-dropdown" id="city-dropdown"></div>
         </div>
-        <!-- City selected pill -->
+        <!-- City selected pill (still visible once a city is chosen) -->
         <div class="city-selected" id="city-selected" style="display:none">
           <span class="cs-flag" id="cs-flag"></span>
           <div class="cs-info"><div class="cs-name" id="cs-name"></div></div>
           <span class="cs-change" onclick="resetCity()">change</span>
         </div>
-        <!-- Persona tabs -->
-        <div class="persona-tabs" id="persona-row"></div>
+        <!-- Persona tabs (hidden — moved to magazine landing above) -->
+        <div class="persona-tabs" id="persona-row" style="display:none"></div>
         <!-- Actions -->
         <div class="topbar-actions">
           <label class="toggle-wrap" onclick="toggleBudget()" title="Show affordable options">
@@ -830,7 +932,7 @@ body::before{
         </button>
       </div>
       <div id="results">
-        <div class="empty">
+        <div class="empty" style="display:none">
           <div class="empty-title">Select a city</div>
           <div class="empty-sub">Search for a city above, then pick how you travel.</div>
         </div>
@@ -2806,5 +2908,147 @@ function closeDetail() {
     <div class="footer-copy">© 2025 LocaleChoice · 110 cities · 384 neighbourhoods</div>
   </div>
 </footer>
+
+<!-- ════ MAGAZINE LANDING JS ════ -->
+<script>
+(function(){
+  // ─── Featured cities (top 4) ───────────────────────────────────────────────
+  var FEATURED_CITIES = [
+    {key:'lisbon',     country:'Portugal',    name:'Lisbon'},
+    {key:'copenhagen', country:'Denmark',     name:'Copenhagen'},
+    {key:'barcelona',  country:'Spain',       name:'Barcelona'},
+    {key:'rome',       country:'Italy',       name:'Rome'}
+  ];
+
+  // Hand-picked Wikipedia infobox images for the 6 featured cities.
+  //
+  // IMPORTANT: These URLs are extracted from Wikipedia's Commons but may
+  // change if Wikipedia editors swap the file. If any of these 404s, the
+  // onerror handler below shows the designed gradient hero fallback for
+  // that one card (with the city's initial as watermark). NEVER a broken
+  // image icon.
+  //
+  // To verify a URL: paste it in your browser. To replace a URL: visit the
+  // city's Wikipedia page, right-click the infobox image, "Copy image link".
+  var CITY_HERO_IMAGES = {
+    lisbon:     'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/2016_Lisboa_Tejo_anagoria.jpg/1280px-2016_Lisboa_Tejo_anagoria.jpg',
+    copenhagen: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Nyhavn_canal_in_Copenhagen.jpg/1280px-Nyhavn_canal_in_Copenhagen.jpg',
+    barcelona:  'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Sagrada_Familia_01.jpg/1280px-Sagrada_Familia_01.jpg',
+    amsterdam:  'https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Amsterdam_Damrak_3.jpg/1280px-Amsterdam_Damrak_3.jpg',
+    rome:       'https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Colosseo_2020.jpg/1280px-Colosseo_2020.jpg',
+    paris:      'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Tour_Eiffel_Wikimedia_Commons.jpg/800px-Tour_Eiffel_Wikimedia_Commons.jpg'
+  };
+
+  // ─── Render featured grid ──────────────────────────────────────────────────
+  var grid = document.getElementById('mag-grid');
+  if (grid) {
+    grid.innerHTML = FEATURED_CITIES.map(function(c){
+      var img = CITY_HERO_IMAGES[c.key];
+      var imgHtml = img
+        ? '<img src="'+img+'" alt="'+c.name+'" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"/>'+
+          '<div class="mag-card-fallback" data-glyph="'+c.name.charAt(0)+'" style="display:none"></div>'
+        : '<div class="mag-card-fallback" data-glyph="'+c.name.charAt(0)+'"></div>';
+      return '<a href="/'+c.key+'" class="mag-card" data-city="'+c.key+'">'
+        + imgHtml
+        + '<div class="mag-card-shade"></div>'
+        + '<div class="mag-card-content">'
+          + '<div class="mag-card-country">'+c.country+'</div>'
+          + '<div class="mag-card-name">'+c.name+'</div>'
+        + '</div>'
+      + '</a>';
+    }).join('');
+  }
+
+  // ─── City search (uses existing CITIES array if present) ───────────────────
+  // The existing index.html has a CITIES global. We reuse it if available;
+  // otherwise we fall back to FEATURED_CITIES.
+  function getAllCities() {
+    if (typeof window.CITIES !== 'undefined' && Array.isArray(window.CITIES)) {
+      return window.CITIES.filter(function(c){return c.on !== false;});
+    }
+    return FEATURED_CITIES.map(function(c){
+      return {id:c.key, name:c.name, country:c.country, flag:''};
+    });
+  }
+
+  var searchInput = document.getElementById('mag-search-input');
+  var searchDropdown = document.getElementById('mag-search-dropdown');
+
+  window.magFilterCities = function(query) {
+    if (!searchDropdown) return;
+    var q = (query||'').toLowerCase().trim();
+    var all = getAllCities();
+    var matches = q
+      ? all.filter(function(c){
+          return (c.name||'').toLowerCase().indexOf(q) > -1 ||
+                 (c.country||'').toLowerCase().indexOf(q) > -1;
+        })
+      : all.slice(0, 12);
+
+    if (matches.length === 0) {
+      searchDropdown.innerHTML = '<div class="mag-search-empty">No cities match \u201c'+escapeHtml(query)+'\u201d</div>';
+    } else {
+      searchDropdown.innerHTML = matches.slice(0, 20).map(function(c){
+        return '<a href="/'+(c.id||c.key)+'" class="mag-search-item">'
+          + '<span class="mag-search-flag">'+(c.flag||'')+'</span>'
+          + '<span class="mag-search-name">'+escapeHtml(c.name)+'</span>'
+          + '<span class="mag-search-meta">'+escapeHtml(c.country||'')+'</span>'
+        + '</a>';
+      }).join('');
+    }
+    searchDropdown.classList.add('open');
+  };
+
+  window.magOpenDropdown = function() {
+    window.magFilterCities(searchInput ? searchInput.value : '');
+  };
+
+  // Close dropdown on outside click
+  document.addEventListener('click', function(e){
+    if (!searchDropdown) return;
+    if (e.target.closest('.mag-search-wrap')) return;
+    searchDropdown.classList.remove('open');
+  });
+
+  // ─── Persona selection ─────────────────────────────────────────────────────
+  // Persona pills set a localStorage preference and add visual feedback.
+  // When user clicks a city card after picking a persona, we append ?persona=X
+  // to the URL so the city page can read it.
+  var STORED_PERSONA = null;
+  try { STORED_PERSONA = localStorage.getItem('lc_persona'); } catch(e) {}
+
+  function updateCardLinks() {
+    var qs = STORED_PERSONA ? '?persona='+STORED_PERSONA : '';
+    document.querySelectorAll('.mag-card[data-city]').forEach(function(card){
+      card.href = '/' + card.dataset.city + qs;
+    });
+  }
+
+  function updatePillState() {
+    document.querySelectorAll('.mag-pill').forEach(function(p){
+      p.classList.toggle('active', p.dataset.persona === STORED_PERSONA);
+    });
+  }
+
+  window.magSelectPersona = function(persona) {
+    STORED_PERSONA = persona;
+    try { localStorage.setItem('lc_persona', persona); } catch(e) {}
+    updatePillState();
+    updateCardLinks();
+  };
+
+  // Initial state
+  updatePillState();
+  updateCardLinks();
+
+  // ─── Helper ────────────────────────────────────────────────────────────────
+  function escapeHtml(s) {
+    return String(s||'').replace(/[&<>"']/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+})();
+</script>
+
 </body>
 </html>
