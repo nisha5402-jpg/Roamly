@@ -94,30 +94,23 @@ body::before{
 .mag-headline em{font-style:italic;color:#5d5645;font-weight:500;display:block}
 .mag-sub{font-family:var(--f-body);font-size:clamp(.95rem,1.4vw,1.05rem);color:var(--ink50);line-height:1.55;max-width:580px;margin:0 auto;font-weight:400}
 
-/* Asymmetric grid: 1 hero card + 3 smaller cards (4 total) */
+/* 2x2 equal-size grid for featured cities */
 .mag-grid{display:grid;gap:14px;margin-bottom:24px}
-.mag-grid-4{grid-template-columns:1.5fr 1fr;grid-template-rows:auto auto auto}
-.mag-grid-4 > .mag-card:first-child{grid-column:1;grid-row:1 / span 3}
-.mag-grid-4 > .mag-card:not(:first-child){grid-column:2}
-@media(max-width:760px){
-  .mag-grid-4{grid-template-columns:1fr;grid-template-rows:auto}
-  .mag-grid-4 > .mag-card:first-child{grid-column:1;grid-row:auto;aspect-ratio:16/9}
-  .mag-grid-4 > .mag-card:not(:first-child){grid-column:1}
+.mag-grid-4{grid-template-columns:1fr 1fr}
+@media(max-width:560px){
+  .mag-grid-4{grid-template-columns:1fr}
 }
 
-.mag-card{position:relative;overflow:hidden;border-radius:var(--r-lg);cursor:pointer;transition:transform .25s ease,box-shadow .25s ease;background:var(--ink);aspect-ratio:1/1;min-height:220px}
-.mag-grid-4 > .mag-card:first-child{aspect-ratio:auto;min-height:480px}
-@media(max-width:760px){.mag-grid-4 > .mag-card:first-child{min-height:auto}}
+.mag-card{position:relative;overflow:hidden;border-radius:var(--r-lg);cursor:pointer;transition:transform .25s ease,box-shadow .25s ease;background:var(--ink);aspect-ratio:4/3;min-height:200px}
 .mag-card:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(22,32,48,.18)}
 .mag-card img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(1.05) brightness(.92);transition:filter .3s,transform .5s ease}
 .mag-card:hover img{filter:saturate(1.1) brightness(1);transform:scale(1.03)}
 .mag-card-fallback{position:absolute;inset:0;background:linear-gradient(135deg,#162030 0%,#1a2540 100%);display:flex;align-items:center;justify-content:center}
-.mag-card-fallback::after{content:attr(data-glyph);font-family:var(--f-serif);font-style:italic;font-weight:700;font-size:140px;color:rgba(191,160,64,.18);line-height:1;letter-spacing:-.04em}
+.mag-card-fallback::after{content:attr(data-glyph);font-family:var(--f-serif);font-style:italic;font-weight:700;font-size:120px;color:rgba(191,160,64,.18);line-height:1;letter-spacing:-.04em}
 .mag-card-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(22,32,48,0) 40%,rgba(22,32,48,.72) 88%,rgba(22,32,48,.88) 100%);pointer-events:none}
 .mag-card-content{position:absolute;left:18px;right:18px;bottom:16px;color:#fff;pointer-events:none}
 .mag-card-country{font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(247,244,238,.78);margin-bottom:4px}
-.mag-card-name{font-family:var(--f-serif);font-size:clamp(1.25rem,2.4vw,1.75rem);font-weight:500;line-height:1;letter-spacing:-.005em}
-.mag-grid-4 > .mag-card:first-child .mag-card-name{font-size:clamp(1.6rem,3.2vw,2.2rem)}
+.mag-card-name{font-family:var(--f-serif);font-size:clamp(1.25rem,2.4vw,1.65rem);font-weight:500;line-height:1;letter-spacing:-.005em}
 
 /* Persona pills */
 .mag-personas{text-align:center;padding:8px 0 24px}
