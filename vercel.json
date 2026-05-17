@@ -1,0 +1,41 @@
+{
+  "outputDirectory": ".",
+  "rewrites": [
+    {
+      "source": "/methodology",
+      "destination": "/api/methodology"
+    },
+    {
+      "source": "/api/data/:city/:hood",
+      "destination": "/api/data?city=:city&hood=:hood"
+    },
+    {
+      "source": "/api/data/:city",
+      "destination": "/api/data?city=:city"
+    },
+    { "source": "/:city/solo",       "destination": "/api/persona?city=:city&persona=solo" },
+    { "source": "/:city/solo/",      "destination": "/api/persona?city=:city&persona=solo" },
+    { "source": "/:city/family",     "destination": "/api/persona?city=:city&persona=family" },
+    { "source": "/:city/family/",    "destination": "/api/persona?city=:city&persona=family" },
+    { "source": "/:city/foodie",     "destination": "/api/persona?city=:city&persona=foodie" },
+    { "source": "/:city/foodie/",    "destination": "/api/persona?city=:city&persona=foodie" },
+    { "source": "/:city/culture",    "destination": "/api/persona?city=:city&persona=culture" },
+    { "source": "/:city/culture/",   "destination": "/api/persona?city=:city&persona=culture" },
+    {
+      "source": "/:city([a-z][a-z0-9_]+)/:hood([a-z][a-z0-9\\-]+)",
+      "destination": "/api/neighbourhood?city=:city&hood=:hood"
+    },
+    {
+      "source": "/:city([a-z][a-z0-9_]+)/:hood([a-z][a-z0-9\\-]+)/",
+      "destination": "/api/neighbourhood?city=:city&hood=:hood"
+    },
+    {
+      "source": "/:city([a-z][a-z0-9_]+)",
+      "destination": "/api/city?city=:city"
+    },
+    {
+      "source": "/:city([a-z][a-z0-9_]+)/",
+      "destination": "/api/city?city=:city"
+    }
+  ]
+}
