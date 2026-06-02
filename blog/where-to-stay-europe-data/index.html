@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Why Your Last Trip Was So Tiring — It Was the Neighborhood You Booked | LocaleChoice</title>
+<meta name="description" content="We scored 384 neighborhoods across 110 European cities. The data reveals four hidden traps — hills, transit dead-zones, bad food zones and noise — that quietly wreck stays, and how to spot them before you book."/>
+<link rel="canonical" href="https://www.localechoice.com/blog/where-to-stay-europe-data/"/>
+
+<!-- Open Graph / social -->
+<meta property="og:type" content="article"/>
+<meta property="og:title" content="Why Your Last Trip Was So Tiring (It Wasn't You — It Was the Neighborhood You Booked)"/>
+<meta property="og:description" content="We scored 384 neighborhoods across 110 European cities. The data explains a frustration almost every traveler has felt but never quite named."/>
+<meta property="og:url" content="https://www.localechoice.com/blog/where-to-stay-europe-data/"/>
+<meta property="og:image" content="https://www.localechoice.com/blog/where-to-stay-europe-data/hero-walkability.png"/>
+<meta property="og:site_name" content="LocaleChoice"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Why Your Last Trip Was So Tiring (It Wasn't You — It Was the Neighborhood You Booked)"/>
+<meta name="twitter:description" content="We scored 384 neighborhoods across 110 European cities. The data explains a frustration almost every traveler has felt but never quite named."/>
+<meta name="twitter:image" content="https://www.localechoice.com/blog/where-to-stay-europe-data/hero-walkability.png"/>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,800;0,900;1,700;1,800&family=Playfair+Display:ital,wght@0,500;0,700;1,500;1,700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --ink:#162030; --ink2:#1E2D3D; --cream:#F2EDE3; --cream2:#EAE3D3; --cream3:#DDD5C0;
+  --blue:#2B5C8A; --blue-d:#1E4268; --blue-l:rgba(43,92,138,0.12);
+  --brass:#BFA040; --brass-d:#9C821F; --brass-l:rgba(191,160,64,0.15);
+  --white:#FFFFFF; --ink20:rgba(22,32,48,0.20); --ink10:rgba(22,32,48,0.10); --ink50:rgba(22,32,48,0.50);
+  --pine:#2C5F4A; --amber:#8A5E1A;
+  --f-display:'Barlow Condensed',sans-serif; --f-serif:'Playfair Display',serif;
+  --f-body:'DM Sans',system-ui,sans-serif; --f-mono:'DM Mono',monospace;
+  --r:6px; --r-lg:12px; --r-xl:18px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:var(--f-body);background:var(--cream);color:var(--ink);-webkit-font-smoothing:antialiased;min-height:100vh}
+a{color:inherit;text-decoration:none}
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:0;opacity:0.6;
+}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:52px;background:var(--ink);position:sticky;top:0;z-index:200;}
+.logo{font-family:var(--f-display);font-size:1.5rem;font-weight:900;color:var(--cream);letter-spacing:0.02em;}
+.logo em{font-style:italic;color:var(--brass)}
+.nav-home{font-family:var(--f-mono);font-size:0.72rem;letter-spacing:0.04em;color:rgba(255,255,255,0.55);transition:color .15s;}
+.nav-home:hover{color:#fff}
+
+.article{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:3rem 1.5rem 4rem;}
+.kicker{font-family:var(--f-mono);font-size:0.72rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--brass-d);margin-bottom:1rem;}
+h1{font-family:var(--f-serif);font-weight:700;font-size:clamp(2rem,4.5vw,2.9rem);line-height:1.12;letter-spacing:-0.01em;color:var(--ink);margin-bottom:1.1rem;}
+.dek{font-family:var(--f-body);font-size:1.12rem;line-height:1.55;color:var(--ink50);font-weight:400;margin-bottom:1.6rem;}
+.byline{display:flex;align-items:center;gap:0.6rem;font-family:var(--f-mono);font-size:0.74rem;color:var(--ink50);letter-spacing:0.02em;border-top:1px solid var(--ink10);border-bottom:1px solid var(--ink10);padding:0.85rem 0;margin-bottom:2rem;}
+.byline strong{color:var(--ink);font-weight:500}
+.byline .dot{width:3px;height:3px;border-radius:50%;background:var(--ink20)}
+
+figure{margin:0 0 2.2rem}
+figure img{width:100%;height:auto;border-radius:var(--r-lg);border:1px solid var(--ink10);display:block}
+figcaption{font-family:var(--f-mono);font-size:0.7rem;color:var(--ink50);margin-top:0.6rem;letter-spacing:0.02em;}
+
+.article p{font-size:1.08rem;line-height:1.72;margin-bottom:1.3rem;color:var(--ink2)}
+.article p a{color:var(--blue);border-bottom:1px solid var(--blue-l);transition:border-color .15s;font-weight:500}
+.article p a:hover{border-bottom-color:var(--blue)}
+.article h2{font-family:var(--f-display);font-weight:800;font-size:1.55rem;line-height:1.15;text-transform:uppercase;letter-spacing:0.005em;color:var(--ink);margin:2.6rem 0 0.9rem;}
+.article h2 .num{color:var(--brass-d);font-family:var(--f-mono);font-weight:500;font-size:1rem;vertical-align:0.18em;margin-right:0.5rem;}
+.pull{font-family:var(--f-serif);font-style:italic;font-size:1.18rem;line-height:1.5;color:var(--ink);border-left:3px solid var(--brass);padding:0.2rem 0 0.2rem 1.1rem;margin:0 0 1.4rem;}
+.article ul{margin:0 0 1.4rem 1.2rem}
+.article li{font-size:1.06rem;line-height:1.6;margin-bottom:0.5rem;color:var(--ink2)}
+
+.note{background:var(--cream2);border:1px solid var(--cream3);border-radius:var(--r-lg);padding:1.3rem 1.4rem;margin:2.2rem 0;}
+.note h3{font-family:var(--f-display);font-weight:800;font-size:1.05rem;text-transform:uppercase;letter-spacing:0.03em;color:var(--ink);margin-bottom:0.6rem;}
+.note p{font-size:0.98rem;line-height:1.62;margin-bottom:0.7rem;color:var(--ink2)}
+.note p:last-child{margin-bottom:0}
+
+.cta{background:var(--ink);border-radius:var(--r-xl);padding:2rem 1.8rem;margin:2.8rem 0 0;text-align:center;}
+.cta h3{font-family:var(--f-serif);font-weight:700;font-size:1.5rem;color:var(--cream);margin-bottom:0.6rem;line-height:1.2}
+.cta p{font-size:1rem;line-height:1.6;color:rgba(255,255,255,0.6);margin-bottom:1.3rem;}
+.cta-btn{display:inline-flex;align-items:center;gap:8px;padding:11px 26px;border-radius:var(--r-xl);background:var(--blue);color:#fff;font-family:var(--f-display);font-size:1rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;transition:background .18s;}
+.cta-btn:hover{background:var(--blue-d)}
+
+.site-footer{position:relative;z-index:1;background:var(--ink);padding:2.4rem 2rem;text-align:center;margin-top:3rem;}
+.footer-brand{font-family:var(--f-display);font-size:1.4rem;font-weight:900;color:var(--cream);}
+.footer-brand em{font-style:italic;color:var(--brass)}
+.footer-tagline{font-size:0.85rem;color:rgba(255,255,255,0.45);margin:0.4rem 0 0.8rem;}
+.footer-contact a{font-family:var(--f-mono);font-size:0.78rem;color:var(--blue);}
+.footer-copy{font-family:var(--f-mono);font-size:0.7rem;color:rgba(255,255,255,0.35);margin-top:0.8rem;letter-spacing:0.03em;}
+
+@media(max-width:640px){
+  .nav{padding:0 1.1rem}
+  .article{padding:2rem 1.2rem 3rem}
+}
+</style>
+
+<!-- Structured Data — BlogPosting -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "@id": "https://www.localechoice.com/blog/where-to-stay-europe-data/#article",
+  "headline": "Why Your Last Trip Was So Tiring (It Wasn't You — It Was the Neighborhood You Booked)",
+  "description": "We scored 384 neighborhoods across 110 European cities. The data reveals four hidden traps that quietly wreck stays, and how to spot them before you book.",
+  "image": "https://www.localechoice.com/blog/where-to-stay-europe-data/hero-walkability.png",
+  "datePublished": "2026-06-02",
+  "dateModified": "2026-06-02",
+  "inLanguage": "en",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://www.localechoice.com/blog/where-to-stay-europe-data/"
+  },
+  "author": {
+    "@type": "Organization",
+    "name": "LocaleChoice",
+    "url": "https://www.localechoice.com/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "@id": "https://www.localechoice.com/#org",
+    "name": "LocaleChoice",
+    "url": "https://www.localechoice.com/"
+  },
+  "about": [
+    {"@type":"Thing","name":"European neighborhood travel"},
+    {"@type":"Thing","name":"Where to stay in Europe"},
+    {"@type":"Thing","name":"Neighborhood walkability"}
+  ]
+}
+</script>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/"><div class="logo">Locale<em>Choice</em></div></a>
+  <a href="/" class="nav-home">← All cities</a>
+</nav>
+
+<article class="article">
+  <div class="kicker">Data Notebook · 384 neighborhoods</div>
+  <h1>Why Your Last Trip Was So Tiring (It Wasn't You — It Was the Neighborhood You Booked)</h1>
+  <p class="dek">We scored 384 neighborhoods across 110 European cities. The data explains a frustration almost every traveler has felt but never quite named.</p>
+  <div class="byline">
+    <strong>LocaleChoice</strong><span class="dot"></span><span>June 2, 2026</span><span class="dot"></span><span>5 min read</span>
+  </div>
+
+  <figure>
+    <img src="hero-walkability.png" alt="Bar chart of Lisbon neighborhood walkability scores: flat central areas like Bairro Alto, Baixa/Chiado and Príncipe Real score around 90, while hilly postcard-famous quarters like Belém, Graça and Alfama score in the 50s and 60s."/>
+    <figcaption>Lisbon walkability scores, terrain-adjusted. Source: LocaleChoice neighborhood scoring.</figcaption>
+  </figure>
+
+  <p>You did everything right. You skipped the bland hotel district, found a gorgeous apartment in the neighborhood everyone raves about — the one with the cobblestones and the rooftop views.</p>
+  <p>And then the trip was somehow… exhausting.</p>
+  <p>You were always climbing something, the good restaurants were a tram ride away, getting to the airport was a massive saga, and by day three you were quietly resentful of the view you'd paid extra for.</p>
+  <p>That frustration is real, it's common, and — this is the part nobody tells you — it's usually entirely predictable before you book. We know because at LocaleChoice, we scored 384 neighborhoods across 110 European cities on seven distinct factors. The same hidden traps kept appearing. Here are the four data patterns that explain most bad stays.</p>
+
+  <h2><span class="num">01</span>The view you booked is a photo someone took while walking uphill</h2>
+  <p>This was the single most consistent surprise in our dataset: the neighborhoods that sell a city visually are frequently the hardest ones to actually move around in.</p>
+  <p>Take <a href="/lisbon">Lisbon</a>. <a href="/lisbon/alfama/">Alfama</a> is arguably the most photographed neighborhood in Portugal — but once you account for its brutal terrain gradient, its walkability score drops into the mid-60s. Graça falls into the high 50s. Meanwhile flat, grid-shaped <a href="/lisbon/bairro-alto/">Bairro Alto</a> and central <a href="/lisbon/baixa-chiado/">Baixa</a> sit at the very top of the scale.</p>
+  <p>It isn't just a Lisbon quirk. Anywhere the prettiest quarter sits on a hill, the same thing happens.</p>
+  <p class="pull">The photo that made you book the apartment was usually taken pointing <em>up</em>. Lovely to look at, but punishing with a suitcase, a stroller, or tired legs.</p>
+
+  <h2><span class="num">02</span>"Walkable" can quietly mean "stranded"</h2>
+  <p>A high walkability score sounds like a guarantee of a seamless stay. It isn't — because walkability only measures how good a neighborhood is on foot <em>within itself</em>. It says nothing about how easily you can escape it.</p>
+  <p>The data is full of places that are a dream to wander but a genuine pain to leave. Antwerp's historic centre scores a perfect 90 on foot but sits near the bottom for transit — a massive 50-point gap. Malmö's old town, <a href="/barcelona/el-raval/">Barcelona's El Raval</a>, and <a href="/san-sebastian">San Sebastián's</a> Parte Vieja all show the exact same split: wonderful inside, poorly connected to everywhere else.</p>
+  <p>These are perfect bases <em>if</em> your trip happens entirely within those few blocks — but a daily ordeal if you're commuting across town or catching early flights. One generic word, "walkable," hides which of those two trips you've actually booked.</p>
+
+  <h2><span class="num">03</span>Your best meals were nowhere near the famous sights</h2>
+  <p>Here is a travel frustration in reverse: you stayed near the historic monuments for convenience, and ate terribly the whole time. The data says you were very likely to.</p>
+  <p>Our food signal points stubbornly away from tourist cores. The two highest-scoring food neighborhoods in our entire European set are San Sebastián's Parte Vieja and <a href="/rome/testaccio/">Rome's Testaccio</a> — a working, unglamorous Roman district famous to locals for its markets and trattorias, located nowhere near the Colosseum circuit most visitors anchor to.</p>
+  <p>In Lisbon, unfashionable <a href="/lisbon/mouraria/">Mouraria</a> out-eats the marquee districts. In <a href="/copenhagen">Copenhagen</a>, <a href="/copenhagen/norrebro/">Nørrebro</a> wins. Stay exclusively for proximity to famous sights and you are, measurably, staying away from the best culinary experiences.</p>
+
+  <h2><span class="num">04</span>The trade-off nobody warns you about: buzz vs. sleep</h2>
+  <p>The neighborhoods that top our atmosphere ratings — like Copenhagen's Nørrebro or <a href="/lisbon/cais-do-sodre/">Lisbon's Cais do Sodré</a> — score among the lowest for family suitability.</p>
+  <p>The vibrant energy that makes a street irresistible at 11:00 PM is the exact same energy that makes it brutal with a five-year-old at 8:00 AM. Couples discover this as noise; families discover it as a ruined trip.</p>
+  <p>The rare exception worth knowing? <a href="/paris/le-marais/">Paris's Le Marais</a> scores near the top on both buzz and family workability. But it's an outlier, not a template. For most cities, you are picking one or the other — and you're far happier picking on purpose than finding out on night one.</p>
+
+  <div class="note">
+    <h3>One honest note on our numbers</h3>
+    <p>We don't pretend all seven of our factors fell out of a cold machine. Four are strictly algorithmic: walkability and family metrics are drawn from mapped pedestrian and park data; transit is calculated from real physical distances; food comes from density signals.</p>
+    <p>Three factors — safety, value, and atmosphere — rely on our team's editorial judgment, and we openly label them that way. We also keep scores in deliberately coarse bands; an 88 versus an 85 is, for your trip, the exact same place. The patterns hold because they're large and consistent, not because of decimal-point precision.</p>
+  </div>
+
+  <h2>How to fix your next trip</h2>
+  <p>Every pattern above is a question you can easily answer before you enter your credit card details:</p>
+  <ul>
+    <li>Is this gorgeous neighborhood secretly an exhausting stairwell?</li>
+    <li>Is "walkable" hiding a transit dead-zone?</li>
+    <li>Will the nightlife keep my kids awake?</li>
+  </ul>
+  <p>The frustrating part of travel planning has always been that this information was scattered across thousands of conflicting reviews, outdated blog posts, and blind gut feel. That is the exact gap we built LocaleChoice to close.</p>
+  <p>Before you book your next accommodation, you can pull up any of our <a href="/">110 covered cities</a>, filter by the type of trip you're actually taking — solo, family, foodie, or culture — and see the data-driven scores behind every neighborhood ranking. You can instantly spot the walkability-versus-transit splits and the terrain penalties that quietly wreck vacations.</p>
+
+  <div class="cta">
+    <h3>Check your next destination before you book it</h3>
+    <p>110 cities · 384 neighborhoods · scored on the data behind every stay.</p>
+    <a href="/" class="cta-btn">Explore the cities →</a>
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="footer-brand">Locale<em>Choice</em></div>
+  <div class="footer-tagline">Where to stay in Europe for your first trip — ranked by data.</div>
+  <div class="footer-contact"><a href="mailto:localechoice@gmail.com">localechoice@gmail.com</a></div>
+  <div class="footer-copy">© 2025 LocaleChoice · 110 cities · 384 neighbourhoods</div>
+</footer>
+
+</body>
+</html>
