@@ -40,6 +40,23 @@ cityKeys.forEach(function(cityKey) {
   urls.push({loc: BASE+'/'+urlKey, lastmod: TODAY, changefreq: 'monthly', priority: '0.8'});
 });
 
+// ── Persona pages (added June 2026) ──────────────────────────────────────
+// EVIDENCE: persona pages were never in the sitemap, yet GSC shows they are
+// the best-performing page type on BOTH channels — 1.09% CTR vs 0.42% for
+// neighbourhood pages, 54% of all non-brand clicks, and ~57% of Copilot
+// citations (bergen/family alone: 15). Only 173 of 440 had ever surfaced in
+// GSC; the rest were undiscovered. Trailing slash matches the canonical in
+// api/persona.js.
+var personaCount = 0;
+var SITEMAP_PERSONAS = ['solo','family','foodie','culture'];
+cityKeys.forEach(function(cityKey) {
+  var urlKey = urlSafeCityKey(cityKey);
+  SITEMAP_PERSONAS.forEach(function(p) {
+    urls.push({loc: BASE+'/'+urlKey+'/'+p+'/', lastmod: TODAY, changefreq: 'monthly', priority: '0.8'});
+    personaCount++;
+  });
+});
+
 var hoodCount = 0;
 cityKeys.forEach(function(cityKey) {
   var urlKey = urlSafeCityKey(cityKey);
@@ -95,6 +112,7 @@ console.log('sitemap.xml written');
 console.log('  Homepage:            1');
 console.log('  Methodology:         1');
 console.log('  City pages:          '+cityKeys.length);
+console.log('  Persona pages:       '+personaCount);
 console.log('  Neighbourhood pages: '+hoodCount);
 console.log('  Comparison pages:    '+compareCount);
 console.log('  Total URLs:          '+urls.length);

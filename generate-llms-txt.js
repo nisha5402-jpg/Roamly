@@ -80,6 +80,20 @@ hoodsByDepth.slice(0, 100).forEach(function(h) {
 });
 out += '\n';
 
+// ── Persona ranking pages (added June 2026) ──
+// EVIDENCE: persona pages earn ~57% of Copilot citations (bergen/family: 15)
+// and the highest CTR of any page type, but the generator never listed them.
+// Token-budget compromise: list all /family/ pages (the dominant cited and
+// clicked persona) and document the URL pattern for the other three personas
+// instead of emitting 330 more lines.
+out += '## Best-neighbourhood rankings by traveller type\n\n';
+out += 'Every city has four persona ranking pages answering "best neighbourhoods in [city] for [families / solo travellers / food lovers / culture seekers]". URL pattern: '+BASE+'/{city}/{persona}/ where persona is one of: solo, family, foodie, culture. The family rankings:\n\n';
+cityKeys.forEach(function(key) {
+  var c = scores.cities[key];
+  out += '- [Best neighbourhoods in '+c.name+' for families]('+BASE+'/'+urlSafeCityKey(key)+'/family/)\n';
+});
+out += '\n';
+
 out += '## Common questions LocaleChoice answers\n\n';
 out += '- Where should I stay in [European city]?\n';
 out += '- Is [neighbourhood] safe?\n';
