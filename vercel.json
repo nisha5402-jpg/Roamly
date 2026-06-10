@@ -49,6 +49,36 @@
       "source": "/heraklion_crete/:path*",
       "destination": "/heraklion-crete/:path*",
       "permanent": true
+    },
+    {
+      "source": "/aarhus/aarhus",
+      "destination": "/aarhus/aarhus-o/",
+      "permanent": true
+    },
+    {
+      "source": "/aarhus/aarhus/",
+      "destination": "/aarhus/aarhus-o/",
+      "permanent": true
+    },
+    {
+      "source": "/oslo/grunerlkka",
+      "destination": "/oslo/grunerlokka/",
+      "permanent": true
+    },
+    {
+      "source": "/oslo/grunerlkka/",
+      "destination": "/oslo/grunerlokka/",
+      "permanent": true
+    },
+    {
+      "source": "/oslo/grnland",
+      "destination": "/oslo/gronland/",
+      "permanent": true
+    },
+    {
+      "source": "/oslo/grnland/",
+      "destination": "/oslo/gronland/",
+      "permanent": true
     }
   ],
   "rewrites": [
