@@ -19,13 +19,12 @@
 var scores   = require('../roamly_scores.json');
 var insights = require('../roamly_insights.json');
 
-var PERSONA_WEIGHTS = {
-  solo:    {walk:0.25,food:0.20,vibe:0.25,safety:0.15,cost:0.05,transit:0.05,family:0.05},
-  family:  {safety:0.30,family:0.25,walk:0.15,transit:0.15,food:0.10,cost:0.05,vibe:0.0},
-  foodie:  {food:0.35,vibe:0.20,walk:0.20,transit:0.10,safety:0.10,cost:0.05,family:0.0},
-  culture: {walk:0.25,vibe:0.20,transit:0.20,safety:0.15,food:0.15,cost:0.05,family:0.0}
-};
-var PERSONAS = ['solo','family','foodie','culture'];
+// ─── Scoring model: imported from the single source of truth ───────────────
+// Weights and gatekeeping rules live in api/_scoring.js. Edit THERE.
+var SCORING = require('./_scoring.js');
+var PERSONA_WEIGHTS = SCORING.PERSONA_WEIGHTS;
+var PERSONAS = SCORING.PERSONAS;
+var calcScore = SCORING.calcScore;
 
 function slugify(s) {
   return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase()
@@ -34,10 +33,6 @@ function slugify(s) {
 function urlKey(k) {
   return String(k||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase()
     .replace(/[()]/g,'').replace(/[\s\/]+/g,'_').replace(/[^a-z0-9_]/g,'').replace(/_+/g,'_').replace(/^_|_$/g,'');
-}
-function calcScore(h, p) {
-  var w = PERSONA_WEIGHTS[p];
-  return Math.round(Object.keys(w).reduce(function(s,f){return s+(h[f]||60)*w[f];},0));
 }
 function findHoodBySlug(cityHoods, slug) {
   var keys = Object.keys(cityHoods);

@@ -23,24 +23,18 @@ var insights = require('../roamly_insights.json');
 var CITY_CENTERS = require('./city_centers.js');
 var HOOD_COORDS = require('./hood_coords.js');
 
-var PERSONA_WEIGHTS = {
-  solo:    {walk:0.25,food:0.20,vibe:0.25,safety:0.15,cost:0.05,transit:0.05,family:0.05},
-  family:  {safety:0.30,family:0.25,walk:0.15,transit:0.15,food:0.10,cost:0.05,vibe:0.0},
-  foodie:  {food:0.35,vibe:0.20,walk:0.20,transit:0.10,safety:0.10,cost:0.05,family:0.0},
-  culture: {walk:0.25,vibe:0.20,transit:0.20,safety:0.15,food:0.15,cost:0.05,family:0.0}
-};
-var PERSONA_LABELS = {solo:'Solo Explorer',family:'Family Traveller',foodie:'Food Lover',culture:'Culture Seeker'};
-var PERSONA_EMOJI  = {solo:'&#x1F9ED;',family:'&#x1F46A;',foodie:'&#x1F37D;',culture:'&#x1F3DB;'};
-var PERSONAS = ['solo','family','foodie','culture'];
-
-// ─── Centralised "data updated" date ─────────────────────────────────────
-var DATA_UPDATED = 'May 2026';
+// ─── Scoring model: imported from the single source of truth ───────────────
+// Weights, gatekeeping rules and dates live in api/_scoring.js. Edit THERE.
+var SCORING = require('./_scoring.js');
+var PERSONA_WEIGHTS = SCORING.PERSONA_WEIGHTS;
+var PERSONA_LABELS = SCORING.PERSONA_LABELS;
+var PERSONA_EMOJI  = SCORING.PERSONA_EMOJI;
+var PERSONAS = SCORING.PERSONAS;
+var DATA_UPDATED = SCORING.DATA_UPDATED;
+var YEAR = SCORING.YEAR;
 
 // ─── Score transparency helper ────────────────────────────────────────────
-var FACTOR_LABELS = {
-  walk:'walkability', transit:'transit', food:'food', family:'family-friendliness',
-  safety:'safety', cost:'affordability', vibe:'vibe'
-};
+var FACTOR_LABELS = SCORING.FACTOR_LABELS;
 function weightExplanation(persona, score) {
   var w = PERSONA_WEIGHTS[persona];
   var entries = Object.keys(w).map(function(k){return {k:k,v:w[k]};}).sort(function(a,b){return b.v-a.v;});
@@ -51,32 +45,22 @@ function weightExplanation(persona, score) {
 }
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
-function calcScore(h, p) {
-  var w = PERSONA_WEIGHTS[p];
-  return Math.round(Object.keys(w).reduce(function(s,f){return s+(h[f]||60)*w[f];},0));
-}
+var calcScore = SCORING.calcScore;
 function sc(s){return s>=80?'#1a7a4a':s>=65?'#2d6a9f':s>=50?'#b07d2a':'#8b3a3a';}
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
 // ─── Comparison soft-launch (May 2026) ────────────────────────────────────
 // Top 10 cities have /compare/ pages for their top-3 hoods. On those hoods'
 // pages, surface links to the comparison pages for internal linking + crawl.
-var COMPARE_CITIES = ['paris','barcelona','lisbon','amsterdam','london','rome','berlin','copenhagen','vienna','prague'];
-function gatekeepPenaltyLocal(h, p) {
-  var pen = 0;
-  if (p==='family'){ if((h.safety||60)<60)pen+=20; if((h.family||60)<55)pen+=15; if((h.vibe||60)>85)pen+=10; }
-  else if (p==='solo'){ if((h.safety||60)<55)pen+=15; }
-  else if (p==='culture'){ if((h.safety||60)<55)pen+=10; }
-  return pen;
-}
+var COMPARE_CITIES = SCORING.COMPARE_CITIES;
+var gatekeepPenaltyLocal = SCORING.gatekeepPenalty;
 function topHoodsForCompare(cityData, n) {
   var hoods = Object.keys(cityData.neighbourhoods);
   var scored = hoods.map(function(hn){
     var h = cityData.neighbourhoods[hn];
     // UNROUNDED scores for ranking — must match compare.js + generate-sitemap.js
     var best = Math.max.apply(null, PERSONAS.map(function(p){
-      var w = PERSONA_WEIGHTS[p];
-      var raw = Object.keys(w).reduce(function(s,f){return s+(h[f]||60)*w[f];},0);
+      var raw = SCORING.calcScoreRaw(h, p);
       return Math.max(0, raw - gatekeepPenaltyLocal(h,p));
     }));
     return {name:hn, best:best};
@@ -653,32 +637,56 @@ function generatePage(cityKey, cityData, hoodName) {
     return 'Typical city pricing';
   }
 
-  if (safetyScore < 60) {
-    // Safety-question intent (matches "is X safe" type queries from GSC)
-    hoodPageTitle = 'Is '+esc(hoodName)+' Safe? '+esc(cityName)+' Area Guide';
+  // ─── Title strategy (rewritten June 2026 from GSC query evidence) ────────
+  // "is X safe" queries are the LARGEST zero-click impression source at
+  // position 6-14: kreuzberg 61+41 impr, bairro alto 36+15, amagerbro 28,
+  // metelkova 9 — all 0 clicks DESPITE some already having "Is X Safe?"
+  // titles. Fixes:
+  //   1. Question-form gate calibrated against the score distribution
+  //      (285/384 hoods sit in the 60s): safety<65 OR vibe>=80 flags ~18%
+  //      of pages — the genuinely low-scoring or nightlife-reputation hoods.
+  //      A wider gate (safety<75) was tested and flipped 88% of the catalog
+  //      into identical interrogative titles — monotonous and template-spammy.
+  //   2. The safety score itself goes in the question-form title — honest,
+  //      specific, distinctive vs vague competitors. "(YEAR)" = freshness.
+  //   3. All OTHER pages still keyword-serve safety queries: "Safety" in the
+  //      title, safety score in the description (Amager, safety 72, ranks
+  //      for "amagerbro copenhagen safe" without qualifying for the
+  //      question form).
+  var safetySalient = safetyScore < 65 || (h.vibe || 60) >= 80;
+  if (safetySalient) {
+    hoodPageTitle = 'Is '+esc(hoodName)+' Safe? '+safetyScore+'/100 \u2014 '+esc(cityName)+' Guide ('+YEAR+')';
+    if (hoodPageTitle.length > 62) hoodPageTitle = 'Is '+esc(hoodName)+' Safe? '+safetyScore+'/100 \u2014 '+esc(cityName)+' Guide';
+    if (hoodPageTitle.length > 62) hoodPageTitle = 'Is '+esc(hoodName)+' Safe? '+esc(cityName)+' Guide';
   } else if (bestPersona === 'family') {
-    // Family-intent frame with travel-search hook
-    hoodPageTitle = 'Staying in '+esc(hoodName)+', '+esc(cityName)+': Family Guide';
+    hoodPageTitle = esc(hoodName)+', '+esc(cityName)+': Safety & Family Guide ('+YEAR+')';
   } else if (bestPersona === 'foodie') {
-    hoodPageTitle = 'Staying in '+esc(hoodName)+', '+esc(cityName)+': Food & Vibe';
+    hoodPageTitle = esc(hoodName)+', '+esc(cityName)+': Food, Vibe & Safety ('+YEAR+')';
   } else if (bestPersona === 'solo') {
-    hoodPageTitle = 'Staying in '+esc(hoodName)+', '+esc(cityName)+': Solo Guide';
+    hoodPageTitle = esc(hoodName)+', '+esc(cityName)+': Solo Guide & Safety ('+YEAR+')';
   } else {
     // Default culture-leaning or generic
-    hoodPageTitle = 'Staying in '+esc(hoodName)+', '+esc(cityName)+': Area Guide';
+    hoodPageTitle = esc(hoodName)+', '+esc(cityName)+': Safety & Area Guide ('+YEAR+')';
   }
-  // Safety net: if title > 60 chars, fall back to shortest form
+  // Safety net: if title > 62 chars, fall back to shortest form
   if (hoodPageTitle.length > 62) {
-    hoodPageTitle = 'Staying in '+esc(hoodName)+', '+esc(cityName);
+    hoodPageTitle = esc(hoodName)+', '+esc(cityName)+': Guide ('+YEAR+')';
     if (hoodPageTitle.length > 62) hoodPageTitle = esc(hoodName)+', '+esc(cityName)+' Guide';
   }
 
-  // Description: lead with safety question if safety<60, else lead with "Where to stay" hook
+  // Description (June 2026): ANSWER FIRST. The old safety description
+  // repeated the searcher's question back at them and quoted the persona
+  // score (e.g. 77/100) where a safety number was expected — ambiguous at
+  // best. Now: verbal verdict + the actual safety score, then breadth.
+  // Persona-led pages also carry the explicit safety number so they can
+  // answer "is X safe" queries from the snippet. Same answer-first principle
+  // that earns the Copilot citations.
   var hoodPageDesc;
-  if (safetyScore < 60) {
-    hoodPageDesc = 'Is '+esc(hoodName)+' safe for solo travellers and families? '+esc(cityName)+' neighbourhood scored '+ps[bestPersona]+'/100. Safety, walkability, transit and vibe compared. Updated '+DATA_UPDATED+'.';
+  if (safetySalient) {
+    var safetyVerdict = safetyScore >= 70 ? 'Yes' : (safetyScore >= 55 ? 'Mostly' : 'Take care');
+    hoodPageDesc = safetyVerdict+' \u2014 '+esc(hoodName)+' scores '+safetyScore+'/100 for safety in our '+esc(cityName)+' data. Walkability, transit, food and vibe also scored. Updated '+DATA_UPDATED+'.';
   } else {
-    hoodPageDesc = 'Where to stay in '+esc(hoodName)+', '+esc(cityName)+': '+ps[bestPersona]+'/100 for '+bestPersonaLabel+'s. Ranked #'+rankInCity[bestPersona]+' of '+allHoodCount+'. Safety, transit, food and vibe scores. Updated '+DATA_UPDATED+'.';
+    hoodPageDesc = 'Where to stay in '+esc(hoodName)+', '+esc(cityName)+': '+ps[bestPersona]+'/100 for '+bestPersonaLabel+'s, safety '+safetyScore+'/100. Ranked #'+rankInCity[bestPersona]+' of '+allHoodCount+'. Updated '+DATA_UPDATED+'.';
   }
   hoodPageDesc = hoodPageDesc.substring(0, 155);
 

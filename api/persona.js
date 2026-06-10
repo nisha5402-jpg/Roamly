@@ -30,22 +30,15 @@ var related = require('./related_cities.js');
 var CITY_IMAGES = {};
 try { CITY_IMAGES = require('./city_images.js'); } catch(e) { /* designed hero fallback */ }
 
-var PERSONA_WEIGHTS = {
-  solo:    {walk:0.25,food:0.20,vibe:0.25,safety:0.15,cost:0.05,transit:0.05,family:0.05},
-  family:  {safety:0.30,family:0.25,walk:0.15,transit:0.15,food:0.10,cost:0.05,vibe:0.0},
-  foodie:  {food:0.35,vibe:0.20,walk:0.20,transit:0.10,safety:0.10,cost:0.05,family:0.0},
-  culture: {walk:0.25,vibe:0.20,transit:0.20,safety:0.15,food:0.15,cost:0.05,family:0.0}
-};
-// Budget mode weights — cost weight boosted to 0.25, causing complete re-ranking.
-var PERSONA_WEIGHTS_BUDGET = {
-  solo:    {walk:0.25,transit:0.15,safety:0.15,food:0.10,vibe:0.10,family:0.00,cost:0.25},
-  family:  {walk:0.08,transit:0.17,safety:0.23,food:0.04,vibe:0.03,family:0.20,cost:0.25},
-  foodie:  {walk:0.15,transit:0.10,safety:0.10,food:0.30,vibe:0.10,family:0.00,cost:0.25},
-  culture: {walk:0.25,transit:0.20,safety:0.10,food:0.05,vibe:0.10,family:0.05,cost:0.25}
-};
-var PERSONA_LABELS = {solo:'Solo Explorer',family:'Family Traveller',foodie:'Food Lover',culture:'Culture Seeker'};
-var PERSONA_EMOJI  = {solo:'&#x1F9ED;',family:'&#x1F46A;',foodie:'&#x1F37D;',culture:'&#x1F3DB;'};
-var PERSONAS = ['solo','family','foodie','culture'];
+// ─── Scoring model: imported from the single source of truth ───────────────
+// Weights, gatekeeping rules and dates live in api/_scoring.js. Edit THERE.
+var SCORING = require('./_scoring.js');
+var PERSONA_WEIGHTS = SCORING.PERSONA_WEIGHTS;
+var PERSONA_WEIGHTS_BUDGET = SCORING.PERSONA_WEIGHTS_BUDGET;
+var PERSONA_LABELS = SCORING.PERSONA_LABELS;
+var PERSONA_EMOJI  = SCORING.PERSONA_EMOJI;
+var PERSONAS = SCORING.PERSONAS;
+var YEAR = SCORING.YEAR;
 
 // Persona-specific title + meta phrasing for high search-intent matching
 var PERSONA_TITLE_NOUN = {
@@ -54,31 +47,38 @@ var PERSONA_TITLE_NOUN = {
   foodie:  'Food Lovers',
   culture: 'Culture Seekers'
 };
-// Title patterns rewritten May 2026 based on Search Console query data.
-// User search patterns show "best neighborhoods in [city] for [persona]" is
-// the dominant intent. Old "Where to Stay in X" titles got 0% CTR at position 5
-// because they didn't keyword-match the query. New format mirrors actual queries.
-// Length kept under 60 chars to avoid Google truncation.
-// Title pivoted May 2026 to "Where to Stay" travel-search-intent framing.
-// Tightened to fit under 60 chars: shorter persona words, no "(2026)" suffix,
-// drop ":N Best Areas" structure that bloats string. Year stays via "(2026)"
-// only when room allows; otherwise dropped.
+// Title patterns rewritten June 2026 from GSC query evidence. The dominant
+// real query shape is "best neighborhoods in [city] for families" / "best
+// area to stay in [city] with family" (london 15+15+6+5 impr, stockholm
+// pos 8.8 / 70 impr / 0 clicks, barcelona, berlin, madrid...). The previous
+// "Where to Stay in X with Family" titles did not mirror that phrasing, so
+// the keyword match (and SERP bolding) went to competitors. New pattern
+// leads with "Best Neighbourhoods in {city}" — Google treats the
+// neighbourhood/neighborhood spelling variants as equivalent for matching.
+// "(YEAR)" freshness hook appended only when it fits under 60 chars.
+function withYear(base) {
+  return (base.length + 7 <= 60) ? base + ' (' + YEAR + ')' : base;
+}
 var PERSONA_TITLE_PATTERN = {
   solo:    function(city, n){
-    var base = 'Where to Stay in '+city+' for Solo Travellers';
-    return (base.length + 12 <= 60) ? base + ' (2026)' : base;
+    var base = 'Best Neighbourhoods in '+city+' for Solo Travel';
+    if (base.length > 60) base = city+' Solo: Best Neighbourhoods';
+    return withYear(base);
   },
   family:  function(city, n){
-    var base = 'Where to Stay in '+city+' with Family';
-    return (base.length + 12 <= 60) ? base + ' (2026)' : base;
+    var base = 'Best Neighbourhoods in '+city+' for Families';
+    if (base.length > 60) base = city+' for Families: Best Areas';
+    return withYear(base);
   },
   foodie:  function(city, n){
-    var base = 'Where to Stay in '+city+' for Food Lovers';
-    return (base.length + 12 <= 60) ? base + ' (2026)' : base;
+    var base = 'Best Foodie Neighbourhoods in '+city;
+    if (base.length > 60) base = city+' Foodie: Best Neighbourhoods';
+    return withYear(base);
   },
   culture: function(city, n){
-    var base = 'Where to Stay in '+city+': Culture Areas';
-    return (base.length + 12 <= 60) ? base + ' (2026)' : base;
+    var base = 'Best Neighbourhoods in '+city+' for Culture';
+    if (base.length > 60) base = city+' Culture: Best Areas';
+    return withYear(base);
   }
 };
 var PERSONA_HEADLINE_INTENT = {
@@ -94,35 +94,15 @@ var PERSONA_VERBS = {
   culture: {best:'richest cultural mix', factors:'walkability, vibe, transit and food'}
 };
 
-function calcScore(h, p, budgetMode) {
-  var w = (budgetMode ? PERSONA_WEIGHTS_BUDGET : PERSONA_WEIGHTS)[p];
-  return Math.round(Object.keys(w).reduce(function(s,f){return s+(h[f]||60)*w[f];},0));
-}
-
-// ─── Gatekeeping (added May 2026, mirrors city.js) ────────────────────────
-// Soft penalty for hoods that fail safety/suitability checks per persona.
-function gatekeepPenalty(h, p) {
-  var penalty = 0;
-  if (p === 'family') {
-    if ((h.safety || 60) < 60) penalty += 20;
-    if ((h.family || 60) < 55) penalty += 15;
-    if ((h.vibe || 60) > 85)   penalty += 10;
-  } else if (p === 'solo') {
-    if ((h.safety || 60) < 55) penalty += 15;
-  } else if (p === 'culture') {
-    if ((h.safety || 60) < 55) penalty += 10;
-  }
-  return penalty;
-}
+var calcScore = SCORING.calcScore;
+var gatekeepPenalty = SCORING.gatekeepPenalty;
 
 // ─── Centralised "data updated" date ─────────────────────────────────────
-var DATA_UPDATED = 'May 2026';
+var DATA_UPDATED = SCORING.DATA_UPDATED;
 
 // ─── Score transparency: human-readable weight breakdown ─────────────────
-var FACTOR_LABELS = {
-  walk:'walkability', transit:'transit', food:'food', family:'family-friendliness',
-  safety:'safety', cost:'affordability', vibe:'vibe'
-};
+var FACTOR_LABELS = SCORING.FACTOR_LABELS;
+
 function weightExplanation(persona, budgetMode) {
   var w = (budgetMode ? PERSONA_WEIGHTS_BUDGET : PERSONA_WEIGHTS)[persona];
   var entries = Object.keys(w).map(function(k){return {k:k,v:w[k]};}).sort(function(a,b){return b.v-a.v;});
@@ -318,7 +298,9 @@ function generatePage(cityKey, cityData, persona, budgetMode) {
   if (budgetMode) {
     pageDesc = 'Budget-friendly '+cityName+' neighbourhoods for '+PERSONA_TITLE_NOUN[persona].toLowerCase()+'. '+nHoods+' areas re-ranked with cost as the primary factor. Updated '+DATA_UPDATED+'.';
   } else {
-    pageDesc = benefitPhrase+'. '+nHoods+' neighbourhoods ranked on '+factorEmphasis+'. '+top1.name+' #1 with '+top1.score+'/100. Updated '+DATA_UPDATED+'.';
+    // June 2026: answer-first. The verdict (#1 hood + score) now LEADS the
+    // snippet instead of being truncated off the end at 155 chars.
+    pageDesc = top1.name+' is our #1 of '+nHoods+' '+cityName+' neighbourhoods for '+PERSONA_TITLE_NOUN[persona].toLowerCase()+' ('+top1.score+'/100), ranked on '+factorEmphasis+'. Updated '+DATA_UPDATED+'.';
   }
   pageDesc = pageDesc.substring(0, 155);
 

@@ -8,59 +8,19 @@ var related = require('./related_cities.js');
 var CITY_IMAGES = {};
 try { CITY_IMAGES = require('./city_images.js'); } catch(e) { /* designed hero fallback */ }
 
-// ─── Centralised "data updated" date ──────────────────────────────────────
-// Update this single constant when refreshing data.
-// Used in: page footers, meta descriptions, FAQ answers, methodology blocks.
-var DATA_UPDATED = 'May 2026';
-var DATA_UPDATED_ISO = '2026-05-01';
-
-var PERSONA_WEIGHTS = {
-  solo:    {walk:0.25,food:0.20,vibe:0.25,safety:0.15,cost:0.05,transit:0.05,family:0.05},
-  family:  {safety:0.30,family:0.25,walk:0.15,transit:0.15,food:0.10,cost:0.05,vibe:0.0},
-  foodie:  {food:0.35,vibe:0.20,walk:0.20,transit:0.10,safety:0.10,cost:0.05,family:0.0},
-  culture: {walk:0.25,vibe:0.20,transit:0.20,safety:0.15,food:0.15,cost:0.05,family:0.0}
-};
-// Budget mode weights — derived from original index.html logic.
-// Cost weight increases to 0.25 across all personas, other factors reduce proportionally.
-// This causes a complete re-ranking that prioritises affordable neighbourhoods.
-var PERSONA_WEIGHTS_BUDGET = {
-  solo:    {walk:0.25,transit:0.15,safety:0.15,food:0.10,vibe:0.10,family:0.00,cost:0.25},
-  family:  {walk:0.08,transit:0.17,safety:0.23,food:0.04,vibe:0.03,family:0.20,cost:0.25},
-  foodie:  {walk:0.15,transit:0.10,safety:0.10,food:0.30,vibe:0.10,family:0.00,cost:0.25},
-  culture: {walk:0.25,transit:0.20,safety:0.10,food:0.05,vibe:0.10,family:0.05,cost:0.25}
-};
-var PERSONA_LABELS = {solo:'Solo Explorer',family:'Family Traveller',foodie:'Food Lover',culture:'Culture Seeker'};
-var PERSONA_EMOJI  = {solo:'&#x1F9ED;',family:'&#x1F46A;',foodie:'&#x1F37D;',culture:'&#x1F3DB;'};
-var PERSONAS = ['solo','family','foodie','culture'];
-
-function calcScore(h, p, budgetMode) {
-  var w = (budgetMode ? PERSONA_WEIGHTS_BUDGET : PERSONA_WEIGHTS)[p];
-  return Math.round(Object.keys(w).reduce(function(s,f){return s+(h[f]||60)*w[f];},0));
-}
-
-// ─── Gatekeeping thresholds (added May 2026 after Gemini editorial review) ──
-// PURPOSE: Prevent unsafe / unsuitable hoods from appearing in top 5 of
-// sensitive personas (family, solo). Implemented as soft penalty (not hard
-// exclusion) so small cities with limited hoods still produce a full ranking.
-//
-// Rules (cumulative; multiple violations = multiple penalties):
-//   FAMILY: -20 if safety<60, -15 if family<55, -10 if vibe>85 (proxy for nightlife noise)
-//   SOLO:   -15 if safety<55 (night safety critical for solo)
-//   FOODIE: -15 if a hood's food score was likely tourist-trap inflated (no direct rule possible without amenity data)
-//   CULTURE: -10 if safety<55 (cultural seekers expect calmer environments)
-function gatekeepPenalty(h, p) {
-  var penalty = 0;
-  if (p === 'family') {
-    if ((h.safety || 60) < 60) penalty += 20;
-    if ((h.family || 60) < 55) penalty += 15;
-    if ((h.vibe || 60) > 85)   penalty += 10;  // very high vibe = nightlife noise proxy
-  } else if (p === 'solo') {
-    if ((h.safety || 60) < 55) penalty += 15;
-  } else if (p === 'culture') {
-    if ((h.safety || 60) < 55) penalty += 10;
-  }
-  return penalty;
-}
+// ─── Scoring model: imported from the single source of truth ───────────────
+// Weights, gatekeeping rules and dates live in api/_scoring.js. Edit THERE.
+var SCORING = require('./_scoring.js');
+var DATA_UPDATED = SCORING.DATA_UPDATED;
+var DATA_UPDATED_ISO = SCORING.DATA_UPDATED_ISO;
+var YEAR = SCORING.YEAR;
+var PERSONA_WEIGHTS = SCORING.PERSONA_WEIGHTS;
+var PERSONA_WEIGHTS_BUDGET = SCORING.PERSONA_WEIGHTS_BUDGET;
+var PERSONA_LABELS = SCORING.PERSONA_LABELS;
+var PERSONA_EMOJI  = SCORING.PERSONA_EMOJI;
+var PERSONAS = SCORING.PERSONAS;
+var calcScore = SCORING.calcScore;
+var gatekeepPenalty = SCORING.gatekeepPenalty;
 
 function ranked(hoods, p, budgetMode) {
   return Object.keys(hoods).map(function(n){
@@ -518,7 +478,7 @@ function generatePage(cityKey, cityData, persona, budgetMode) {
   var nHoods = Object.keys(hoods).length;
   var cityPageTitle = budgetMode
     ? 'Budget-Friendly '+esc(cityName)+' Neighbourhoods ('+nHoods+' Ranked)'
-    : 'Where to Stay in '+esc(cityName)+': '+nHoods+' Neighbourhoods Ranked 2026';
+    : 'Where to Stay in '+esc(cityName)+': '+nHoods+' Neighbourhoods Ranked '+YEAR;
   var cityPageDesc = budgetMode
     ? ('Affordable '+esc(cityName)+' neighbourhoods for budget travellers. '+nHoods+' areas re-ranked with cost as the primary factor. Updated '+DATA_UPDATED+'.').substring(0,155)
     : ('Find your '+esc(cityName)+' neighbourhood. '+nHoods+' areas compared on walkability, food, safety and vibe. Personalised for families, foodies, solo or culture. Updated '+DATA_UPDATED+'.').substring(0,155);

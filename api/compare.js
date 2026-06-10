@@ -10,38 +10,18 @@
 
 var scores = require('../roamly_scores.json');
 
-// ─── Scoring model (kept in sync with api/persona.js) ─────────────────────
-var COMPARE_CITIES = ['paris','barcelona','lisbon','amsterdam','london','rome','berlin','copenhagen','vienna','prague'];
-var PERSONA_WEIGHTS = {
-  solo:    {walk:0.25,food:0.20,vibe:0.25,safety:0.15,cost:0.05,transit:0.05,family:0.05},
-  family:  {safety:0.30,family:0.25,walk:0.15,transit:0.15,food:0.10,cost:0.05,vibe:0.0},
-  foodie:  {food:0.35,vibe:0.20,walk:0.20,transit:0.10,safety:0.10,cost:0.05,family:0.0},
-  culture: {walk:0.25,vibe:0.20,transit:0.20,safety:0.15,food:0.15,cost:0.05,family:0.0}
-};
-var PERSONA_LABELS = {solo:'Solo Explorer',family:'Family Traveller',foodie:'Food Lover',culture:'Culture Seeker'};
-var PERSONAS = ['solo','family','foodie','culture'];
-var DATA_UPDATED = 'May 2026';
+// ─── Scoring model: imported from the single source of truth ───────────────
+// Weights, gatekeeping rules and dates live in api/_scoring.js. Edit THERE.
+var SCORING = require('./_scoring.js');
+var COMPARE_CITIES = SCORING.COMPARE_CITIES;
+var PERSONA_WEIGHTS = SCORING.PERSONA_WEIGHTS;
+var PERSONA_LABELS = SCORING.PERSONA_LABELS;
+var PERSONAS = SCORING.PERSONAS;
+var DATA_UPDATED = SCORING.DATA_UPDATED;
 
-function calcScore(h, p) {
-  var w = PERSONA_WEIGHTS[p];
-  return Math.round(Object.keys(w).reduce(function(s,f){return s+(h[f]||60)*w[f];},0));
-}
-function gatekeepPenalty(h, p) {
-  var penalty = 0;
-  if (p === 'family') {
-    if ((h.safety || 60) < 60) penalty += 20;
-    if ((h.family || 60) < 55) penalty += 15;
-    if ((h.vibe || 60) > 85)   penalty += 10;
-  } else if (p === 'solo') {
-    if ((h.safety || 60) < 55) penalty += 15;
-  } else if (p === 'culture') {
-    if ((h.safety || 60) < 55) penalty += 10;
-  }
-  return penalty;
-}
-function personaScore(h, p) {
-  return Math.max(0, calcScore(h, p) - gatekeepPenalty(h, p));
-}
+var calcScore = SCORING.calcScore;
+var gatekeepPenalty = SCORING.gatekeepPenalty;
+var personaScore = SCORING.personaScore;
 
 // ─── Helpers ──────────────────────────────────────────────────────────────
 function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
@@ -85,8 +65,7 @@ function topHoods(cityData, n){
   var scored = hoods.map(function(hn){
     var h = cityData.neighbourhoods[hn];
     var best = Math.max.apply(null, PERSONAS.map(function(p){
-      var w = PERSONA_WEIGHTS[p];
-      var raw = Object.keys(w).reduce(function(s,f){return s+(h[f]||60)*w[f];},0);
+      var raw = SCORING.calcScoreRaw(h, p);
       return Math.max(0, raw - gatekeepPenalty(h,p));
     }));
     return {name:hn, best:best};
