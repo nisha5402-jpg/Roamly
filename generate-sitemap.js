@@ -28,6 +28,11 @@ function urlSafeCityKey(k) {
 var urls = [];
 urls.push({loc: BASE+'/',             lastmod: TODAY, changefreq: 'weekly',  priority: '1.0'});
 urls.push({loc: BASE+'/methodology',  lastmod: TODAY, changefreq: 'monthly', priority: '0.6'});
+// Blog articles (June 2026 fix): these were manually appended to sitemap.xml
+// and the generator didn't know about them — every regeneration silently
+// dropped them. Add new blog posts HERE, not by hand-editing sitemap.xml.
+urls.push({loc: BASE+'/blog/where-to-stay-europe-data/', lastmod: TODAY, changefreq: 'monthly', priority: '0.7'});
+urls.push({loc: BASE+'/blog/where-to-stay-london-data/', lastmod: TODAY, changefreq: 'monthly', priority: '0.7'});
 
 var cityKeys = Object.keys(scores.cities);
 cityKeys.forEach(function(cityKey) {
@@ -49,15 +54,12 @@ cityKeys.forEach(function(cityKey) {
 });
 
 // ── Comparison pages (soft-launch: top 10 cities, top 3 hoods, 3 pairs each) ──
-var COMPARE_CITIES = ['paris','barcelona','lisbon','amsterdam','london','rome','berlin','copenhagen','vienna','prague'];
-var PW_SM = {
-  solo:{walk:0.25,food:0.20,vibe:0.25,safety:0.15,cost:0.05,transit:0.05,family:0.05},
-  family:{safety:0.30,family:0.25,walk:0.15,transit:0.15,food:0.10,cost:0.05,vibe:0.0},
-  foodie:{food:0.35,vibe:0.20,walk:0.20,transit:0.10,safety:0.10,cost:0.05,family:0.0},
-  culture:{walk:0.25,vibe:0.20,transit:0.20,safety:0.15,food:0.15,cost:0.05,family:0.0}
-};
-function smScore(h,p){var w=PW_SM[p];return Object.keys(w).reduce(function(s,f){return s+(h[f]||60)*w[f];},0);}
-function smPenalty(h,p){var pen=0;if(p==='family'){if((h.safety||60)<60)pen+=20;if((h.family||60)<55)pen+=15;if((h.vibe||60)>85)pen+=10;}else if(p==='solo'){if((h.safety||60)<55)pen+=15;}else if(p==='culture'){if((h.safety||60)<55)pen+=10;}return pen;}
+// Scoring model from the single source of truth (api/_scoring.js). Ranking
+// uses UNROUNDED scores — must match compare.js pair selection exactly.
+var SCORING = require('./api/_scoring.js');
+var COMPARE_CITIES = SCORING.COMPARE_CITIES;
+function smScore(h,p){return SCORING.calcScoreRaw(h,p);}
+function smPenalty(h,p){return SCORING.gatekeepPenalty(h,p);}
 function smTop3(cityData){
   var hoods=Object.keys(cityData.neighbourhoods);
   var scored=hoods.map(function(hn){var h=cityData.neighbourhoods[hn];var best=Math.max.apply(null,['solo','family','foodie','culture'].map(function(p){return Math.max(0,smScore(h,p)-smPenalty(h,p));}));return {name:hn,best:best};});
