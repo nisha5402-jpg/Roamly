@@ -1,6 +1,26 @@
 {
   "redirects": [
     {
+      "source": "/d\u00fcsseldorf",
+      "destination": "/dusseldorf",
+      "permanent": true
+    },
+    {
+      "source": "/d\u00fcsseldorf/:path*",
+      "destination": "/dusseldorf/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/heraklion_\\(crete\\)",
+      "destination": "/heraklion-crete",
+      "permanent": true
+    },
+    {
+      "source": "/heraklion_\\(crete\\)/:path*",
+      "destination": "/heraklion-crete/:path*",
+      "permanent": true
+    },
+    {
       "source": "/san_sebastian",
       "destination": "/san-sebastian",
       "permanent": true
