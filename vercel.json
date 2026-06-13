@@ -1,12 +1,22 @@
 {
   "redirects": [
     {
-      "source": "/d\u00fcsseldorf",
+      "source": "/malmö/:path*",
+      "destination": "/malmo/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/malmö",
+      "destination": "/malmo",
+      "permanent": true
+    },
+    {
+      "source": "/düsseldorf",
       "destination": "/dusseldorf",
       "permanent": true
     },
     {
-      "source": "/d\u00fcsseldorf/:path*",
+      "source": "/düsseldorf/:path*",
       "destination": "/dusseldorf/:path*",
       "permanent": true
     },
