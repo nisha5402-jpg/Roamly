@@ -966,6 +966,7 @@ body::before{
 <script>
 // ── DATA ─────────────────────────────────────────────────────────────────────
 
+function asciiSlug(x){return String(x||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();}
 var CITIES = [
   {id:"lisbon",name:"Lisbon",country:"Portugal",flag:"🇵🇹",tier:"verified",n:12,hook:"Powered by Data &amp; AI",on:true},
   {id:"porto",name:"Porto",country:"Portugal",flag:"🇵🇹",tier:"data",n:5,hook:"Powered by Data &amp; AI",on:true},
@@ -1002,7 +1003,7 @@ var CITIES = [
   {id:"cologne",name:"Cologne",country:"Germany",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
   {id:"frankfurt",name:"Frankfurt",country:"Germany",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
   {id:"dresden",name:"Dresden",country:"Germany",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
-  {id:"düsseldorf",name:"Düsseldorf",country:"Germany",flag:"🏙️",tier:"data",n:2,hook:"Powered by Data &amp; AI",on:true},
+  {id:"dusseldorf",name:"Düsseldorf",country:"Germany",flag:"🏙️",tier:"data",n:2,hook:"Powered by Data &amp; AI",on:true},
   {id:"stuttgart",name:"Stuttgart",country:"Germany",flag:"🏙️",tier:"data",n:2,hook:"Powered by Data &amp; AI",on:true},
   {id:"vienna",name:"Vienna",country:"Austria",flag:"🇦🇹",tier:"data",n:6,hook:"Powered by Data &amp; AI",on:true},
   {id:"salzburg",name:"Salzburg",country:"Austria",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
@@ -1037,7 +1038,7 @@ var CITIES = [
   {id:"aarhus",name:"Aarhus",country:"Denmark",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
   {id:"stockholm",name:"Stockholm",country:"Sweden",flag:"🇸🇪",tier:"data",n:6,hook:"Powered by Data &amp; AI",on:true},
   {id:"gothenburg",name:"Gothenburg",country:"Sweden",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
-  {id:"malmö",name:"Malmö",country:"Sweden",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
+  {id:"malmo",name:"Malmö",country:"Sweden",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
   {id:"oslo",name:"Oslo",country:"Norway",flag:"🇳🇴",tier:"data",n:5,hook:"Powered by Data &amp; AI",on:true},
   {id:"bergen",name:"Bergen",country:"Norway",flag:"🏙️",tier:"data",n:3,hook:"Powered by Data &amp; AI",on:true},
   {id:"helsinki",name:"Helsinki",country:"Finland",flag:"🏙️",tier:"data",n:4,hook:"Powered by Data &amp; AI",on:true},
@@ -2077,7 +2078,7 @@ function renderResults(){
   // Show full guide link
   var fg = document.getElementById("full-guide-link");
   if(fg && S.city) {
-    fg.href = '/' + S.city;
+    fg.href = '/' + asciiSlug(S.city);
     fg.style.display = 'inline-flex';
   }
   var tierLabel = '<span style="font-family:var(--f-mono);font-size:0.6rem;letter-spacing:0.06em;color:var(--ink50)">Powered by Data &amp; AI</span>';
