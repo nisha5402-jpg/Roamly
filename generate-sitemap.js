@@ -57,6 +57,17 @@ cityKeys.forEach(function(cityKey) {
   });
 });
 
+// ── Events pages (only cities present in events_data.js) ──
+var eventsCount = 0;
+var EVENTS_DATA = (function(){ try { return require('./api/events_data.js'); } catch(e){ return {}; } })();
+cityKeys.forEach(function(cityKey){
+  var urlKey = urlSafeCityKey(cityKey);
+  if (EVENTS_DATA[urlKey]) {
+    urls.push({loc: BASE+'/'+urlKey+'/events/', lastmod: TODAY, changefreq: 'weekly', priority: '0.7'});
+    eventsCount++;
+  }
+});
+
 var hoodCount = 0;
 cityKeys.forEach(function(cityKey) {
   var urlKey = urlSafeCityKey(cityKey);
@@ -113,6 +124,7 @@ console.log('  Homepage:            1');
 console.log('  Methodology:         1');
 console.log('  City pages:          '+cityKeys.length);
 console.log('  Persona pages:       '+personaCount);
+console.log('  Events pages:        '+eventsCount);
 console.log('  Neighbourhood pages: '+hoodCount);
 console.log('  Comparison pages:    '+compareCount);
 console.log('  Total URLs:          '+urls.length);

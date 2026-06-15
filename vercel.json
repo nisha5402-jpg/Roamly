@@ -117,6 +117,14 @@
       "destination": "/api/methodology"
     },
     {
+      "source": "/:city([a-z][a-z0-9_\\-]+)/events",
+      "destination": "/api/events?city=:city"
+    },
+    {
+      "source": "/:city([a-z][a-z0-9_\\-]+)/events/",
+      "destination": "/api/events?city=:city"
+    },
+    {
       "source": "/api/data/:city/:hood",
       "destination": "/api/data?city=:city&hood=:hood"
     },
