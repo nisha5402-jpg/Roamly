@@ -1,6 +1,6 @@
 // api/events_data.js — AUTO-GENERATED events dataset.
 // Refresh on the 1st & 15th per EVENTS_RUNBOOK.md. Keyed by city url-slug.
-// generated: 2026-06-14
+// generated: 2026-06-15 (wave 2 added: 10 more cities)
 module.exports = {
  "lisbon": [
   {
@@ -1053,6 +1053,812 @@ module.exports = {
    "tags": [
     "#openair",
     "#free",
+    "#neighbourhood"
+   ]
+  }
+ ],
+ "bergen": [
+  {
+   "name": "Bergenfest",
+   "start": "2026-06-10",
+   "end": "2026-06-13",
+   "hood": "Bryggen",
+   "area": "Bergenhus Fortress",
+   "cat": "Music",
+   "link": "https://www.bergenfest.no/en/",
+   "ltype": "official",
+   "verified": true,
+   "blurb": "Four days of major international and Nordic acts inside a medieval fortress on the waterfront — Lewis Capaldi, Sigrid and The Hives among the 2026 names.",
+   "fitment": {
+    "Solo": "intimate fortress setting",
+    "Culture": "Bergen's premier festival"
+   },
+   "caution": {},
+   "tags": [
+    "#livemusic",
+    "#waterfront",
+    "#ticketed"
+   ]
+  },
+  {
+   "name": "Bergen International Festival",
+   "start": "2026-05-20",
+   "end": "2026-06-03",
+   "hood": "Bryggen",
+   "area": "Citywide · Bryggen & venues",
+   "cat": "Culture",
+   "link": "https://www.fib.no/en",
+   "ltype": "official",
+   "verified": true,
+   "blurb": "Norway's flagship arts festival — classical music, theatre, dance and free street performances across the city for two weeks.",
+   "fitment": {
+    "Culture": "the prestige arts festival",
+    "Family": "free street shows",
+    "Solo": "easy to drop into"
+   },
+   "caution": {},
+   "tags": [
+    "#classical",
+    "#theatre",
+    "#free",
+    "#openair"
+   ]
+  },
+  {
+   "name": "Nattjazz",
+   "start": "2026-05-29",
+   "end": "2026-06-06",
+   "hood": "Bryggen",
+   "area": "USF Verftet",
+   "cat": "Music",
+   "link": "https://nattjazz.no/en/",
+   "ltype": "official",
+   "verified": true,
+   "blurb": "One of Norway's oldest and most respected jazz festivals, in a converted quayside sardine factory — over a week of nightly concerts.",
+   "fitment": {
+    "Culture": "54 years of jazz",
+    "Solo": "warm club atmosphere"
+   },
+   "caution": {},
+   "tags": [
+    "#jazz",
+    "#waterfront",
+    "#ticketed"
+   ]
+  },
+  {
+   "name": "Bergen Food Festival",
+   "start": "2026-09-03",
+   "end": "2026-09-05",
+   "hood": "Bryggen",
+   "area": "City centre quay",
+   "cat": "Food",
+   "link": "#",
+   "ltype": "search",
+   "verified": false,
+   "blurb": "Farm and fjord producers from across western Norway gather on the waterfront for a celebration of regional food — with a children's food fest and adjacent beer festival.",
+   "fitment": {
+    "Foodie": "fjord-to-table produce",
+    "Family": "dedicated kids' food fest"
+   },
+   "caution": {},
+   "tags": [
+    "#streetfood",
+    "#free",
+    "#waterfront"
+   ]
+  },
+  {
+   "name": "Beyond the Gates",
+   "start": "2026-07-29",
+   "end": "2026-08-01",
+   "hood": "Bryggen",
+   "area": "City centre venues",
+   "cat": "Music",
+   "link": "#",
+   "ltype": "search",
+   "verified": true,
+   "blurb": "A premier extreme-metal festival born from the legendary Hole in the Sky — four days for heavy-music fans from across the world.",
+   "fitment": {
+    "Solo": "a tight-knit scene",
+    "Culture": "a metal institution"
+   },
+   "caution": {
+    "Family": "extreme metal, late and loud — not for kids"
+   },
+   "tags": [
+    "#metal",
+    "#livemusic",
+    "#ticketed"
+   ]
+  }
+ ],
+ "porto": [
+  {
+   "name": "Festa de São João",
+   "start": "2026-06-23",
+   "end": "2026-06-24",
+   "hood": "Ribeira",
+   "area": "Ribeira & citywide",
+   "cat": "Festival",
+   "link": "#",
+   "ltype": "search",
+   "verified": true,
+   "blurb": "Porto's biggest night of the year — a city-wide street party with bonfires, grilled sardines, fireworks over the Douro, and the playful tradition of bopping strangers with plastic hammers.",
+   "fitment": {
+    "Solo": "the whole city is out",
+    "Foodie": "sardines on every corner",
+    "Culture": "Porto's defining tradition"
+   },
+   "caution": {
+    "Family": "wonderful early on, but it runs all night and gets very crowded — see the fireworks then retreat"
+   },
+   "tags": [
+    "#streetfood",
+    "#fireworks",
+    "#free",
+    "#tradition"
+   ]
+  },
+  {
+   "name": "Primavera Sound Porto",
+   "start": "2026-06-11",
+   "end": "2026-06-14",
+   "hood": "Foz do Douro",
+   "area": "Parque da Cidade",
+   "cat": "Music",
+   "link": "https://www.nosprimaverasound.com/",
+   "ltype": "official",
+   "verified": true,
+   "blurb": "A world-class indie and electronic festival in a green park near the ocean — 2026's bill includes Gorillaz, Massive Attack, The XX and IDLES.",
+   "fitment": {
+    "Solo": "festival-pilgrim crowd",
+    "Culture": "cutting-edge lineup"
+   },
+   "caution": {
+    "Family": "a large adult music festival; stay in Foz or Matosinhos, not the centre"
+   },
+   "tags": [
+    "#livemusic",
+    "#indie",
+    "#ticketed"
+   ]
+  },
+  {
+   "name": "Serralves em Festa",
+   "start": "2026-05-29",
+   "end": "2026-05-31",
+   "hood": "Boavista",
+   "area": "Fundação Serralves",
+   "cat": "Culture",
+   "link": "https://www.serralves.pt/en/",
+   "ltype": "official",
+   "verified": true,
+   "blurb": "A 50-hour non-stop marathon of contemporary art, music, dance and theatre across the Serralves museum, villa and park — most of it free.",
+   "fitment": {
+    "Culture": "50 hours of art",
+    "Family": "workshops & park space",
+    "Solo": "free and easy to wander"
+   },
+   "caution": {},
+   "tags": [
+    "#art",
+    "#free",
+    "#openair"
+   ]
+  },
+  {
+   "name": "Portugal Day (Dia de Portugal)",
+   "start": "2026-06-10",
+   "end": "2026-06-10",
+   "hood": "Baixa",
+   "area": "City centre",
+   "cat": "Culture",
+   "link": "#",
+   "ltype": "search",
+   "verified": true,
+   "blurb": "The national holiday brings flag ceremonies, parades and a festive riverside mood — a good excuse to climb to the Crystal Palace gardens for Douro views.",
+   "fitment": {
+    "Culture": "national celebration",
+    "Family": "daytime, relaxed"
+   },
+   "caution": {},
+   "tags": [
+    "#nationalday",
+    "#free",
+    "#daytime"
+   ]
+  }
+ ],
+ "gothenburg": [
+  {
+   "name": "West Pride",
+   "start": "2026-06-08",
+   "end": "2026-06-15",
+   "hood": "Haga",
+   "area": "Citywide",
+   "cat": "Culture",
+   "link": "https://westpride.se/en/",
+   "ltype": "official",
+   "verified": true,
+   "blurb": "Gothenburg's week-long celebration of LGBTQ culture — a colourful parade, concerts, exhibitions and talks filling the whole city.",
+   "fitment": {
+    "Solo": "open, welcoming crowd",
+    "Culture": "a week of art & community"
+   },
+   "caution": {},
+   "tags": [
+    "#pride",
+    "#parade",
+    "#free"
+   ]
+  },
+  {
+   "name": "Butterfly Festival",
+   "start": "2026-06-26",
+   "end": "2026-06-27",
+   "hood": "Frihamnen",
+   "area": "Bananpiren, Frihamnen",
+   "cat": "Music",
+   "link": "#",
+   "ltype": "search",
+   "verified": true,
+   "blurb": "A new dockside summer festival — two stages of pop and dance (Macklemore, Alan Walker, Tom Odell in 2026), world street food and funfair rides.",
+   "fitment": {
+    "Solo": "easy party atmosphere",
+    "Foodie": "global street food"
+   },
+   "caution": {},
+   "tags": [
+    "#livemusic",
+    "#streetfood",
+    "#ticketed"
+   ]
+  },
+  {
+   "name": "Way Out West",
+   "start": "2026-08-13",
+   "end": "2026-08-15",
+   "hood": "Linnéstaden",
+   "area": "Slottsskogen park",
+   "cat": "Music",
+   "link": "https://www.wayoutwest.se/en/",
+   "ltype": "official",
+   "verified": true,
+   "blurb": "Gothenburg's flagship festival in the leafy Slottsskogen park — musically diverse, famously vegetarian, with a 'Stay Out West' club programme at night. 2026 brings The Cure, Gorillaz and Lorde.",
+   "fitment": {
+    "Solo": "diverse, friendly crowd",
+    "Foodie": "all-vegetarian food",
+    "Culture": "music + film"
+   },
+   "caution": {},
+   "tags": [
+    "#livemusic",
+    "#vegetarian",
+    "#ticketed"
+   ]
+  },
+  {
+   "name": "Göteborgs Kalaset",
+   "start": "2026-08-27",
+   "end": "2026-08-30",
+   "hood": "Centrum",
+   "area": "City centre squares",
+   "cat": "Festival",
+   "link": "#",
+   "ltype": "search",
+   "verified": false,
+   "blurb": "A vast free street party closing the summer — live music, dance, street art and comedy across the city's squares, drawing up to 700,000 people.",
+   "fitment": {
+    "Solo": "huge and free",
+    "Family": "all-ages street culture",
+    "Foodie": "food stalls everywhere"
+   },
+   "caution": {},
+   "tags": [
+    "#festival",
+    "#free",
+    "#streetfood",
+    "#citywide"
+   ]
+  }
+ ],
+ "gdansk": [
+  {
+   "name": "St. Dominic's Fair (Jarmark Św. Dominika)",
+   "start": "2026-07-25",
+   "end": "2026-08-16",
+   "hood": "Main Town",
+   "area": "Główne Miasto (Old Town)",
+   "cat": "Festival",
+   "link": "https://jarmarkswdominika.pl/en/",
+   "ltype": "official",
+   "verified": true,
+   "blurb": "One of Europe's largest and oldest open-air trade fairs — over 1,000 stalls of crafts, antiques, food and street performance filling Gdańsk's old streets for three weeks.",
+   "fitment": {
+    "Foodie": "street food & local crafts",
+    "Family": "stalls, performers, all-ages",
+    "Culture": "a 760-year tradition",
+    "Solo": "easy to wander for hours"
+   },
+   "caution": {},
+   "tags": [
+    "#market",
+    "#streetfood",
+    "#free",
+    "#tradition"
+   ]
+  },
+  {
+   "name": "Gdańsk Shakespeare Festival",
+   "start": "2026-07-25",
+   "end": "2026-08-02",
+   "hood": "Main Town",
+   "area": "Gdańsk Shakespeare Theatre",
+   "cat": "Culture",
+   "link": "#",
+   "ltype": "search",
+   "verified": false,
+   "blurb": "International productions of Shakespeare and bold contemporary theatre at the striking modern Shakespeare Theatre, with open-air performances too.",
+   "fitment": {
+    "Culture": "world-class theatre",
+    "Solo": "a cultured evening"
+   },
+   "caution": {},
+   "tags": [
+    "#theatre",
+    "#ticketed"
+   ]
+  },
+  {
+   "name": "Sounds of the North / Sea Shanty days",
+   "start": "2026-08-01",
+   "end": "2026-08-03",
+   "hood": "Old Town",
+   "area": "Motława riverfront",
+   "cat": "Music",
+   "link": "#",
+   "ltype": "search",
+   "verified": false,
+   "blurb": "Summer weekends bring concerts and maritime celebration along the Motława river — free open-air music against the backdrop of the old crane and granaries.",
+   "fitment": {
+    "Family": "free riverside music",
+    "Solo": "relaxed waterfront evenings"
+   },
+   "caution": {},
+   "tags": [
+    "#livemusic",
+    "#free",
+    "#waterfront"
+   ]
+  }
+ ],
+ "graz": [
+  {
+   "name": "La Strada",
+   "start": "2026-07-31",
+   "end": "2026-08-08",
+   "hood": "Innere Stadt",
+   "area": "Citywide squares & streets",
+   "cat": "Festival",
+   "link": "https://www.lastrada.at/en/",
+   "ltype": "official",
+   "verified": true,
+   "blurb": "Graz's international festival of street theatre, contemporary circus and puppetry — free performances animating the UNESCO old town for nine days.",
+   "fitment": {
+    "Family": "free street circus & puppetry",
+    "Culture": "avant-garde performance",
+    "Solo": "free, all over town"
+   },
+   "caution": {},
+   "tags": [
+    "#theatre",
+    "#circus",
+    "#free",
+    "#openair"
+   ]
+  },
+  {
+   "name": "Elevate Festival",
+   "start": "2026-08-26",
+   "end": "2026-08-30",
+   "hood": "Schlossberg",
+   "area": "Schlossberg tunnels & venues",
+   "cat": "Music",
+   "link": "https://elevate.at/en/",
+   "ltype": "official",
+   "verified": false,
+   "blurb": "An interdisciplinary festival blending electronic music, art and political discourse — staged in the dramatic tunnels inside the Schlossberg mountain.",
+   "fitment": {
+    "Solo": "electronic + ideas",
+    "Culture": "music meets discourse"
+   },
+   "caution": {
+    "Family": "late-night electronic and talks, not aimed at kids"
+   },
+   "tags": [
+    "#electronic",
+    "#art",
+    "#ticketed"
+   ]
+  },
+  {
+   "name": "Stockwerk Jazz / summer concerts",
+   "start": "2026-06-14",
+   "end": "2026-08-14",
+   "hood": "Innere Stadt",
+   "area": "City venues & courtyards",
+   "cat": "Music",
+   "link": "#",
+   "ltype": "search",
+   "verified": false,
+   "blurb": "Through summer, Graz's courtyards and the Stockwerk jazz club host regular live jazz and acoustic evenings — a low-key, local night out.",
+   "fitment": {
+    "Solo": "intimate jazz nights",
+    "Culture": "local music scene"
+   },
+   "caution": {},
+   "tags": [
+    "#jazz",
+    "#openair"
+   ]
+  }
+ ],
+ "krakow": [
+  {
+   "name": "Wianki (Midsummer)",
+   "start": "2026-06-20",
+   "end": "2026-06-21",
+   "hood": "Kazimierz",
+   "area": "Vistula riverbank, below Wawel",
+   "cat": "Festival",
+   "link": "https://wianki.krakow.pl/",
+   "ltype": "official",
+   "verified": true,
+   "blurb": "Kraków's summer-solstice celebration on the Vistula — wreath-floating, big open-air concerts and fireworks over the river below Wawel Castle. Free.",
+   "fitment": {
+    "Solo": "free riverside party",
+    "Family": "daytime wreaths & music",
+    "Culture": "a pagan-rooted ritual"
+   },
+   "caution": {},
+   "tags": [
+    "#solstice",
+    "#fireworks",
+    "#free",
+    "#riverside"
+   ]
+  },
+  {
+   "name": "Jewish Culture Festival",
+   "start": "2026-06-27",
+   "end": "2026-07-05",
+   "hood": "Kazimierz",
+   "area": "Kazimierz (Jewish Quarter)",
+   "cat": "Culture",
+   "link": "https://www.jewishfestival.pl/en/",
+   "ltype": "official",
+   "verified": true,
+   "blurb": "One of the world's largest Jewish culture festivals — concerts, workshops, film and talks in the synagogues and squares of Kazimierz, ending with a huge free outdoor concert.",
+   "fitment": {
+    "Culture": "world-class heritage festival",
+    "Foodie": "Kazimierz food scene",
+    "Solo": "free final concert"
+   },
+   "caution": {},
+   "tags": [
+    "#culture",
+    "#music",
+    "#tradition"
+   ]
+  },
+  {
+   "name": "Crossroads Festival",
+   "start": "2026-06-19",
+   "end": "2026-06-27",
+   "hood": "Old Town",
+   "area": "Old Town & Kazimierz venues",
+   "cat": "Music",
+   "link": "#",
+   "ltype": "search",
+   "verified": true,
+   "blurb": "A world-music festival bringing international folk, jazz and acoustic acts to intimate venues across the Old Town and Kazimierz.",
+   "fitment": {
+    "Culture": "global folk & jazz",
+    "Solo": "small, intimate rooms"
+   },
+   "caution": {},
+   "tags": [
+    "#worldmusic",
+    "#jazz",
+    "#ticketed"
+   ]
+  },
+  {
+   "name": "Pierogi Festival",
+   "start": "2026-08-13",
+   "end": "2026-08-16",
+   "hood": "Old Town",
+   "area": "Mały Rynek",
+   "cat": "Food",
+   "link": "#",
+   "ltype": "search",
+   "verified": false,
+   "blurb": "Kraków's beloved dumpling festival on the Mały Rynek square — dozens of stalls competing for the best pierogi, with a prize for the year's favourite.",
+   "fitment": {
+    "Foodie": "every pierogi imaginable",
+    "Family": "casual, tasty, central",
+    "Solo": "cheap and cheerful"
+   },
+   "caution": {},
+   "tags": [
+    "#streetfood",
+    "#free",
+    "#tradition"
+   ]
+  }
+ ],
+ "valencia": [
+  {
+   "name": "Gran Fira de València",
+   "start": "2026-07-01",
+   "end": "2026-07-31",
+   "hood": "Ciutat Vella",
+   "area": "Citywide · squares & gardens",
+   "cat": "Festival",
+   "link": "https://www.granfiravalencia.com/",
+   "ltype": "official",
+   "verified": true,
+   "blurb": "Valencia's month-long July fair — open-air concerts, fireworks, the Batalla de Flores flower battle, fairground rides and free events across the city.",
+   "fitment": {
+    "Solo": "something on nightly",
+    "Family": "flower battle & funfair",
+    "Culture": "the city's summer centrepiece",
+    "Foodie": "fair food & horchata"
+   },
+   "caution": {},
+   "tags": [
+    "#festival",
+    "#fireworks",
+    "#free"
+   ]
+  },
+  {
+   "name": "Feria de Julio concerts (Viveros)",
+   "start": "2026-07-01",
+   "end": "2026-07-31",
+   "hood": "Pla del Real",
+   "area": "Jardines de Viveros",
+   "cat": "Music",
+   "link": "#",
+   "ltype": "search",
+   "verified": false,
+   "blurb": "The July fair's concert series in the leafy Viveros gardens — Spanish and international names across the month in a relaxed open-air park setting.",
+   "fitment": {
+    "Solo": "easy park concerts",
+    "Culture": "big-name lineup"
+   },
+   "caution": {},
+   "tags": [
+    "#livemusic",
+    "#openair",
+    "#ticketed"
+   ]
+  },
+  {
+   "name": "Nits de Vivers / open-air cinema",
+   "start": "2026-06-14",
+   "end": "2026-08-14",
+   "hood": "Pla del Real",
+   "area": "Jardines de Viveros",
+   "cat": "Culture",
+   "link": "#",
+   "ltype": "search",
+   "verified": false,
+   "blurb": "Warm-evening culture in the Viveros gardens — open-air film and music nights through the heart of summer.",
+   "fitment": {
+    "Family": "relaxed garden evenings",
+    "Solo": "easy summer nights"
+   },
+   "caution": {},
+   "tags": [
+    "#cinema",
+    "#openair",
+    "#garden"
+   ]
+  }
+ ],
+ "tallinn": [
+  {
+   "name": "Tallinn Old Town Days",
+   "start": "2026-06-04",
+   "end": "2026-06-07",
+   "hood": "Old Town",
+   "area": "Vanalinn (Old Town)",
+   "cat": "Festival",
+   "link": "https://vanalinnapaevad.ee/en/",
+   "ltype": "official",
+   "verified": false,
+   "blurb": "The medieval Old Town comes alive with concerts, markets, dance and street performance — a beloved free celebration filling the cobbled squares.",
+   "fitment": {
+    "Family": "medieval fun, all-ages",
+    "Culture": "living heritage",
+    "Solo": "free and atmospheric",
+    "Foodie": "market stalls"
+   },
+   "caution": {},
+   "tags": [
+    "#festival",
+    "#free",
+    "#tradition",
+    "#oldtown"
+   ]
+  },
+  {
+   "name": "Õllesummer",
+   "start": "2026-07-08",
+   "end": "2026-07-11",
+   "hood": "Kesklinn",
+   "area": "Song Festival Grounds",
+   "cat": "Music",
+   "link": "#",
+   "ltype": "search",
+   "verified": false,
+   "blurb": "Estonia's largest summer music-and-beer festival at the iconic Song Festival Grounds — multiple stages of Estonian and international acts.",
+   "fitment": {
+    "Solo": "big, sociable crowd",
+    "Foodie": "food & craft beer"
+   },
+   "caution": {
+    "Family": "a beer festival — fine early, livelier late"
+   },
+   "tags": [
+    "#livemusic",
+    "#beer",
+    "#ticketed"
+   ]
+  },
+  {
+   "name": "Tallinn Maritime Days",
+   "start": "2026-07-17",
+   "end": "2026-07-19",
+   "hood": "Kalamaja",
+   "area": "Seaplane Harbour & waterfront",
+   "cat": "Family",
+   "link": "#",
+   "ltype": "search",
+   "verified": false,
+   "blurb": "A free family festival along the harbour — ships to board, concerts, workshops and food, centred on the Seaplane Harbour in trendy Kalamaja.",
+   "fitment": {
+    "Family": "free, hands-on, kids love it",
+    "Foodie": "harbour food stalls",
+    "Solo": "easy seaside day"
+   },
+   "caution": {},
+   "tags": [
+    "#family",
+    "#free",
+    "#waterfront"
+   ]
+  }
+ ],
+ "ljubljana": [
+  {
+   "name": "Ljubljana Festival",
+   "start": "2026-07-01",
+   "end": "2026-08-31",
+   "hood": "Center",
+   "area": "Križanke open-air theatre",
+   "cat": "Culture",
+   "link": "https://www.ljubljanafestival.si/en/",
+   "ltype": "official",
+   "verified": true,
+   "blurb": "Slovenia's foremost summer arts festival — over 100 events of symphonic music, opera, ballet and theatre, many under the stars in the Plečnik-designed Križanke complex.",
+   "fitment": {
+    "Culture": "100+ world-class events",
+    "Solo": "single tickets, easy to join",
+    "Family": "some family programming"
+   },
+   "caution": {},
+   "tags": [
+    "#classical",
+    "#opera",
+    "#openair",
+    "#ticketed"
+   ]
+  },
+  {
+   "name": "Ljubljana old-town summer evenings",
+   "start": "2026-06-14",
+   "end": "2026-08-31",
+   "hood": "Center",
+   "area": "Old town & riverbanks",
+   "cat": "Music",
+   "link": "#",
+   "ltype": "search",
+   "verified": true,
+   "blurb": "All summer the car-free old town and Ljubljanica riverbanks fill with free open-air concerts, markets and street performers — the city at its most relaxed.",
+   "fitment": {
+    "Solo": "free riverside evenings",
+    "Family": "car-free, easy to stroll",
+    "Foodie": "riverside cafes & market"
+   },
+   "caution": {},
+   "tags": [
+    "#free",
+    "#openair",
+    "#riverside"
+   ]
+  },
+  {
+   "name": "Trnfest",
+   "start": "2026-08-01",
+   "end": "2026-08-31",
+   "hood": "Trnovo",
+   "area": "KUD France Prešeren, Trnovo",
+   "cat": "Festival",
+   "link": "#",
+   "ltype": "search",
+   "verified": false,
+   "blurb": "A month-long alternative arts festival in the Trnovo district — free concerts, workshops, theatre and film with a friendly neighbourhood feel.",
+   "fitment": {
+    "Culture": "alternative & local",
+    "Family": "free workshops",
+    "Solo": "low-key and welcoming"
+   },
+   "caution": {},
+   "tags": [
+    "#festival",
+    "#free",
+    "#neighbourhood"
+   ]
+  }
+ ],
+ "seville": [
+  {
+   "name": "Noches en los Jardines del Real Alcázar",
+   "start": "2026-06-14",
+   "end": "2026-09-30",
+   "hood": "Santa Cruz",
+   "area": "Real Alcázar gardens",
+   "cat": "Music",
+   "link": "#",
+   "ltype": "search",
+   "verified": true,
+   "blurb": "Summer-evening concerts in the candlelit gardens of the Alcázar palace — flamenco, classical and world music in one of Europe's most beautiful settings.",
+   "fitment": {
+    "Culture": "music in a palace garden",
+    "Solo": "a magical solo evening",
+    "Foodie": "pair with tapas after"
+   },
+   "caution": {},
+   "tags": [
+    "#livemusic",
+    "#openair",
+    "#garden",
+    "#ticketed"
+   ]
+  },
+  {
+   "name": "Flamenco summer nights (Triana)",
+   "start": "2026-06-14",
+   "end": "2026-08-31",
+   "hood": "Triana",
+   "area": "Triana · tablaos & terraces",
+   "cat": "Culture",
+   "link": "#",
+   "ltype": "search",
+   "verified": true,
+   "blurb": "Flamenco's birthplace barrio stays alive through summer with tablao shows and riverside terraces — the most authentic way to feel the art form.",
+   "fitment": {
+    "Culture": "flamenco at its source",
+    "Foodie": "Triana's tapas bars",
+    "Solo": "easy to catch a show"
+   },
+   "caution": {},
+   "tags": [
+    "#flamenco",
+    "#tradition",
     "#neighbourhood"
    ]
   }
