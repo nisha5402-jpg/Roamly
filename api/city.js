@@ -2,6 +2,7 @@
 var scores   = require('../roamly_scores.json');
 var insights = require('../roamly_insights.json');
 var related = require('./related_cities.js');
+var EVENTS_DATA = (function(){ try { return require('./events_data.js'); } catch(e){ return {}; } })();
 
 // Optional city hero images from Wikipedia (run fetch_city_images.js to generate).
 // If the file doesn't exist yet, fall back to {} so designed gradient hero is used.
@@ -714,6 +715,7 @@ function generatePage(cityKey, cityData, persona, budgetMode) {
   +'<tbody>'+compareCards+'</tbody>'
   +'</table>'
   +'<div class="cmp-note">Data updated '+DATA_UPDATED+' &middot; Powered by OpenStreetMap &amp; Google Places</div>'
+  + (EVENTS_DATA[urlKey(cityKey)] ? '<div style="text-align:center;margin:14px 0 2px"><a href="/'+urlKey(cityKey)+'/events/" style="display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:99px;background:#162030;color:#F2EDE3;font-size:13px;font-weight:600;text-decoration:none;font-family:\'DM Sans\',sans-serif">\uD83D\uDCC5 See what\u2019s on in '+esc(cityData.name||cityKey)+' this season \u2192</a></div>' : '')
   +'</div>\n'
 
   +'<div class="sec-hdr"><span class="sec-ttl">Neighbourhood deep-dives</span><div class="sec-line"></div></div>\n'
