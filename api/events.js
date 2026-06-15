@@ -49,6 +49,11 @@ function groupOf(e, today){
   return MON[s.getUTCMonth()];
 }
 
+function detailRow(icon, label, val){
+  return '<div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:7px">'
+    +'<span style="color:rgba(22,32,48,.4);margin-top:1px;font-size:13px">'+icon+'</span>'
+    +'<div style="font-size:13px;color:rgba(22,32,48,.6);line-height:1.5"><b style="color:#162030;font-weight:600">'+label+'</b> '+val+'</div></div>';
+}
 function eventCard(e, today){
   var s=parseISO(e.start), en=parseISO(e.end);
   var live = s<=today && en>=today;
@@ -56,33 +61,46 @@ function eventCard(e, today){
   var fitChips = Object.keys(e.fitment||{}).map(function(p){
     return '<span style="display:inline-flex;align-items:baseline;gap:5px;background:rgba(44,95,74,.12);border-radius:99px;padding:4px 11px;font-size:12.5px;color:#2C5F4A">'
       +'<b style="font-weight:700">'+esc(p)+'</b><span style="color:rgba(22,32,48,.5);font-size:11.5px">'+esc(e.fitment[p])+'</span></span>';
-  }).join('');
+  }).join(' ');
   var cautionHtml = Object.keys(e.caution||{}).map(function(p){
-    return '<div style="display:flex;gap:7px;align-items:flex-start;background:rgba(138,94,26,.14);border-radius:6px;padding:8px 11px;font-size:12.5px;color:#8A5E1A;line-height:1.45;margin-bottom:10px">'
+    return '<div style="display:flex;gap:7px;align-items:flex-start;background:rgba(138,94,26,.14);border-radius:6px;padding:8px 11px;font-size:12.5px;color:#8A5E1A;line-height:1.45;margin-bottom:12px">'
       +'<b style="font-weight:700;white-space:nowrap">\u26A0 '+esc(p)+':</b><span>'+esc(e.caution[p])+'</span></div>';
   }).join('');
   var tagsHtml = (e.tags||[]).map(function(t){
     return '<span style="font-family:\'DM Mono\',monospace;font-size:11px;color:#2B5C8A;background:rgba(43,92,138,.10);padding:2px 8px;border-radius:6px">'+esc(t)+'</span>';
   }).join(' ');
-  var hoodLink = e.hood ? '<a href="/'+urlKey(/* cityKey injected below */ CARD_CITYKEY)+'/'+SLUG.slugify(e.hood)+'/" style="font-size:13px;color:#2B5C8A;text-decoration:none">\uD83D\uDCCD Stay near: '+esc(e.hood)+'</a>' : '';
-  var linkLabel = e.ltype==='official' ? 'Official site \u2197' : 'Find info \u2197';
+
+  // detail box: venue / price / getting-there / insider tip (only rows that exist)
+  var rows = '';
+  if(e.venue) rows += detailRow('\uD83D\uDCCD','Venue','\u2014 '+esc(e.venue)+(e.hood?', '+esc(e.hood):''));
+  if(e.price) rows += detailRow('\uD83C\uDFAB','Price','\u2014 '+esc(e.price));
+  if(e.getting_there) rows += detailRow('\uD83D\uDEB6','Getting there','\u2014 '+esc(e.getting_there));
+  if(e.tip) rows += '<div style="display:flex;gap:8px;align-items:flex-start">'
+    +'<span style="color:#9C821F;margin-top:1px;font-size:13px">\uD83D\uDCA1</span>'
+    +'<div style="font-size:13px;color:rgba(22,32,48,.6);line-height:1.5"><b style="color:#9C821F;font-weight:600">Insider tip</b> \u2014 '+esc(e.tip)+'</div></div>';
+  var detailBox = rows ? '<div style="background:#F7F4EC;border-radius:10px;padding:13px 15px;margin-bottom:14px">'+rows+'</div>' : '';
+
+  var hoodLink = e.hood ? '<a href="/'+urlKey(CARD_CITYKEY)+'/'+SLUG.slugify(e.hood)+'/" style="font-size:13px;color:#2B5C8A;text-decoration:none">\uD83D\uDCCD Stay near: '+esc(e.hood)+'</a>' : '<span></span>';
+  var linkLabel = e.ltype==='official' ? 'Book / official site' : (e.ltype==='tickets' ? 'Get tickets' : 'Find info');
   var linkHtml = (e.link && e.link!=='#')
-    ? '<a href="'+esc(e.link)+'" target="_blank" rel="noopener nofollow" style="font-size:13px;color:#2B5C8A;text-decoration:none">'+linkLabel+'</a>'
+    ? '<a href="'+esc(e.link)+'" target="_blank" rel="noopener nofollow" style="display:inline-flex;align-items:center;gap:6px;background:#162030;color:#F2EDE3;font-size:13px;font-weight:600;padding:9px 16px;border-radius:6px;text-decoration:none">'+linkLabel+' \u2197</a>'
     : '';
-  return '<div style="background:#fff;border:1.5px solid '+(live?'#BFA040':'rgba(22,32,48,.08)')+';border-radius:18px;padding:18px 20px;margin-bottom:12px">'
-    +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap">'
+
+  return '<div style="background:#fff;border:1.5px solid '+(live?'#BFA040':'rgba(22,32,48,.08)')+';border-radius:18px;padding:20px 22px;margin-bottom:12px">'
+    +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap">'
       +'<span style="font-family:\'DM Mono\',monospace;font-size:10px;padding:2px 9px;border-radius:99px;background:'+cc[0]+';color:'+cc[1]+'">'+esc(e.cat)+'</span>'
       +(live?'<span style="font-family:\'DM Mono\',monospace;font-size:10px;color:#2C5F4A">\u25CF on now</span>':'')
       +(!e.verified?'<span style="font-family:\'DM Mono\',monospace;font-size:10px;color:#8A5E1A;background:rgba(138,94,26,.14);padding:2px 8px;border-radius:99px">dates to confirm</span>':'')
     +'</div>'
-    +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:700;text-transform:uppercase;font-size:22px;letter-spacing:.02em;line-height:1.05">'+esc(e.name)+'</div>'
-    +'<div style="font-family:\'DM Mono\',monospace;font-size:12px;color:rgba(22,32,48,.5);margin:3px 0 10px">'+dateRange(e)+' \u00B7 '+esc(e.area)+'</div>'
-    +'<div style="font-size:14.5px;color:#1E2D3D;line-height:1.55;margin-bottom:12px">'+esc(e.blurb)+'</div>'
+    +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:700;text-transform:uppercase;font-size:23px;letter-spacing:.02em;line-height:1.05">'+esc(e.name)+'</div>'
+    +'<div style="font-family:\'DM Mono\',monospace;font-size:12px;color:rgba(22,32,48,.5);margin:4px 0 12px">'+dateRange(e)+' \u00B7 '+esc(e.area||e.venue||'')+'</div>'
+    +'<div style="font-size:14.5px;color:#1E2D3D;line-height:1.6;margin-bottom:16px">'+esc(e.blurb)+'</div>'
+    +detailBox
     +'<div style="font-family:\'DM Mono\',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:rgba(22,32,48,.5);margin-bottom:6px">who it suits</div>'
-    +'<div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px">'+fitChips+'</div>'
+    +'<div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:'+(cautionHtml?'12':'14')+'px">'+fitChips+'</div>'
     +cautionHtml
-    +'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">'+tagsHtml+'</div>'
-    +'<div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;border-top:1px dashed #DDD5C0;padding-top:11px">'+hoodLink+linkHtml+'</div>'
+    +'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">'+tagsHtml+'</div>'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px dashed #DDD5C0;padding-top:13px">'+hoodLink+linkHtml+'</div>'
   +'</div>';
 }
 // closure-injected cityKey for hood links (set in generatePage)
@@ -91,46 +109,59 @@ var CARD_CITYKEY='';
 function generatePage(cityKey, cityName, rawEvents){
   var today = todayUTC();
   CARD_CITYKEY = cityKey;
-  var winEnd = new Date(today.getTime()+8*7*86400000); // 8 weeks
+  var nearEnd = new Date(today.getTime()+8*7*86400000); // 8-week "near term"
+  // season end = 30 Sept of current year (or next year if already past)
+  var seasonEnd = new Date(Date.UTC(today.getUTCFullYear(),8,30));
+  if(seasonEnd < today) seasonEnd = new Date(Date.UTC(today.getUTCFullYear()+1,8,30));
 
-  // auto-hide: keep events whose END is today-or-later AND START within window
-  var visible = (rawEvents||[]).filter(function(e){
+  // keep any event not yet ended and starting on/before season end
+  var allVisible = (rawEvents||[]).filter(function(e){
     var en=parseISO(e.end), s=parseISO(e.start);
-    return en>=today && s<=winEnd;
+    return en>=today && s<=seasonEnd;
   }).sort(function(a,b){ return parseISO(a.start)-parseISO(b.start); });
 
+  // split: near-term (starts within 8wks OR already running) vs later-this-summer
+  var near = allVisible.filter(function(e){ return parseISO(e.start)<=nearEnd; });
+  var later = allVisible.filter(function(e){ return parseISO(e.start)>nearEnd; });
+
   var ORDER=['On now','This week','Later this month'];
-  // append month names in chronological order found
   var groups={};
-  visible.forEach(function(e){ var g=groupOf(e,today); (groups[g]=groups[g]||[]).push(e); });
+  near.forEach(function(e){ var g=groupOf(e,today); (groups[g]=groups[g]||[]).push(e); });
   var monthGroups = Object.keys(groups).filter(function(g){return ORDER.indexOf(g)<0;})
     .sort(function(a,b){ return MON.indexOf(a)-MON.indexOf(b); });
   var groupOrder = ORDER.filter(function(g){return groups[g];}).concat(monthGroups);
 
+  function groupHeader(label){
+    return '<div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:600;text-transform:uppercase;letter-spacing:.1em;font-size:13px;color:#9C821F;margin:22px 0 12px;display:flex;align-items:center;gap:10px">'+esc(label)+'<span style="flex:1;height:1px;background:#DDD5C0"></span></div>';
+  }
+
   var body;
-  if(visible.length===0){
+  if(allVisible.length===0){
     body='<div style="background:#fff;border:1.5px dashed #DDD5C0;border-radius:12px;padding:22px;text-align:center;font-size:14px;color:rgba(22,32,48,.5)">'
       +'It\u2019s a quieter stretch in '+esc(cityName)+' right now. '
       +'<a href="https://www.google.com/search?q='+encodeURIComponent(cityName+' events this week')+'" target="_blank" rel="noopener nofollow" style="color:#2B5C8A">See the city\u2019s full calendar \u2192</a></div>';
   } else {
     body = groupOrder.map(function(g){
-      return '<div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:600;text-transform:uppercase;letter-spacing:.1em;font-size:13px;color:#9C821F;margin:22px 0 12px;display:flex;align-items:center;gap:10px">'+esc(g)+'<span style="flex:1;height:1px;background:#DDD5C0"></span></div>'
-        + groups[g].map(function(e){return eventCard(e,today);}).join('');
+      return groupHeader(g) + groups[g].map(function(e){return eventCard(e,today);}).join('');
     }).join('');
+    if(later.length){
+      body += groupHeader('Later this summer')
+        + later.map(function(e){return eventCard(e,today);}).join('');
+    }
   }
 
   var hiddenCount = (rawEvents||[]).filter(function(e){ return parseISO(e.end)<today; }).length;
-  var winLabel = fmtShort(today)+' \u2013 '+fmtShort(winEnd)+' '+winEnd.getUTCFullYear();
+  var winLabel = fmtShort(today)+' \u2013 '+fmtShort(seasonEnd)+' '+seasonEnd.getUTCFullYear();
 
   var canonical = 'https://www.localechoice.com/'+urlKey(cityKey)+'/events/';
   var title = 'What\u2019s On in '+esc(cityName)+' \u2014 Events This Season | LocaleChoice';
-  var desc  = 'The festivals, concerts and seasonal events on in '+esc(cityName)+' over the next 8 weeks \u2014 tagged by who they suit, with neighbourhoods to stay near. Updated 1st &amp; 15th.';
+  var desc  = 'The festivals, concerts and seasonal events on in '+esc(cityName)+' this season \u2014 tagged by who they suit, with neighbourhoods to stay near. Updated 1st &amp; 15th.';
 
   // JSON-LD ItemList of events
   var ld = {
     "@context":"https://schema.org","@type":"ItemList",
     "name":"Events in "+cityName,
-    "itemListElement": visible.map(function(e,i){
+    "itemListElement": allVisible.map(function(e,i){
       var ev={"@type":"Event","name":e.name,"startDate":e.start,"endDate":e.end,
         "eventStatus":"https://schema.org/EventScheduled",
         "location":{"@type":"Place","name":e.area+', '+cityName}};
@@ -158,7 +189,7 @@ function generatePage(cityKey, cityName, rawEvents){
     +'</div>'
     +'<div style="font-family:\'DM Mono\',monospace;font-size:12px;color:rgba(22,32,48,.5);margin:6px 0 16px"><a href="/'+urlKey(cityKey)+'" style="text-decoration:none">'+esc(cityName)+'</a> \u203A What\u2019s on</div>'
     +'<h1 style="font-family:\'Playfair Display\',serif;font-size:clamp(28px,4.6vw,40px);line-height:1.12">What\u2019s on in '+esc(cityName)+' <i style="color:#1E2D3D">this season</i></h1>'
-    +'<div style="font-family:\'DM Mono\',monospace;font-size:12px;color:rgba(22,32,48,.5);margin:10px 0 6px">Next 8 weeks \u00B7 '+winLabel+' \u00B7 updated 1st &amp; 15th \u00B7 past events hidden automatically</div>'
+    +'<div style="font-family:\'DM Mono\',monospace;font-size:12px;color:rgba(22,32,48,.5);margin:10px 0 6px">This season \u00B7 '+winLabel+' \u00B7 updated 1st &amp; 15th \u00B7 past events hidden automatically</div>'
     +'<p style="font-size:14px;color:#1E2D3D;margin:10px 0 18px;max-width:620px">The festivals and happenings worth planning a trip around \u2014 each one tagged with who it suits, and an honest word where it doesn\u2019t. <a href="/'+urlKey(cityKey)+'">See where to stay \u2192</a></p>'
     + body
     +'<div style="font-family:\'DM Mono\',monospace;font-size:11px;color:rgba(22,32,48,.5);margin-top:24px;border-top:1.5px solid #DDD5C0;padding-top:14px;line-height:1.7">'
