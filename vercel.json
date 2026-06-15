@@ -117,6 +117,14 @@
       "destination": "/api/methodology"
     },
     {
+      "source": "/reports/most-walkable-food-neighbourhoods-europe",
+      "destination": "/api/report_walkable_food"
+    },
+    {
+      "source": "/reports/most-walkable-food-neighbourhoods-europe/",
+      "destination": "/api/report_walkable_food"
+    },
+    {
       "source": "/:city([a-z][a-z0-9_\\-]+)/events",
       "destination": "/api/events?city=:city"
     },

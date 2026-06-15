@@ -28,6 +28,7 @@ function urlSafeCityKey(k) {
 var urls = [];
 urls.push({loc: BASE+'/',             lastmod: TODAY, changefreq: 'weekly',  priority: '1.0'});
 urls.push({loc: BASE+'/methodology',  lastmod: TODAY, changefreq: 'monthly', priority: '0.6'});
+urls.push({loc: BASE+'/reports/most-walkable-food-neighbourhoods-europe', lastmod: TODAY, changefreq: 'monthly', priority: '0.8'});
 // Blog articles (June 2026 fix): these were manually appended to sitemap.xml
 // and the generator didn't know about them — every regeneration silently
 // dropped them. Add new blog posts HERE, not by hand-editing sitemap.xml.
